@@ -2,7 +2,10 @@
 
 
 #include "MyCharacter.h"
+
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/Controller.h"
 #include "Camera/CameraComponent.h"
 
 // Sets default values
@@ -10,6 +13,15 @@ AMyCharacter::AMyCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Don't let Controller rotating Character
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	
+	// Let Character Movement Component rotate Character toward movement direction
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Follow Camera"));
@@ -46,15 +58,28 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &ACharacter::StopJumping);
 }
 
 void AMyCharacter::MoveFoward(float scale)
 {
-	AddMovementInput(GetActorForwardVector(), scale);
+	if ((Controller != NULL) && (scale != 0.f)) {
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation = FRotator(0.f, Rotation.Yaw, 0.f);
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(Direction, scale);
+	}
 }
 
 void AMyCharacter::MoveRight(float scale)
 {
-	AddMovementInput(GetActorRightVector(), scale);
+	if ((Controller != NULL) && (scale != 0.f)) {
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation = FRotator(0.f, Rotation.Yaw, 0.f);
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(Direction, scale);
+	}
 }
 
