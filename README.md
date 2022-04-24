@@ -1,1 +1,3 @@
-LearnUE4
+#### Dependent Assets
+- Paragon: Countess
+- Soul: Cave
