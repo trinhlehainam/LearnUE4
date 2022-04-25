@@ -18,7 +18,13 @@ public:
 	virtual void NativeInitializeAnimation() override;
 
 	UFUNCTION(BlueprintCallable, Category = AnimationProperties)
-	void UpdateAnimationProperties();
+	void UpdateAnimationProperties(float DeltaTime);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	float DetalYaw;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	FRotator LastFrameRotation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
 	float MovementSpeed;
