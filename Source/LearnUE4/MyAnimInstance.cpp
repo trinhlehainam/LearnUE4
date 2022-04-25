@@ -27,20 +27,20 @@ void UMyAnimInstance::UpdateAnimationProperties(float DeltaTime)
 	}
 
 	if (Owner) {
-		FVector Speed = Owner->GetVelocity();
-		FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0.f);
-		MovementSpeed = LateralSpeed.Size();
+		FVector Velocity = Owner->GetVelocity();
+		MovementSpeed = FVector(Velocity.X, Velocity.Y, 0.f).Size();
 
 		bIsInAir = Owner->GetMovementComponent()->IsFalling();
 		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0 ? true : false;
 
 		FRotator Rotation = Owner->GetActorRotation();
-		FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(LastFrameRotation, Rotation);
-		float Target = DeltaRotation.Yaw / DeltaTime;
+		FRotator DeltaRotation = Rotation - LastFrameRotation;	// DEBUG
+		FRotator NormalizedDeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(Rotation, LastFrameRotation);
+		float Target = NormalizedDeltaRotation.Yaw / DeltaTime;
 		float FInterp = FMath::FInterpTo(DetalYaw, Target, DeltaTime, 6.0f);
 		DetalYaw = FMath::Clamp(FInterp, -90.f, 90.f);
 		LastFrameRotation = Rotation;
 
-		UE_LOG(LogTemp, Warning, TEXT("Target : %f, Yaw * %f"), Target, Rotation.Yaw);
+		UE_LOG(LogTemp, Warning, TEXT("DeltaRotation.Yaw = %f; Target = %f"), DeltaRotation.Euler().Z, Target);
 	}
 }
