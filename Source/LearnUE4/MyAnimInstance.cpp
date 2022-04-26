@@ -34,13 +34,13 @@ void UMyAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0 ? true : false;
 
 		FRotator Rotation = Owner->GetActorRotation();
-		FRotator DeltaRotation = Rotation - LastFrameRotation;	// DEBUG
+		// FRotator DeltaRotation = Rotation - LastFrameRotation;	// DEBUG
 		FRotator NormalizedDeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(Rotation, LastFrameRotation);
 		float Target = NormalizedDeltaRotation.Yaw / DeltaTime;
 		float FInterp = FMath::FInterpTo(DetalYaw, Target, DeltaTime, 6.0f);
 		DetalYaw = FMath::Clamp(FInterp, -90.f, 90.f);
 		LastFrameRotation = Rotation;
 
-		UE_LOG(LogTemp, Warning, TEXT("DeltaRotation.Yaw = %f; Target = %f"), DeltaRotation.Euler().Z, Target);
+		// UE_LOG(LogTemp, Warning, TEXT("DeltaRotation.Yaw = %f; Target = %f"), DeltaRotation.Yaw, Target);
 	}
 }
