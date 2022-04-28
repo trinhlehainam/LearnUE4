@@ -44,3 +44,10 @@ void UMyAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		// UE_LOG(LogTemp, Warning, TEXT("DeltaRotation.Yaw = %f; Target = %f"), DeltaRotation.Yaw, Target);
 	}
 }
+
+
+void UMyAnimInstance::NativeUpdateAnimation(float DeltaTime) {
+	Super::NativeUpdateAnimation(DeltaTime);
+
+	UpdateAnimationProperties(DeltaTime);
+}

@@ -16,6 +16,7 @@ class LEARNUE4_API UMyAnimInstance : public UAnimInstance
 	
 public:
 	virtual void NativeInitializeAnimation() override;
+	virtual void NativeUpdateAnimation(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = AnimationProperties)
 	void UpdateAnimationProperties(float DeltaTime);

@@ -61,6 +61,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("LMB", IE_Pressed, this, &AMyCharacter::Attack);
 }
 
 void AMyCharacter::MoveFoward(float scale)
@@ -81,5 +82,14 @@ void AMyCharacter::MoveRight(float scale)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, scale);
 	}
+}
+
+void AMyCharacter::Attack()
+{
+	bIsAttacking = true;
+
+	/*auto AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AnimMontage)
+		AnimInstance->Montage_Play(AnimMontage);*/
 }
 
