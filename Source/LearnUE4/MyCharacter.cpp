@@ -31,6 +31,8 @@ AMyCharacter::AMyCharacter()
 
 	CameraBoom->SetupAttachment(RootComponent);
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+
+	bIsAttacking = false;
 }
 
 // Called when the game starts or when spawned
@@ -86,10 +88,12 @@ void AMyCharacter::MoveRight(float scale)
 
 void AMyCharacter::Attack()
 {
+	if (bIsAttacking) return;
+
 	bIsAttacking = true;
 
-	/*auto AnimInstance = GetMesh()->GetAnimInstance();
+	auto AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && AnimMontage)
-		AnimInstance->Montage_Play(AnimMontage);*/
+		AnimInstance->Montage_Play(AnimMontage);
 }
 

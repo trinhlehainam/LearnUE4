@@ -13,7 +13,7 @@ void UMyAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	if (!Owner) {
+	if (Owner == nullptr) {
 		APawn* PawnOwner = TryGetPawnOwner();
 		Owner = Cast<AMyCharacter>(PawnOwner);
 	}
