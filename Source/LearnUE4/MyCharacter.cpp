@@ -33,6 +33,9 @@ AMyCharacter::AMyCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 
 	bIsAttacking = false;
+
+	Health = 80.f;
+	MaxHealth = 100.f;
 }
 
 // Called when the game starts or when spawned
@@ -96,4 +99,3 @@ void AMyCharacter::Attack()
 	if (AnimInstance && AnimMontage)
 		AnimInstance->Montage_Play(AnimMontage);
 }
-
