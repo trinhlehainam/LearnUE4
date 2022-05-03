@@ -8,20 +8,32 @@
 void UHUDPlayerStats::NativeConstruct()
 {
 	Super::NativeConstruct();
+}
+
+bool UHUDPlayerStats::Initialize()
+{
+	bool Success = Super::Initialize();
+
+	if (!Success) return false;
 
 	if (!OwningCharacter)
 		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
+
+	if (HealthBar) {
+		HealthBar->PercentDelegate.BindDynamic(this, &UHUDPlayerStats::GetHealthBarPercent);
+		if (OwningCharacter)
+			HealthBar->SetPercent(OwningCharacter->GetHealth() / OwningCharacter->GetMaxHealth());
+	}
+
+	return Success;
 }
 
-void UHUDPlayerStats::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+float UHUDPlayerStats::GetHealthBarPercent()
 {
-	Super::Tick(MyGeometry, InDeltaTime);
+	if (!OwningCharacter)
+		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
+	else
+		return OwningCharacter->GetHealth() / OwningCharacter->GetMaxHealth();
 
-	UpdateHealthBarPercent();
-}
-
-void UHUDPlayerStats::UpdateHealthBarPercent()
-{
-	if (OwningCharacter)
-		HealthBar->SetPercent(OwningCharacter->GetHealth() / OwningCharacter->GetMaxHealth());
+	return HealthBar->Percent;
 }

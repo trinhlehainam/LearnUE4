@@ -15,12 +15,14 @@ class LEARNUE4_API UHUDPlayerStats : public UUserWidget
 	GENERATED_BODY()
 public:
 	virtual void NativeConstruct() override;
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* HealthBar;
+	virtual bool Initialize() override;
+	
 private:
-	void UpdateHealthBarPercent();
+	UPROPERTY(meta = (BindWidget))
+	class UProgressBar* HealthBar;
+
+	UFUNCTION()
+	float GetHealthBarPercent();
 
 	class AMyCharacter* OwningCharacter;
 };
