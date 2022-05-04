@@ -10,11 +10,9 @@ void UHUDPlayerStats::NativeConstruct()
 	Super::NativeConstruct();
 }
 
-bool UHUDPlayerStats::Initialize()
+void UHUDPlayerStats::NativeOnInitialized()
 {
-	bool Success = Super::Initialize();
-
-	if (!Success) return false;
+	Super::NativeOnInitialized();
 
 	if (!OwningCharacter)
 		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
@@ -24,8 +22,6 @@ bool UHUDPlayerStats::Initialize()
 		if (OwningCharacter)
 			HealthBar->SetPercent(OwningCharacter->GetHealth() / OwningCharacter->GetMaxHealth());
 	}
-
-	return Success;
 }
 
 float UHUDPlayerStats::GetHealthBarPercent()

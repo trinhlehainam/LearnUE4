@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
+DECLARE_DYNAMIC_DELEGATE(FToggleRotateDelegate);
+
 UCLASS()
 class LEARNUE4_API AMyCharacter : public ACharacter
 {
@@ -32,8 +34,13 @@ public:
 
 	void Attack();
 
+	UFUNCTION()
+	void ToggleRotationWithDelegate();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Combat)
 	bool bIsAttacking;
+
+	FToggleRotateDelegate ToggleRotateDelegate;
 
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
@@ -54,4 +61,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Stats", meta = (AllowPrivateAccess = "true"))
 	float MaxHealth;
+
+	
 };

@@ -13,9 +13,10 @@ UCLASS()
 class LEARNUE4_API UHUDPlayerStats : public UUserWidget
 {
 	GENERATED_BODY()
-public:
+
+protected:
 	virtual void NativeConstruct() override;
-	virtual bool Initialize() override;
+	virtual void NativeOnInitialized() override;
 	
 private:
 	UPROPERTY(meta = (BindWidget))

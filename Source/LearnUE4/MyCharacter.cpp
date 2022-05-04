@@ -7,6 +7,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "RotatingActor.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -49,7 +52,6 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -67,6 +69,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("LMB", IE_Pressed, this, &AMyCharacter::Attack);
+	PlayerInputComponent->BindAction("ToggleRotation", IE_Pressed, this, &AMyCharacter::ToggleRotationWithDelegate);
 }
 
 void AMyCharacter::MoveFoward(float scale)
@@ -99,3 +102,17 @@ void AMyCharacter::Attack()
 	if (AnimInstance && AnimMontage)
 		AnimInstance->Montage_Play(AnimMontage);
 }
+
+void AMyCharacter::ToggleRotationWithDelegate()
+{
+	/*TArray<AActor*> Actors;
+	UGameplayStatics::GetAllActorsOfClass(this, ARotatingActor::StaticClass(), Actors);
+
+	for (AActor* Actor : Actors) {
+		ARotatingActor* RotatingActor = Cast<ARotatingActor>(Actor);
+		if (RotatingActor)
+			RotatingActor->ToggleRotation();
+	}*/
+	ToggleRotateDelegate.ExecuteIfBound();
+}
+
