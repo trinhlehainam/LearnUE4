@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "State.h"
 #include "RotatingActor.generated.h"
 
 UCLASS()
-class LEARNUE4_API ARotatingActor : public AActor
+class LEARNUE4_API ARotatingActor : public AActor, public IState
 {
 	GENERATED_BODY()
 	
@@ -23,7 +24,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION()
 	void ToggleRotation();
+
+	void OnFire_Implementation() override;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Mesh;

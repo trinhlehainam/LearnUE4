@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "MyCharacter.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE(FToggleRotateDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FToggleRotateDelegate);
 
 UCLASS()
 class LEARNUE4_API AMyCharacter : public ACharacter

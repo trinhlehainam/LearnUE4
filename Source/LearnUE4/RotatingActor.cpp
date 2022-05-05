@@ -26,7 +26,7 @@ void ARotatingActor::BeginPlay()
 
 	AMyCharacter* MyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetActorOfClass(this, AMyCharacter::StaticClass()));
 	if (MyCharacter)
-		MyCharacter->ToggleRotateDelegate.BindDynamic(this, &ARotatingActor::ToggleRotation);
+		MyCharacter->ToggleRotateDelegate.AddDynamic(this, &ARotatingActor::ToggleRotation);
 }
 
 // Called every frame
@@ -44,5 +44,10 @@ void ARotatingActor::Tick(float DeltaTime)
 void ARotatingActor::ToggleRotation()
 {
 	bIsRotating = !bIsRotating;
+}
+
+void ARotatingActor::OnFire_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("On Fire"));
 }
 

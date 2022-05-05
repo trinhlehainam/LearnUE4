@@ -105,14 +105,6 @@ void AMyCharacter::Attack()
 
 void AMyCharacter::ToggleRotationWithDelegate()
 {
-	/*TArray<AActor*> Actors;
-	UGameplayStatics::GetAllActorsOfClass(this, ARotatingActor::StaticClass(), Actors);
-
-	for (AActor* Actor : Actors) {
-		ARotatingActor* RotatingActor = Cast<ARotatingActor>(Actor);
-		if (RotatingActor)
-			RotatingActor->ToggleRotation();
-	}*/
-	ToggleRotateDelegate.ExecuteIfBound();
+	ToggleRotateDelegate.Broadcast();
 }
 
