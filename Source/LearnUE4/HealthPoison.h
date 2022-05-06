@@ -6,6 +6,8 @@
 #include "Item.h"
 #include "HealthPoison.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogCustom, Log, All);
+
 /**
  * 
  */

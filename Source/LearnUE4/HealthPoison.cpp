@@ -11,6 +11,9 @@ AHealthPoison::AHealthPoison()
 
 void AHealthPoison::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Increase Health"));
+	
+
 	auto Character = Cast<AMyCharacter>(OtherActor);
 	if (Character) {
 		Character->SetHealth(Character->GetHealth() + HealthAmount);
@@ -18,3 +21,5 @@ void AHealthPoison::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
+
+DEFINE_LOG_CATEGORY(LogCustom);

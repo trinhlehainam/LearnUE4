@@ -8,6 +8,8 @@
 #include "GameFramework/Controller.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "EngineGlobals.h"
+#include "Engine/Engine.h"
 
 #include "RotatingActor.h"
 
@@ -52,6 +54,8 @@ void AMyCharacter::BeginPlay()
 void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(1, 1.5f, FColor::Cyan, FString::Printf(TEXT("DeltaTime : %f"), DeltaTime));
 }
 
 // Called to bind functionality to input
