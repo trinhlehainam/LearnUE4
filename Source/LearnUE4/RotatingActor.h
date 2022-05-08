@@ -32,6 +32,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Mesh;
 
+	class USphereComponent* Collider;
+
 	bool bIsRotating;
 
 	float RotationRate;

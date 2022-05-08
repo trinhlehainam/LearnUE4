@@ -3,6 +3,7 @@
 
 #include "RotatingActor.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SphereComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "MyCharacter.h"
@@ -14,9 +15,12 @@ ARotatingActor::ARotatingActor() :
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
+	Collider = CreateDefaultSubobject<USphereComponent>(FName("Collider"));
 
 	SetRootComponent(Mesh);
+	Collider->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +31,7 @@ void ARotatingActor::BeginPlay()
 	AMyCharacter* MyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetActorOfClass(this, AMyCharacter::StaticClass()));
 	if (MyCharacter)
 		MyCharacter->ToggleRotateDelegate.AddDynamic(this, &ARotatingActor::ToggleRotation);
+
 }
 
 // Called every frame

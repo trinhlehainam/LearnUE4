@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AItem::AItem()
@@ -34,6 +35,8 @@ void AItem::BeginPlay()
 void AItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// DrawDebugSphere(GetWorld(), GetActorLocation(), Collider->GetScaledSphereRadius(), 64, FColor::Red);
 
 	if (bIsRotate) {
 		FRotator Rotator = GetActorRotation();

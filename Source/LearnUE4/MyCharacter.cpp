@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EngineGlobals.h"
 #include "Engine/Engine.h"
+#include "DrawDebugHelpers.h"
 
 #include "RotatingActor.h"
 
@@ -56,6 +57,21 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(1, 1.5f, FColor::Cyan, FString::Printf(TEXT("DeltaTime : %f"), DeltaTime));
+	TArray<FHitResult> HitResults;
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery1);
+	TArray<AActor*> IgnoreActors;
+	IgnoreActors.Add(this);
+	FVector Start = GetActorLocation();
+	FVector End = Start + GetActorForwardVector() * 200.f;
+	UKismetSystemLibrary::BoxTraceMultiForObjects(this, Start, End, FVector(32.f, 32.f, 32.f), FRotator(), ObjectTypes, true, IgnoreActors, EDrawDebugTrace::ForOneFrame, HitResults, true, FColor::Red, FColor::Blue);
+	UE_LOG(LogTemp, Warning, TEXT("hit num %d"), HitResults.Num());
+	for (const auto& Result : HitResults) {
+		if (Result.bBlockingHit) {
+			FString ObjectName = Result.GetActor()->GetName();
+			UE_LOG(LogTemp, Warning, TEXT("%s ahead"), *ObjectName);
+		}
+	}
 }
 
 // Called to bind functionality to input
