@@ -37,6 +37,10 @@ public:
 	UFUNCTION()
 	void ToggleRotationWithDelegate();
 
+	FString SlotName;
+	void SaveData();
+	void LoadData();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Combat)
 	bool bIsAttacking;
 
@@ -62,5 +66,5 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Stats", meta = (AllowPrivateAccess = "true"))
 	float MaxHealth;
 
-	
+	void TogglePauseMenu();
 };

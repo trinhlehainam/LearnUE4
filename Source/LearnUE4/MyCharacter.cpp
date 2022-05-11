@@ -3,6 +3,8 @@
 
 #include "MyCharacter.h"
 
+#include "CharacterController.h"
+#include "CharacterSaveGame.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
@@ -90,6 +92,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("LMB", IE_Pressed, this, &AMyCharacter::Attack);
 	PlayerInputComponent->BindAction("ToggleRotation", IE_Pressed, this, &AMyCharacter::ToggleRotationWithDelegate);
+	PlayerInputComponent->BindAction("TogglePauseMenu", IE_Pressed, this, &AMyCharacter::TogglePauseMenu);
 }
 
 void AMyCharacter::MoveFoward(float scale)
@@ -126,5 +129,46 @@ void AMyCharacter::Attack()
 void AMyCharacter::ToggleRotationWithDelegate()
 {
 	ToggleRotateDelegate.Broadcast();
+}
+
+void AMyCharacter::SaveData()
+{
+	if (UCharacterSaveGame* SaveGameInstance =
+		Cast<UCharacterSaveGame>(UGameplayStatics::CreateSaveGameObject(UCharacterSaveGame::StaticClass())))
+	{
+		SlotName = SaveGameInstance->SlotName;
+		SaveGameInstance->WorldLocation = GetActorLocation();
+		SaveGameInstance->WorldRotation = GetActorRotation();
+		SaveGameInstance->Health = Health;
+		SaveGameInstance->MaxHealth = MaxHealth;
+
+		if (UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SlotName, SaveGameInstance->UserIndex))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Save success"));
+		}
+	}
+}
+
+void AMyCharacter::LoadData()
+{
+	UCharacterSaveGame* LoadGameInstance = Cast<UCharacterSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+	if (LoadGameInstance)
+	{
+		SetActorLocation(LoadGameInstance->WorldLocation);
+		SetActorRotation(LoadGameInstance->WorldRotation);
+		Health = LoadGameInstance->Health;
+		MaxHealth = LoadGameInstance->MaxHealth;
+
+		UE_LOG(LogTemp, Warning, TEXT("Load : [Health : %f MaxHealth : %f]"), LoadGameInstance->Health, LoadGameInstance->MaxHealth);
+	}
+}
+
+void AMyCharacter::TogglePauseMenu()
+{
+	if (Controller)
+	{
+		ACharacterController* CharaController = Cast<ACharacterController>(Controller);
+		CharaController->TogglePauseMenu();
+	}
 }
 
