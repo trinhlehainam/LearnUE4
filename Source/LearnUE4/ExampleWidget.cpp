@@ -14,6 +14,6 @@ void UExampleWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if (Text)
-		Text->SetText(FText::FromString(TEXT("Example Text")));
+	if (ExampleText)
+		ExampleText->SetText(FText::FromString(TEXT("Example Text")));
 }

@@ -18,9 +18,9 @@ protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
 private:
-	UPROPERTY(meta=(BindWidget))
-	class UButton* Button;
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess))
+	class UButton* ExampleButton;
 
-	UPROPERTY(meta=(BindWidget))
-	class UTextBlock* Text;
+	UPROPERTY(BlueprintReadOnly, meta=(BindWidget, AllowPrivateAccess))
+	class UTextBlock* ExampleText;
 };
