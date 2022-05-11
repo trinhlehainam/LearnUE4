@@ -30,7 +30,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* QuitButton;
 
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	class ACharacterController* Controller;
+
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	class AMyCharacter* Character;
 
 	UFUNCTION()
