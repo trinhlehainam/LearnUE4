@@ -3,11 +3,10 @@
 
 #include "MyAnimInstance.h"
 
+#include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-
-#include "MyCharacter.h"
 
 void UMyAnimInstance::NativeInitializeAnimation()
 {
@@ -15,7 +14,7 @@ void UMyAnimInstance::NativeInitializeAnimation()
 
 	if (Owner == nullptr) {
 		APawn* PawnOwner = TryGetPawnOwner();
-		Owner = Cast<AMyCharacter>(PawnOwner);
+		Owner = Cast<ACharacter>(PawnOwner);
 	}
 }
 
@@ -23,7 +22,7 @@ void UMyAnimInstance::UpdateAnimationProperties(float DeltaTime)
 {
 	if (!Owner) {
 		APawn* PawnOwner = TryGetPawnOwner();
-		Owner = Cast<AMyCharacter>(PawnOwner);
+		Owner = Cast<ACharacter>(PawnOwner);
 	}
 
 	if (Owner) {

@@ -3,6 +3,9 @@
 
 #include "Enemy.h"
 
+#include "EnemyController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 // Sets default values
 AEnemy::AEnemy()
 {
@@ -15,7 +18,14 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	FVector Location = GetActorLocation();
+	AIController = Cast<AEnemyController>(GetController());
+	UBlackboardComponent* BlackboardComponent = AIController->GetBlackboardComponent();
+	BlackboardComponent->SetValueAsVector(FName("PatrolPoint1"), Location + PatrolPoint1);
+	BlackboardComponent->SetValueAsVector(FName("PatrolPoint2"), Location + PatrolPoint2);
+	BlackboardComponent->SetValueAsVector(FName("PatrolPoint3"), Location + PatrolPoint3);
+	BlackboardComponent->SetValueAsVector(FName("PatrolPoint4"), Location + PatrolPoint4);
 }
 
 // Called every frame

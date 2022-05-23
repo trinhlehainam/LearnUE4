@@ -13,6 +13,6 @@ void AEnemyController::OnPossess(APawn* InPawn)
 	AEnemy* Enemy = Cast<AEnemy>(InPawn);
 	if (!Enemy) return;
 
-	check(InitializeBlackboard(*Blackboard, *(Enemy->BehaviorTree->GetBlackboardAsset())));
+	check(UseBlackboard(Enemy->BehaviorTree->BlackboardAsset, Blackboard));
 	check(RunBehaviorTree(Enemy->BehaviorTree));
 }

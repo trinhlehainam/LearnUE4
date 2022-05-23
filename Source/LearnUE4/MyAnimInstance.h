@@ -37,5 +37,5 @@ public:
 	bool bIsAccelerating;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
-	class AMyCharacter* Owner;
+	ACharacter* Owner;
 };
