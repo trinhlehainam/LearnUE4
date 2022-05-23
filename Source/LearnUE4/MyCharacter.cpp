@@ -10,23 +10,24 @@
 #include "GameFramework/Controller.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "EngineGlobals.h"
 #include "Engine/Engine.h"
 #include "DrawDebugHelpers.h"
 
 #include "RotatingActor.h"
+#include "NavigationSystem.h"
+#include "NavigationPath.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Don't let Controller rotating Character
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
-	
+
 	// Let Character Movement Component rotate Character toward movement direction
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
@@ -50,7 +51,6 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -59,20 +59,15 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(1, 1.5f, FColor::Cyan, FString::Printf(TEXT("DeltaTime : %f"), DeltaTime));
-	TArray<FHitResult> HitResults;
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery1);
-	TArray<AActor*> IgnoreActors;
-	IgnoreActors.Add(this);
-	FVector Start = GetActorLocation();
-	FVector End = Start + GetActorForwardVector() * 200.f;
-	UKismetSystemLibrary::BoxTraceMultiForObjects(this, Start, End, FVector(32.f, 32.f, 32.f), FRotator(), ObjectTypes, true, IgnoreActors, EDrawDebugTrace::ForOneFrame, HitResults, true, FColor::Red, FColor::Blue);
-	UE_LOG(LogTemp, Warning, TEXT("hit num %d"), HitResults.Num());
-	for (const auto& Result : HitResults) {
-		if (Result.bBlockingHit) {
-			FString ObjectName = Result.GetActor()->GetName();
-			UE_LOG(LogTemp, Warning, TEXT("%s ahead"), *ObjectName);
-		}
+
+	TArray<AActor*> actors;
+	FVector location = GetActorLocation();
+	UGameplayStatics::GetAllActorsOfClass(this, ARotatingActor::StaticClass(), actors);
+	for (auto actor : actors)
+	{
+		UNavigationPath* path = UNavigationSystemV1::FindPathToActorSynchronously(this, location, actor);
+		for (auto pathPoint : path->PathPoints)
+			DrawDebugSphere(GetWorld(), pathPoint, 30.f, 16, FColor::Red);
 	}
 }
 
@@ -97,7 +92,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AMyCharacter::MoveFoward(float scale)
 {
-	if ((Controller != NULL) && (scale != 0.f)) {
+	if ((Controller != NULL) && (scale != 0.f))
+	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation = FRotator(0.f, Rotation.Yaw, 0.f);
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -107,7 +103,8 @@ void AMyCharacter::MoveFoward(float scale)
 
 void AMyCharacter::MoveRight(float scale)
 {
-	if ((Controller != NULL) && (scale != 0.f)) {
+	if ((Controller != NULL) && (scale != 0.f))
+	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation = FRotator(0.f, Rotation.Yaw, 0.f);
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
@@ -159,7 +156,8 @@ void AMyCharacter::LoadData()
 		Health = LoadGameInstance->Health;
 		MaxHealth = LoadGameInstance->MaxHealth;
 
-		UE_LOG(LogTemp, Warning, TEXT("Load : [Health : %f MaxHealth : %f]"), LoadGameInstance->Health, LoadGameInstance->MaxHealth);
+		UE_LOG(LogTemp, Warning, TEXT("Load : [Health : %f MaxHealth : %f]"), LoadGameInstance->Health,
+		       LoadGameInstance->MaxHealth);
 	}
 }
 
@@ -171,4 +169,3 @@ void AMyCharacter::TogglePauseMenu()
 		CharaController->TogglePauseMenu();
 	}
 }
-
