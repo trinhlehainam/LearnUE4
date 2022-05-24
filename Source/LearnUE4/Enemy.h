@@ -19,31 +19,50 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	void ArgoBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                      int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void ArgoEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                    int32 OtherBodyIndex);
+	UFUNCTION()
+	void AttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                        const FHitResult& SweepResult);
+	UFUNCTION()
+	void AttackEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                      int32 OtherBodyIndex);
+
+	UPROPERTY(EditAnywhere, Category=Combat)
+	class USphereComponent* ArgoSphere;
+
+	UPROPERTY(EditAnywhere, Category=Combat)
+	class USphereComponent* AttackSphere;
+
 	UPROPERTY(EditAnywhere, Category = AI)
 	class UBehaviorTree* BehaviorTree;
 
-public:
 	UPROPERTY(EditAnywhere, Category="AI Stats", meta=(MakeEditWidget="true"))
 	FVector PatrolPoint1;
-	
+
 	UPROPERTY(EditAnywhere, Category="AI Stats", meta=(MakeEditWidget="true"))
 	FVector PatrolPoint2;
-	
+
 	UPROPERTY(EditAnywhere, Category="AI Stats", meta=(MakeEditWidget="true"))
 	FVector PatrolPoint3;
-	
+
 	UPROPERTY(EditAnywhere, Category="AI Stats", meta=(MakeEditWidget="true"))
 	FVector PatrolPoint4;
 
 	UPROPERTY(VisibleAnywhere, Category="AI Stats")
 	bool bIsInAttackRange;
 
-	class AEnemyController* AIController;
+	class AEnemyController* EnemyController;
 };

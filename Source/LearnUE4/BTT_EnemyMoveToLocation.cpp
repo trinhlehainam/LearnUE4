@@ -37,14 +37,24 @@ EBTNodeResult::Type UBTT_EnemyMoveToLocation::ExecuteTask(UBehaviorTreeComponent
 	AEnemyController* EnemyController = Cast<AEnemyController>(OwnerComp.GetAIOwner());
 	AEnemy* Enemy = Cast<AEnemy>(EnemyController->GetPawn());
 	if (!EnemyController || !Enemy) return EBTNodeResult::Failed;
-	
-	FVector Destination = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
-	EPathFollowingRequestResult::Type RequestResult =  EnemyController->MoveToLocation(Destination);
 
-	if (RequestResult != EPathFollowingRequestResult::AlreadyAtGoal) return EBTNodeResult::Succeeded;
+	FVector Destination = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
+	EPathFollowingRequestResult::Type RequestResult = EnemyController->MoveToLocation(Destination);
+
+	if (RequestResult == EPathFollowingRequestResult::Failed) return EBTNodeResult::Failed;
+
+	if (RequestResult == EPathFollowingRequestResult::AlreadyAtGoal) return EBTNodeResult::Succeeded;
 
 	FAIRequestID RequestID = EnemyController->GetCurrentMoveRequestID();
 	WaitForMessage(OwnerComp, UBrainComponent::AIMessage_MoveFinished, RequestID);
 
 	return EBTNodeResult::InProgress;
+}
+
+void UBTT_EnemyMoveToLocation::OnMessage(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, FName Message,
+                                         int32 RequestID, bool bSuccess)
+{
+	// AIMessage_RepathFailed means task has failed
+	bSuccess &= (Message != UBrainComponent::AIMessage_RepathFailed);
+	Super::OnMessage(OwnerComp, NodeMemory, Message, RequestID, bSuccess);
 }
