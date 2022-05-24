@@ -49,16 +49,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = AI)
 	class UBehaviorTree* BehaviorTree;
 
-	UPROPERTY(EditAnywhere, Category="AI Stats", meta=(MakeEditWidget="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI Stats", meta=(MakeEditWidget="true"))
 	FVector PatrolPoint1;
 
-	UPROPERTY(EditAnywhere, Category="AI Stats", meta=(MakeEditWidget="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI Stats", meta=(MakeEditWidget="true"))
 	FVector PatrolPoint2;
 
-	UPROPERTY(EditAnywhere, Category="AI Stats", meta=(MakeEditWidget="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI Stats", meta=(MakeEditWidget="true"))
 	FVector PatrolPoint3;
 
-	UPROPERTY(EditAnywhere, Category="AI Stats", meta=(MakeEditWidget="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI Stats", meta=(MakeEditWidget="true"))
 	FVector PatrolPoint4;
 
 	UPROPERTY(VisibleAnywhere, Category="AI Stats")
