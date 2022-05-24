@@ -17,8 +17,11 @@ class LEARNUE4_API UBTT_EnemyMoveToLocation : public UBTTask_BlackboardBase
 public:
 	UBTT_EnemyMoveToLocation(const FObjectInitializer& ObjectInitializer);
 
-	virtual FString GetStaticDescription() const override;
+	FString GetStaticDescription() const final;
 
-private:
-	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;	
+protected:
+	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) final;
+
+	void OnMessage(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, FName Message, int32 RequestID, bool bSuccess) override;
+
 };
