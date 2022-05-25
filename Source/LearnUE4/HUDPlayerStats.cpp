@@ -2,6 +2,8 @@
 
 
 #include "HUDPlayerStats.h"
+
+#include "CharacterCombatComponent.h"
 #include "Components/ProgressBar.h"
 #include "MyCharacter.h"
 
@@ -20,7 +22,7 @@ void UHUDPlayerStats::NativeOnInitialized()
 	if (HealthBar) {
 		HealthBar->PercentDelegate.BindDynamic(this, &UHUDPlayerStats::GetHealthBarPercent);
 		if (OwningCharacter)
-			HealthBar->SetPercent(OwningCharacter->GetHealth() / OwningCharacter->GetMaxHealth());
+			HealthBar->SetPercent(OwningCharacter->GetCombatComponent()->GetHealth() / OwningCharacter->GetCombatComponent()->GetMaxHealth());
 	}
 }
 
@@ -29,7 +31,7 @@ float UHUDPlayerStats::GetHealthBarPercent()
 	if (!OwningCharacter)
 		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
 	else
-		return OwningCharacter->GetHealth() / OwningCharacter->GetMaxHealth();
+		return OwningCharacter->GetCombatComponent()->GetHealth() / OwningCharacter->GetCombatComponent()->GetMaxHealth();
 
 	return HealthBar->Percent;
 }

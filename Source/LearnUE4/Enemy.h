@@ -26,7 +26,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void Attack();
+	void OnAttackStart();
+	void OnAttackEnd();
+
+	void QueryAttack();
 
 	UFUNCTION()
 	void ArgoBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -42,11 +45,21 @@ public:
 	void AttackEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	                      int32 OtherBodyIndex);
 
+	
+	UFUNCTION()
+	void WeaponBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                        const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void WeaponEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                      int32 OtherBodyIndex);
+
 	UPROPERTY(EditAnywhere, Category=Combat)
 	class USphereComponent* ArgoSphere;
 
 	UPROPERTY(EditAnywhere, Category=Combat)
-	class USphereComponent* AttackSphere;
+	USphereComponent* AttackSphere;
 
 	UPROPERTY(EditAnywhere, Category = AI)
 	class UBehaviorTree* BehaviorTree;
@@ -69,9 +82,16 @@ public:
 	class AEnemyController* EnemyController;
 
 	FTimerHandle AttackTimerHandle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI Stats", meta=(MakeEditWidget="true"))
 	float AttackTimeMin;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI Stats", meta=(MakeEditWidget="true"))
 	float AttackTimeMax;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Combat)
 	class UCharacterCombatComponent* CombatComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Conbat)
+	USphereComponent* WeaponCollider;
 };

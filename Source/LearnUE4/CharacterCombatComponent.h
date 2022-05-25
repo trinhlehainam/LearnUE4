@@ -6,7 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "CharacterCombatComponent.generated.h"
 
-DECLARE_DELEGATE(FAttackDelegate);
+DECLARE_DELEGATE(FOnAttackStartDelegate);
+DECLARE_DELEGATE(FOnAttackEndDelegate);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class LEARNUE4_API UCharacterCombatComponent : public UActorComponent
@@ -28,11 +29,13 @@ public:
 
 	FORCEINLINE UAnimMontage* GetAnimMontage() const { return AnimMontage;}
 
-	void Attack();
+	void AttackStart();
+	void AttackEnd();
 
 	bool bIsAttacking;
 
-	FAttackDelegate OnAttack;
+	FOnAttackStartDelegate OnAttackStart;
+	FOnAttackEndDelegate OnAttackEnd;
 
 protected:
 	// Called when the game starts

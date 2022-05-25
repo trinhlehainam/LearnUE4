@@ -15,5 +15,5 @@ void UAttackEndAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 
 	UCharacterCombatComponent* CombatComponent = Cast<UCharacterCombatComponent>(owner->GetComponentByClass(UCharacterCombatComponent::StaticClass()));
 	if (!CombatComponent) return;
-	CombatComponent->bIsAttacking = false;
+	CombatComponent->AttackEnd();
 }

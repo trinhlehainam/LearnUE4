@@ -14,10 +14,16 @@ UCharacterCombatComponent::UCharacterCombatComponent()
 	bIsAttacking = false;
 }
 
-
-void UCharacterCombatComponent::Attack()
+void UCharacterCombatComponent::AttackStart()
 {
-	OnAttack.ExecuteIfBound();
+	OnAttackStart.ExecuteIfBound();
+	bIsAttacking = true;
+}
+
+void UCharacterCombatComponent::AttackEnd()
+{
+	OnAttackEnd.ExecuteIfBound();
+	bIsAttacking = false;
 }
 
 // Called when the game starts

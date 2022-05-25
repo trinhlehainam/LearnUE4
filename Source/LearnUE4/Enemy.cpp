@@ -16,12 +16,22 @@ AEnemy::AEnemy()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CombatComponent = CreateDefaultSubobject<UCharacterCombatComponent>(Fname("Combat Component"));
+	CombatComponent = CreateDefaultSubobject<UCharacterCombatComponent>(FName("Combat Component"));
 	ArgoSphere = CreateDefaultSubobject<USphereComponent>(FName("Argo Range"));
 	AttackSphere = CreateDefaultSubobject<USphereComponent>(FName("Attack Range"));
+	WeaponCollider = CreateDefaultSubobject<USphereComponent>(FName("Weapon Collider"));
 
 	ArgoSphere->SetupAttachment(RootComponent);
 	AttackSphere->SetupAttachment(RootComponent);
+	WeaponCollider->SetupAttachment(GetMesh(), FName("weapon_lSocket"));
+
+	WeaponCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponCollider->SetCollisionObjectType(ECC_WorldDynamic);
+	WeaponCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
+	WeaponCollider->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	AttackTimeMin = 0.1f;
+	AttackTimeMax = 0.2f;
 }
 
 // Called when the game starts or when spawned
@@ -39,17 +49,22 @@ void AEnemy::BeginPlay()
 
 	ArgoSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::ArgoBeginOverlap);
 	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::AttackBeginOverlap);
+	WeaponCollider->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::WeaponBeginOverlap);
 
 	ArgoSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::ArgoEndOverlap);
 	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::AttackEndOverlap);
-
-	CombatComponent->OnAttack.BindUObject(this, &AEnemy::Attack);
+	WeaponCollider->OnComponentEndOverlap.AddDynamic(this, &AEnemy::WeaponEndOverlap);
+	
+	CombatComponent->OnAttackStart.BindUObject(this, &AEnemy::OnAttackStart);
+	CombatComponent->OnAttackEnd.BindUObject(this, &AEnemy::OnAttackEnd);
 }
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	QueryAttack();
 }
 
 // Called to bind functionality to input
@@ -58,7 +73,7 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AEnemy::ArgoBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void AEnemy::AttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                               const FHitResult& SweepResult)
 {
@@ -70,7 +85,7 @@ void AEnemy::ArgoBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	BlackboardComponent->SetValueAsBool(FName("IsInAttackRange"), true);
 }
 
-void AEnemy::ArgoEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void AEnemy::AttackEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (!OtherActor) return;
@@ -81,18 +96,32 @@ void AEnemy::ArgoEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 	BlackboardComponent->SetValueAsBool(FName("IsInAttackRange"), false);
 }
 
-void AEnemy::AttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                const FHitResult& SweepResult)
+void AEnemy::WeaponBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+}
+
+void AEnemy::WeaponEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	
+}
+
+void AEnemy::ArgoBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                              const FHitResult& SweepResult)
 {
 	if (!OtherActor) return;
 	if (!Cast<AMyCharacter>(OtherActor)) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("OtherActor : %s"), *OtherActor->GetName());
 
 	UBlackboardComponent* BlackboardComponent = EnemyController->GetBlackboardComponent();
 	BlackboardComponent->SetValueAsObject(FName("TargetActor"), OtherActor);
 }
 
-void AEnemy::AttackEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void AEnemy::ArgoEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (!OtherActor) return;
@@ -102,17 +131,38 @@ void AEnemy::AttackEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	BlackboardComponent->SetValueAsObject(FName("TargetActor"), nullptr);
 }
 
-void AEnemy::Attack()
+void AEnemy::OnAttackStart()
 {
 	if (!CombatComponent) return;
 
 	if (CombatComponent->bIsAttacking) return;
 
-	CombatComponent->bIsAttacking = true;
+	WeaponCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 	auto AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && CombatComponent->GetAnimMontage())
 	{
 		AnimInstance->Montage_Play(CombatComponent->GetAnimMontage());
 	}
+}
+
+void AEnemy::OnAttackEnd()
+{
+	if (!CombatComponent) return;
+
+	WeaponCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AEnemy::QueryAttack()
+{
+	if (!bIsInAttackRange) return;
+	
+	if (!CombatComponent) return;
+	
+	if (CombatComponent->bIsAttacking) return;
+	
+	if(GetWorldTimerManager().TimerExists(AttackTimerHandle)) return;
+
+	float Timer = FMath::RandRange(AttackTimeMin, AttackTimeMax);
+	GetWorldTimerManager().SetTimer(AttackTimerHandle, CombatComponent, &UCharacterCombatComponent::AttackStart, Timer);
 }

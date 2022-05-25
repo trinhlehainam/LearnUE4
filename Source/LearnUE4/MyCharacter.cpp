@@ -50,7 +50,7 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CombatComponent->OnAttack.BindUObject(this, &AMyCharacter::Attack);
+	CombatComponent->OnAttackStart.BindUObject(this, &AMyCharacter::Attack);
 }
 
 // Called every frame
@@ -75,7 +75,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &ACharacter::StopJumping);
-	PlayerInputComponent->BindAction("LMB", IE_Pressed, CombatComponent, &UCharacterCombatComponent::Attack);
+	PlayerInputComponent->BindAction("LMB", IE_Pressed, CombatComponent, &UCharacterCombatComponent::AttackStart);
 	PlayerInputComponent->BindAction("TogglePauseMenu", IE_Pressed, this, &AMyCharacter::TogglePauseMenu);
 }
 
