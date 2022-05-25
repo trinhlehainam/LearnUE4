@@ -3,6 +3,7 @@
 
 #include "MyCharacter.h"
 
+#include "CharacterCombatComponent.h"
 #include "CharacterController.h"
 #include "CharacterSaveGame.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -11,11 +12,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
-#include "DrawDebugHelpers.h"
-
-#include "RotatingActor.h"
 #include "NavigationSystem.h"
-#include "NavigationPath.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -34,6 +31,7 @@ AMyCharacter::AMyCharacter()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Follow Camera"));
+	CombatComponent = CreateDefaultSubobject<UCharacterCombatComponent>(TEXT("Combat Component"));
 
 	CameraBoom->bUsePawnControlRotation = true;
 	FollowCamera->bUsePawnControlRotation = false;
@@ -41,16 +39,18 @@ AMyCharacter::AMyCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 
-	bIsAttacking = false;
-
-	Health = 80.f;
-	MaxHealth = 100.f;
+	CombatComponent->SetHealth(80.f);
+	CombatComponent->SetMaxHealth(100.f);
+	CombatComponent->SetDamage(10.f);
+	
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CombatComponent->OnAttack.BindUObject(this, &AMyCharacter::Attack);
 }
 
 // Called every frame
@@ -59,16 +59,6 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(1, 1.5f, FColor::Cyan, FString::Printf(TEXT("DeltaTime : %f"), DeltaTime));
-
-	TArray<AActor*> actors;
-	FVector location = GetActorLocation();
-	UGameplayStatics::GetAllActorsOfClass(this, ARotatingActor::StaticClass(), actors);
-	for (auto actor : actors)
-	{
-		UNavigationPath* path = UNavigationSystemV1::FindPathToActorSynchronously(this, location, actor);
-		for (auto pathPoint : path->PathPoints)
-			DrawDebugSphere(GetWorld(), pathPoint, 30.f, 16, FColor::Red);
-	}
 }
 
 // Called to bind functionality to input
@@ -85,8 +75,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &ACharacter::StopJumping);
-	PlayerInputComponent->BindAction("LMB", IE_Pressed, this, &AMyCharacter::Attack);
-	PlayerInputComponent->BindAction("ToggleRotation", IE_Pressed, this, &AMyCharacter::ToggleRotationWithDelegate);
+	PlayerInputComponent->BindAction("LMB", IE_Pressed, CombatComponent, &UCharacterCombatComponent::Attack);
 	PlayerInputComponent->BindAction("TogglePauseMenu", IE_Pressed, this, &AMyCharacter::TogglePauseMenu);
 }
 
@@ -114,18 +103,13 @@ void AMyCharacter::MoveRight(float scale)
 
 void AMyCharacter::Attack()
 {
-	if (bIsAttacking) return;
+	if (CombatComponent->bIsAttacking) return;
 
-	bIsAttacking = true;
+	CombatComponent->bIsAttacking = true;
 
 	auto AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && AnimMontage)
-		AnimInstance->Montage_Play(AnimMontage);
-}
-
-void AMyCharacter::ToggleRotationWithDelegate()
-{
-	ToggleRotateDelegate.Broadcast();
+	if (AnimInstance && CombatComponent->GetAnimMontage())
+		AnimInstance->Montage_Play(CombatComponent->GetAnimMontage());
 }
 
 void AMyCharacter::SaveData()
@@ -136,8 +120,8 @@ void AMyCharacter::SaveData()
 		SlotName = SaveGameInstance->SlotName;
 		SaveGameInstance->WorldLocation = GetActorLocation();
 		SaveGameInstance->WorldRotation = GetActorRotation();
-		SaveGameInstance->Health = Health;
-		SaveGameInstance->MaxHealth = MaxHealth;
+		SaveGameInstance->Health = CombatComponent->GetHealth();
+		SaveGameInstance->MaxHealth = CombatComponent->GetMaxHealth();
 
 		if (UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SlotName, SaveGameInstance->UserIndex))
 		{
@@ -153,8 +137,8 @@ void AMyCharacter::LoadData()
 	{
 		SetActorLocation(LoadGameInstance->WorldLocation);
 		SetActorRotation(LoadGameInstance->WorldRotation);
-		Health = LoadGameInstance->Health;
-		MaxHealth = LoadGameInstance->MaxHealth;
+		CombatComponent->SetHealth(LoadGameInstance->Health);
+		CombatComponent->SetMaxHealth(LoadGameInstance->MaxHealth);
 
 		UE_LOG(LogTemp, Warning, TEXT("Load : [Health : %f MaxHealth : %f]"), LoadGameInstance->Health,
 		       LoadGameInstance->MaxHealth);

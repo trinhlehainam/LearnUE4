@@ -2,7 +2,9 @@
 
 
 #include "HealthPoison.h"
-#include "MyCharacter.h"
+#include "CharacterCombatComponent.h"
+#include "GameFramework/Character.h"
+
 
 AHealthPoison::AHealthPoison()
 {
@@ -12,12 +14,14 @@ AHealthPoison::AHealthPoison()
 void AHealthPoison::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Increase Health"));
-	
 
-	auto Character = Cast<AMyCharacter>(OtherActor);
-	if (Character) {
-		Character->SetHealth(Character->GetHealth() + HealthAmount);
-	}
+	auto Character = Cast<ACharacter>(OtherActor);
+	if (!Character) return;
+	
+	auto CombatComponent = Cast<UCharacterCombatComponent>(Character->GetComponentByClass(UCharacterCombatComponent::StaticClass()));
+	if (!CombatComponent) return;
+	
+	CombatComponent->SetHealth(CombatComponent->GetHealth() + HealthAmount);
 		
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }

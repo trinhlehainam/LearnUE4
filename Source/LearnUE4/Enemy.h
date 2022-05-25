@@ -26,6 +26,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void Attack();
+
 	UFUNCTION()
 	void ArgoBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	                      int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -65,4 +67,11 @@ public:
 	bool bIsInAttackRange;
 
 	class AEnemyController* EnemyController;
+
+	FTimerHandle AttackTimerHandle;
+	float AttackTimeMin;
+	float AttackTimeMax;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Combat)
+	class UCharacterCombatComponent* CombatComponent;
 };

@@ -27,11 +27,6 @@ ARotatingActor::ARotatingActor() :
 void ARotatingActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AMyCharacter* MyCharacter = Cast<AMyCharacter>(UGameplayStatics::GetActorOfClass(this, AMyCharacter::StaticClass()));
-	if (MyCharacter)
-		MyCharacter->ToggleRotateDelegate.AddDynamic(this, &ARotatingActor::ToggleRotation);
-
 }
 
 // Called every frame

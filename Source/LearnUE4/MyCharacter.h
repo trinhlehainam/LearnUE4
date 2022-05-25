@@ -34,22 +34,12 @@ public:
 
 	void Attack();
 
-	UFUNCTION()
-	void ToggleRotationWithDelegate();
-
 	FString SlotName;
 	void SaveData();
 	void LoadData();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Combat)
-	bool bIsAttacking;
-
-	FToggleRotateDelegate ToggleRotateDelegate;
-
-	FORCEINLINE float GetHealth() const { return Health; }
-	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
-	FORCEINLINE void SetHealth(float amount) { Health = FMath::Clamp(amount, 0.f, MaxHealth); }
-	FORCEINLINE void SetMaxHealth(float amount) { MaxHealth = amount; }
+	
+	FORCEINLINE class UCharacterCombatComponent* GetCombatComponent() const { return CombatComponent; }
+	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
@@ -57,14 +47,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-	class UAnimMontage* AnimMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Stats", meta = (AllowPrivateAccess = "true"))
-	float Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Stats", meta = (AllowPrivateAccess = "true"))
-	float MaxHealth;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Combat, meta=(AllowPrivateAccess = "true"))
+	class UCharacterCombatComponent* CombatComponent;
 
 	void TogglePauseMenu();
 };
