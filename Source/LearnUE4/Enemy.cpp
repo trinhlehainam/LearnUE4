@@ -9,6 +9,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -118,7 +119,7 @@ void AEnemy::WeaponBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	if (!OtherActor) return;
 	if (OtherActor->GetName() == GetName()) return;
-	
+
 	UCharacterCombatComponent* CombatComp = Cast<UCharacterCombatComponent>(
 		OtherActor->GetComponentByClass(UCharacterCombatComponent::StaticClass()));
 	if (!CombatComp) return;
@@ -173,8 +174,7 @@ void AEnemy::OnAttackStart()
 
 void AEnemy::OnAttackEnd()
 {
-	if (!CombatComponent) return;
-
+	UE_LOG(LogTemp, Warning, TEXT("Enemy Attack End"));
 	WeaponCollider->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
