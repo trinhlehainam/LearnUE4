@@ -39,13 +39,16 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FVector Location = GetActorLocation();
 	EnemyController = Cast<AEnemyController>(GetController());
-	UBlackboardComponent* BlackboardComponent = EnemyController->GetBlackboardComponent();
-	BlackboardComponent->SetValueAsVector(FName("PatrolPoint1"), Location + PatrolPoint1);
-	BlackboardComponent->SetValueAsVector(FName("PatrolPoint2"), Location + PatrolPoint2);
-	BlackboardComponent->SetValueAsVector(FName("PatrolPoint3"), Location + PatrolPoint3);
-	BlackboardComponent->SetValueAsVector(FName("PatrolPoint4"), Location + PatrolPoint4);
+	if (EnemyController)
+	{
+		FVector Location = GetActorLocation();
+		UBlackboardComponent* BlackboardComponent = EnemyController->GetBlackboardComponent();
+		BlackboardComponent->SetValueAsVector(FName("PatrolPoint1"), Location + PatrolPoint1);
+		BlackboardComponent->SetValueAsVector(FName("PatrolPoint2"), Location + PatrolPoint2);
+		BlackboardComponent->SetValueAsVector(FName("PatrolPoint3"), Location + PatrolPoint3);
+		BlackboardComponent->SetValueAsVector(FName("PatrolPoint4"), Location + PatrolPoint4);
+	}
 
 	ArgoSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::ArgoBeginOverlap);
 	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::AttackBeginOverlap);
@@ -54,7 +57,7 @@ void AEnemy::BeginPlay()
 	ArgoSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::ArgoEndOverlap);
 	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::AttackEndOverlap);
 	WeaponCollider->OnComponentEndOverlap.AddDynamic(this, &AEnemy::WeaponEndOverlap);
-	
+
 	CombatComponent->OnAttackStart.BindUObject(this, &AEnemy::OnAttackStart);
 	CombatComponent->OnAttackEnd.BindUObject(this, &AEnemy::OnAttackEnd);
 }
@@ -74,8 +77,8 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 
 void AEnemy::AttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                              const FHitResult& SweepResult)
+                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                const FHitResult& SweepResult)
 {
 	if (!OtherActor) return;
 	if (!Cast<AMyCharacter>(OtherActor)) return;
@@ -86,7 +89,7 @@ void AEnemy::AttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 }
 
 void AEnemy::AttackEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (!OtherActor) return;
 	if (!Cast<AMyCharacter>(OtherActor)) return;
@@ -97,15 +100,20 @@ void AEnemy::AttackEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 }
 
 void AEnemy::WeaponBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	if (!OtherActor) return;
+	UCharacterCombatComponent* CombatComponent = Cast<UCharacterCombatComponent>(
+		OtherActor->GetComponentByClass(UCharacterCombatComponent::StaticClass()));
+	if (!CombatComponent) return;
+	CombatComponent->TakeDamage(10.f);
 }
 
 void AEnemy::WeaponEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	
 }
 
 void AEnemy::ArgoBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -122,7 +130,7 @@ void AEnemy::ArgoBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 }
 
 void AEnemy::ArgoEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (!OtherActor) return;
 	if (!Cast<AMyCharacter>(OtherActor)) return;
@@ -135,7 +143,7 @@ void AEnemy::OnAttackStart()
 {
 	if (!CombatComponent) return;
 
-	if (CombatComponent->bIsAttacking) return;
+	if (CombatComponent->IsAttacking()) return;
 
 	WeaponCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
@@ -156,12 +164,12 @@ void AEnemy::OnAttackEnd()
 void AEnemy::QueryAttack()
 {
 	if (!bIsInAttackRange) return;
-	
+
 	if (!CombatComponent) return;
-	
-	if (CombatComponent->bIsAttacking) return;
-	
-	if(GetWorldTimerManager().TimerExists(AttackTimerHandle)) return;
+
+	if (CombatComponent->IsAttacking()) return;
+
+	if (GetWorldTimerManager().TimerExists(AttackTimerHandle)) return;
 
 	float Timer = FMath::RandRange(AttackTimeMin, AttackTimeMax);
 	GetWorldTimerManager().SetTimer(AttackTimerHandle, CombatComponent, &UCharacterCombatComponent::AttackStart, Timer);

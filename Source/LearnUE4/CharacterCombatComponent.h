@@ -26,13 +26,12 @@ public:
 	FORCEINLINE void TakeDamage(float amount) { Health = FMath::Max(Health - amount, 0.f); }
 	FORCEINLINE float GetDamage() const { return Damage; }
 	FORCEINLINE void SetDamage(float amount) { Damage = amount; }
+	FORCEINLINE bool IsAttacking() const { return bIsAttacking; }
 
 	FORCEINLINE UAnimMontage* GetAnimMontage() const { return AnimMontage;}
 
 	void AttackStart();
 	void AttackEnd();
-
-	bool bIsAttacking;
 
 	FOnAttackStartDelegate OnAttackStart;
 	FOnAttackEndDelegate OnAttackEnd;
@@ -58,4 +57,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Stats", meta = (AllowPrivateAccess = "true"))
 	float Damage;
+	
+	bool bIsAttacking;
 };

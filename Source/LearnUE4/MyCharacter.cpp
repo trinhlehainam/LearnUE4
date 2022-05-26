@@ -103,9 +103,7 @@ void AMyCharacter::MoveRight(float scale)
 
 void AMyCharacter::Attack()
 {
-	if (CombatComponent->bIsAttacking) return;
-
-	CombatComponent->bIsAttacking = true;
+	if (CombatComponent->IsAttacking()) return;
 
 	auto AnimInstance = GetMesh()->GetAnimInstance();
 	if (AnimInstance && CombatComponent->GetAnimMontage())
