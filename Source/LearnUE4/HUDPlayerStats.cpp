@@ -19,10 +19,13 @@ void UHUDPlayerStats::NativeOnInitialized()
 	if (!OwningCharacter)
 		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
 
-	if (HealthBar) {
+	if (HealthBar)
+	{
 		HealthBar->PercentDelegate.BindDynamic(this, &UHUDPlayerStats::GetHealthBarPercent);
 		if (OwningCharacter)
-			HealthBar->SetPercent(OwningCharacter->GetCombatComponent()->GetHealth() / OwningCharacter->GetCombatComponent()->GetMaxHealth());
+			HealthBar->SetPercent(
+				OwningCharacter->GetCombatComponent()->GetHealth() / OwningCharacter->GetCombatComponent()->
+				GetMaxHealth());
 	}
 }
 
@@ -30,8 +33,10 @@ float UHUDPlayerStats::GetHealthBarPercent()
 {
 	if (!OwningCharacter)
 		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
-	else
-		return OwningCharacter->GetCombatComponent()->GetHealth() / OwningCharacter->GetCombatComponent()->GetMaxHealth();
+
+	if (OwningCharacter)
+		return OwningCharacter->GetCombatComponent()->GetHealth() / OwningCharacter->GetCombatComponent()->
+			GetMaxHealth();
 
 	return HealthBar->Percent;
 }

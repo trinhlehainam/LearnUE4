@@ -32,7 +32,7 @@ public:
 
 	void MoveRight(float scale);
 
-	void Attack();
+	void OnAttackStart();
 
 	FString SlotName;
 	void SaveData();

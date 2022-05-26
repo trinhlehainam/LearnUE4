@@ -50,7 +50,7 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CombatComponent->OnAttackStart.BindUObject(this, &AMyCharacter::Attack);
+	CombatComponent->OnAttackStart.BindUObject(this, &AMyCharacter::OnAttackStart);
 }
 
 // Called every frame
@@ -101,7 +101,7 @@ void AMyCharacter::MoveRight(float scale)
 	}
 }
 
-void AMyCharacter::Attack()
+void AMyCharacter::OnAttackStart()
 {
 	if (CombatComponent->IsAttacking()) return;
 
