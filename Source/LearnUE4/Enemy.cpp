@@ -16,6 +16,14 @@ AEnemy::AEnemy()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	if (GetMesh())
+	{
+		GetMesh()->SetCollisionObjectType(ECC_Pawn);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
+		GetMesh()->SetGenerateOverlapEvents(false);
+	}
 
 	CombatComponent = CreateDefaultSubobject<UCharacterCombatComponent>(FName("Combat Component"));
 	ArgoSphere = CreateDefaultSubobject<USphereComponent>(FName("Argo Range"));
@@ -74,6 +82,12 @@ void AEnemy::BeginPlay()
 
 	CombatComponent->OnAttackStart.BindUObject(this, &AEnemy::OnAttackStart);
 	CombatComponent->OnAttackEnd.BindUObject(this, &AEnemy::OnAttackEnd);
+
+	if (GetMesh()->SkeletalMesh)
+	{
+		UPhysicsAsset* PhysicsAsset = GetMesh()->SkeletalMesh->GetPhysicsAsset();
+		int32 BodyIndex = PhysicsAsset->FindBodyIndex(FName("weapon_l"));
+	}
 }
 
 // Called every frame

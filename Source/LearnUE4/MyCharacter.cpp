@@ -6,6 +6,8 @@
 #include "CharacterCombatComponent.h"
 #include "CharacterController.h"
 #include "CharacterSaveGame.h"
+#include "CollisionDebugDrawingPublic.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
@@ -42,7 +44,14 @@ AMyCharacter::AMyCharacter()
 	CombatComponent->SetHealth(80.f);
 	CombatComponent->SetMaxHealth(100.f);
 	CombatComponent->SetDamage(10.f);
-	
+
+	if (GetMesh())
+	{
+		GetMesh()->SetCollisionObjectType(ECC_Pawn);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
+		GetMesh()->SetGenerateOverlapEvents(false);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -59,6 +68,22 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(1, 1.5f, FColor::Cyan, FString::Printf(TEXT("DeltaTime : %f"), DeltaTime));
+
+	if (CameraBoom)
+	{
+		TArray<FHitResult> HitResults;
+		FCollisionQueryParams CollisionQueryParams;
+		CollisionQueryParams.AddIgnoredActor(this);
+		GetWorld()->SweepMultiByChannel(HitResults, GetActorLocation(), CameraBoom->GetUnfixedCameraPosition(),
+		                                FQuat::Identity, ECC_Camera,
+		                                FCollisionShape::MakeSphere(CameraBoom->ProbeSize), CollisionQueryParams);
+		DrawSphereSweeps(GetWorld(), GetActorLocation(), CameraBoom->GetUnfixedCameraPosition(), CameraBoom->ProbeSize, HitResults, -1.f);
+		for (const auto& HitResult : HitResults)
+			if (HitResult.bBlockingHit)
+				DrawDebugSphere(GetWorld(), HitResult.Location, CameraBoom->ProbeSize, 16, FColor::Yellow);
+		if (CameraBoom->IsCollisionFixApplied())
+			UE_LOG(LogTemp, Warning, TEXT("Camera Boom Collision"));
+	}
 }
 
 // Called to bind functionality to input
