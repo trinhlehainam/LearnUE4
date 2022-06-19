@@ -3,11 +3,13 @@
 
 #include "MyCharacter.h"
 
-#include "CharacterCombatComponent.h"
+#include "AbilitySystemComponent.h"
 #include "CharacterController.h"
 #include "CharacterSaveGame.h"
 #include "CollisionDebugDrawingPublic.h"
 #include "DrawDebugHelpers.h"
+#include "MyAttributeSet.h"
+#include "MyGameplayAbility.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
@@ -33,17 +35,18 @@ AMyCharacter::AMyCharacter()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Follow Camera"));
-	CombatComponent = CreateDefaultSubobject<UCharacterCombatComponent>(TEXT("Combat Component"));
+	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(FName("ASC"));
+	ASC->SetIsReplicated(true);
+	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	bIsAbilitiesBoundToInput = false;
+
+	AttributeSet = CreateDefaultSubobject<UMyAttributeSet>(FName("Attribute Set"));
 
 	CameraBoom->bUsePawnControlRotation = true;
 	FollowCamera->bUsePawnControlRotation = false;
 
 	CameraBoom->SetupAttachment(RootComponent);
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-
-	CombatComponent->SetHealth(80.f);
-	CombatComponent->SetMaxHealth(100.f);
-	CombatComponent->SetDamage(10.f);
 
 	if (GetMesh())
 	{
@@ -59,7 +62,6 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CombatComponent->OnAttackStart.BindUObject(this, &AMyCharacter::OnAttackStart);
 }
 
 // Called every frame
@@ -100,8 +102,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &ACharacter::StopJumping);
-	PlayerInputComponent->BindAction("LMB", IE_Pressed, CombatComponent, &UCharacterCombatComponent::AttackStart);
 	PlayerInputComponent->BindAction("TogglePauseMenu", IE_Pressed, this, &AMyCharacter::TogglePauseMenu);
+
+	BindAbilitiesActivationToInputComponent();
 }
 
 void AMyCharacter::MoveFoward(float scale)
@@ -128,11 +131,7 @@ void AMyCharacter::MoveRight(float scale)
 
 void AMyCharacter::OnAttackStart()
 {
-	if (CombatComponent->IsAttacking()) return;
-
-	auto AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && CombatComponent->GetAnimMontage())
-		AnimInstance->Montage_Play(CombatComponent->GetAnimMontage());
+	
 }
 
 void AMyCharacter::SaveData()
@@ -143,8 +142,6 @@ void AMyCharacter::SaveData()
 		SlotName = SaveGameInstance->SlotName;
 		SaveGameInstance->WorldLocation = GetActorLocation();
 		SaveGameInstance->WorldRotation = GetActorRotation();
-		SaveGameInstance->Health = CombatComponent->GetHealth();
-		SaveGameInstance->MaxHealth = CombatComponent->GetMaxHealth();
 
 		if (UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveGameInstance->SlotName, SaveGameInstance->UserIndex))
 		{
@@ -160,12 +157,89 @@ void AMyCharacter::LoadData()
 	{
 		SetActorLocation(LoadGameInstance->WorldLocation);
 		SetActorRotation(LoadGameInstance->WorldRotation);
-		CombatComponent->SetHealth(LoadGameInstance->Health);
-		CombatComponent->SetMaxHealth(LoadGameInstance->MaxHealth);
 
 		UE_LOG(LogTemp, Warning, TEXT("Load : [Health : %f MaxHealth : %f]"), LoadGameInstance->Health,
 		       LoadGameInstance->MaxHealth);
 	}
+}
+
+void AMyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	ASC->InitAbilityActorInfo(this, this);
+	InitAttributes();
+	GiveDefaultAbilities();
+}
+
+void AMyCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	ASC->InitAbilityActorInfo(this, this);
+	InitAttributes();
+	BindAbilitiesActivationToInputComponent();
+}
+
+float AMyCharacter::GetHealth() const
+{
+	return AttributeSet->GetHealth();
+}
+
+float AMyCharacter::GetMaxHealth() const
+{
+	return AttributeSet->GetMaxHealth();
+}
+
+float AMyCharacter::GetMana() const
+{
+	return AttributeSet->GetMana();
+}
+
+float AMyCharacter::GetMaxMana() const
+{
+	return AttributeSet->GetMaxMana();
+}
+
+void AMyCharacter::InitAttributes()
+{
+	if (ASC && DefaultGameplayEffect)
+	{
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+		Context.AddSourceObject(this);
+
+		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DefaultGameplayEffect, 1, Context);
+		if (SpecHandle.IsValid())
+			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	}
+}
+
+void AMyCharacter::GiveDefaultAbilities()
+{
+	if (HasAuthority() && ASC)
+	{
+		for (TSubclassOf<UMyGameplayAbility>& DefaultAbility : DefaultAbilities)
+		{
+			ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
+				static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID), this));
+		}
+	}
+}
+
+void AMyCharacter::BindAbilitiesActivationToInputComponent()
+{
+	if (InputComponent && ASC && !bIsAbilitiesBoundToInput)
+	{
+		FGameplayAbilityInputBinds BindInfo("Confirm", "Cancel", "EAbilityInputID",
+			static_cast<int32>(EAbilityInputID::Confirm), static_cast<int32>(EAbilityInputID::Cancel));
+		ASC->BindAbilityActivationToInputComponent(InputComponent, BindInfo);
+		bIsAbilitiesBoundToInput = true;
+	}
+}
+
+UAbilitySystemComponent* AMyCharacter::GetAbilitySystemComponent() const
+{
+	return ASC;
 }
 
 void AMyCharacter::TogglePauseMenu()
@@ -175,4 +249,14 @@ void AMyCharacter::TogglePauseMenu()
 		ACharacterController* CharaController = Cast<ACharacterController>(Controller);
 		CharaController->TogglePauseMenu();
 	}
+}
+
+void AMyCharacter::HealthAttributeUpdated(const FOnAttributeChangeData& Data)
+{
+	OnHealthAttributeChange.Broadcast(Data.NewValue);
+}
+
+void AMyCharacter::MaxHealthAttributeUpdated(const FOnAttributeChangeData& Data)
+{
+	OnMaxHealthAttributeChange.Broadcast(Data.NewValue);
 }

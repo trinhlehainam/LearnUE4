@@ -23,7 +23,13 @@ private:
 	class UProgressBar* HealthBar;
 
 	UFUNCTION()
-	float GetHealthBarPercent();
+	void OnHealthAttributeChange(float NewValue);
+	void OnMaxHealthAttributeChange(float NewValue);
 
 	class AMyCharacter* OwningCharacter;
+
+	float Health;
+	float MaxHealth;
+	float Mana;
+	float MaxMana;
 };

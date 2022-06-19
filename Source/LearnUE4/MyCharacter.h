@@ -4,12 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "MyCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FToggleRotateDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChange, float, Data);
+
+struct FOnAttributeChangeData;
 
 UCLASS()
-class LEARNUE4_API AMyCharacter : public ACharacter
+class LEARNUE4_API AMyCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -37,8 +41,26 @@ public:
 	FString SlotName;
 	void SaveData();
 	void LoadData();
+
+	/*GAMEPLAY ABILITY SYSTEM*/
+	// Server-side
+	virtual void PossessedBy(AController* NewController) override;
+	// Client-side : Client received replicated PlayerState from Server
+	virtual void OnRep_PlayerState() override;
+
+	float GetHealth() const;
+	float GetMaxHealth() const;
+	float GetMana() const;
+	float GetMaxMana() const;
 	
-	FORCEINLINE class UCharacterCombatComponent* GetCombatComponent() const { return CombatComponent; }
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	void InitAttributes();
+	void GiveDefaultAbilities();
+	void BindAbilitiesActivationToInputComponent();
+
+	FOnAttributeChange OnHealthAttributeChange;
+	FOnAttributeChange OnMaxHealthAttributeChange;
+	/**/
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -47,8 +69,22 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Combat, meta=(AllowPrivateAccess = "true"))
-	class UCharacterCombatComponent* CombatComponent;
+	UPROPERTY()
+	class UMyAttributeSet* AttributeSet;
+
+	UPROPERTY()
+	UAbilitySystemComponent* ASC;
+
+	bool bIsAbilitiesBoundToInput;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay Ability|Default Ability", meta=(AllowPrivateAccess))
+	TSubclassOf<class UGameplayEffect> DefaultGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay Ability|Default Ability", meta=(AllowPrivateAccess))
+	TArray<TSubclassOf<class UMyGameplayAbility>> DefaultAbilities;
 
 	void TogglePauseMenu();
+
+	void HealthAttributeUpdated(const FOnAttributeChangeData& Data);
+	void MaxHealthAttributeUpdated(const FOnAttributeChangeData& Data);
 };

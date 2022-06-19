@@ -3,7 +3,7 @@
 
 #include "HUDPlayerStats.h"
 
-#include "CharacterCombatComponent.h"
+#include "AbilitySystemComponent.h"
 #include "Components/ProgressBar.h"
 #include "MyCharacter.h"
 
@@ -19,24 +19,27 @@ void UHUDPlayerStats::NativeOnInitialized()
 	if (!OwningCharacter)
 		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
 
+	if (OwningCharacter)
+	{
+		OwningCharacter->OnHealthAttributeChange.AddDynamic(this, &UHUDPlayerStats::OnHealthAttributeChange);
+		Health = OwningCharacter->GetHealth();
+		MaxHealth = OwningCharacter->GetMaxHealth();
+	}
+
 	if (HealthBar)
 	{
-		HealthBar->PercentDelegate.BindDynamic(this, &UHUDPlayerStats::GetHealthBarPercent);
-		if (OwningCharacter)
-			HealthBar->SetPercent(
-				OwningCharacter->GetCombatComponent()->GetHealth() / OwningCharacter->GetCombatComponent()->
-				GetMaxHealth());
+		HealthBar->SetPercent(Health / MaxHealth);
 	}
 }
 
-float UHUDPlayerStats::GetHealthBarPercent()
+void UHUDPlayerStats::OnHealthAttributeChange(float NewValue)
 {
-	if (!OwningCharacter)
-		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
+	Health = NewValue;
+	HealthBar->SetPercent(Health / MaxHealth);
+}
 
-	if (OwningCharacter)
-		return OwningCharacter->GetCombatComponent()->GetHealth() / OwningCharacter->GetCombatComponent()->
-			GetMaxHealth();
-
-	return HealthBar->Percent;
+void UHUDPlayerStats::OnMaxHealthAttributeChange(float NewValue)
+{
+	MaxHealth = NewValue;
+	HealthBar->SetPercent(Health / MaxHealth);
 }

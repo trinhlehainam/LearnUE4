@@ -89,9 +89,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI Stats", meta=(MakeEditWidget="true"))
 	float AttackTimeMax;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Combat)
-	class UCharacterCombatComponent* CombatComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=Conbat)
 	USphereComponent* WeaponCollider;
 };

@@ -3,7 +3,6 @@
 
 #include "Enemy.h"
 
-#include "CharacterCombatComponent.h"
 #include "EnemyController.h"
 #include "MyCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -25,7 +24,6 @@ AEnemy::AEnemy()
 		GetMesh()->SetGenerateOverlapEvents(false);
 	}
 
-	CombatComponent = CreateDefaultSubobject<UCharacterCombatComponent>(FName("Combat Component"));
 	ArgoSphere = CreateDefaultSubobject<USphereComponent>(FName("Argo Range"));
 	AttackSphere = CreateDefaultSubobject<USphereComponent>(FName("Attack Range"));
 	WeaponCollider = CreateDefaultSubobject<USphereComponent>(FName("Weapon Collider"));
@@ -51,9 +49,6 @@ AEnemy::AEnemy()
 
 	AttackTimeMin = 0.1f;
 	AttackTimeMax = 0.2f;
-	CombatComponent->SetHealth(100.f);
-	CombatComponent->SetMaxHealth(100.f);
-	CombatComponent->SetDamage(10.f);
 }
 
 // Called when the game starts or when spawned
@@ -79,9 +74,6 @@ void AEnemy::BeginPlay()
 	ArgoSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::ArgoEndOverlap);
 	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::AttackEndOverlap);
 	WeaponCollider->OnComponentEndOverlap.AddDynamic(this, &AEnemy::WeaponEndOverlap);
-
-	CombatComponent->OnAttackStart.BindUObject(this, &AEnemy::OnAttackStart);
-	CombatComponent->OnAttackEnd.BindUObject(this, &AEnemy::OnAttackEnd);
 
 	if (GetMesh()->SkeletalMesh)
 	{
@@ -134,11 +126,6 @@ void AEnemy::WeaponBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	if (!OtherActor) return;
 	if (OtherActor->GetName() == GetName()) return;
 
-	UCharacterCombatComponent* CombatComp = Cast<UCharacterCombatComponent>(
-		OtherActor->GetComponentByClass(UCharacterCombatComponent::StaticClass()));
-	if (!CombatComp) return;
-
-	CombatComp->TakeDamage(CombatComponent->GetDamage());
 	UE_LOG(LogTemp, Warning, TEXT("Hit Player"));
 }
 
@@ -172,18 +159,6 @@ void AEnemy::ArgoEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 
 void AEnemy::OnAttackStart()
 {
-	if (!CombatComponent) return;
-
-	if (CombatComponent->IsAttacking()) return;
-
-	WeaponCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
-	auto AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && CombatComponent->GetAnimMontage())
-	{
-		AnimInstance->Montage_Play(CombatComponent->GetAnimMontage());
-		AnimInstance->Montage_JumpToSection(FName("Attack"), CombatComponent->GetAnimMontage());
-	}
 }
 
 void AEnemy::OnAttackEnd()
@@ -195,13 +170,4 @@ void AEnemy::OnAttackEnd()
 void AEnemy::QueryAttack()
 {
 	if (!bIsInAttackRange) return;
-
-	if (!CombatComponent) return;
-
-	if (CombatComponent->IsAttacking()) return;
-
-	if (GetWorldTimerManager().TimerExists(AttackTimerHandle)) return;
-
-	float Timer = FMath::RandRange(AttackTimeMin, AttackTimeMax);
-	GetWorldTimerManager().SetTimer(AttackTimerHandle, CombatComponent, &UCharacterCombatComponent::AttackStart, Timer);
 }

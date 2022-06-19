@@ -2,7 +2,6 @@
 
 
 #include "HealthPoison.h"
-#include "CharacterCombatComponent.h"
 #include "GameFramework/Character.h"
 
 
@@ -18,10 +17,6 @@ void AHealthPoison::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	auto Character = Cast<ACharacter>(OtherActor);
 	if (!Character) return;
 	
-	auto CombatComponent = Cast<UCharacterCombatComponent>(Character->GetComponentByClass(UCharacterCombatComponent::StaticClass()));
-	if (!CombatComponent) return;
-	
-	CombatComponent->SetHealth(CombatComponent->GetHealth() + HealthAmount);
 		
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }

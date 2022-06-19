@@ -3,7 +3,6 @@
 
 #include "AttackEndAnimNotify.h"
 
-#include "CharacterCombatComponent.h"
 #include "MyCharacter.h"
 
 void UAttackEndAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
@@ -13,7 +12,4 @@ void UAttackEndAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	AActor* owner = MeshComp->GetOwner();
 	if (!owner) return;
 
-	UCharacterCombatComponent* CombatComponent = Cast<UCharacterCombatComponent>(owner->GetComponentByClass(UCharacterCombatComponent::StaticClass()));
-	if (!CombatComponent) return;
-	CombatComponent->AttackEnd();
 }

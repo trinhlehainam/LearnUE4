@@ -7,14 +7,23 @@ public class LearnUE4 : ModuleRules
 	public LearnUE4(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTags", "GameplayTasks", "Core", "CoreUObject", "Engine", "InputCore", "UMG", "NavigationSystem", "AIModule", "GameplayTasks" });
 
+		// Core Modules
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+
+		// GAS Modules
+		PublicDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTags", "GameplayTasks" });
+
+		// AI Modules
+		PublicDependencyModuleNames.AddRange(new string[] { "NavigationSystem", "AIModule" });
+
+		// UI Modules
+		PublicDependencyModuleNames.AddRange(new string[] { "UMG" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
+
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 

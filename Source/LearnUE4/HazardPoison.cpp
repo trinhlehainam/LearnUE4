@@ -2,7 +2,6 @@
 
 
 #include "HazardPoison.h"
-#include "CharacterCombatComponent.h"
 #include "GameFramework/Character.h"
 
 AHazardPoison::AHazardPoison()
@@ -15,10 +14,5 @@ void AHazardPoison::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	auto Character = Cast<ACharacter>(OtherActor);
 	if (!Character) return;
 	
-	auto CombatComponent = Cast<UCharacterCombatComponent>(Character->GetComponentByClass(UCharacterCombatComponent::StaticClass()));
-	if (!CombatComponent) return;
-	
-	CombatComponent->SetHealth(CombatComponent->GetHealth() - HazardAmount);
-
 	Super::OnBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 }
