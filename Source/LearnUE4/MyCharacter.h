@@ -43,6 +43,7 @@ public:
 	void LoadData();
 
 	/*GAMEPLAY ABILITY SYSTEM*/
+	virtual void PostInitializeComponents() override;
 	// Server-side
 	virtual void PossessedBy(AController* NewController) override;
 	// Client-side : Client received replicated PlayerState from Server
@@ -68,9 +69,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
-
-	UPROPERTY()
-	class UMyAttributeSet* AttributeSet;
 
 	UPROPERTY()
 	UAbilitySystemComponent* ASC;

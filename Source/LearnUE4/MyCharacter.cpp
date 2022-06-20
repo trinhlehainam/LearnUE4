@@ -40,8 +40,6 @@ AMyCharacter::AMyCharacter()
 	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	bIsAbilitiesBoundToInput = false;
 
-	AttributeSet = CreateDefaultSubobject<UMyAttributeSet>(FName("Attribute Set"));
-
 	CameraBoom->bUsePawnControlRotation = true;
 	FollowCamera->bUsePawnControlRotation = false;
 
@@ -163,6 +161,16 @@ void AMyCharacter::LoadData()
 	}
 }
 
+void AMyCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (ASC)
+	{
+		ASC->AddSet<UMyAttributeSet>();
+	}
+}
+
 void AMyCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -183,22 +191,30 @@ void AMyCharacter::OnRep_PlayerState()
 
 float AMyCharacter::GetHealth() const
 {
-	return AttributeSet->GetHealth();
+	if (ASC)
+		return ASC->GetNumericAttribute(UMyAttributeSet::GetHealthAttribute());
+	return 0.f;
 }
 
 float AMyCharacter::GetMaxHealth() const
 {
-	return AttributeSet->GetMaxHealth();
+	if (ASC)
+		return ASC->GetNumericAttribute(UMyAttributeSet::GetMaxHealthAttribute());
+	return 0.f;
 }
 
 float AMyCharacter::GetMana() const
 {
-	return AttributeSet->GetMana();
+	if (ASC)
+		return ASC->GetNumericAttribute(UMyAttributeSet::GetManaAttribute());
+	return 0.f;
 }
 
 float AMyCharacter::GetMaxMana() const
 {
-	return AttributeSet->GetMaxMana();
+	if (ASC)
+		return ASC->GetNumericAttribute(UMyAttributeSet::GetMaxManaAttribute());
+	return 0.f;
 }
 
 void AMyCharacter::InitAttributes()
