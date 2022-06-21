@@ -40,3 +40,10 @@ void UMyAttributeSet::OnRep_AttackPower(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMyAttributeSet, AttackPower, OldValue);
 }
+
+void UMyAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	NewValue = FMath::Max(NewValue, 0.f);
+}

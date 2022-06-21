@@ -17,6 +17,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 #include "NavigationSystem.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -39,6 +40,7 @@ AMyCharacter::AMyCharacter()
 	ASC->SetIsReplicated(true);
 	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	bIsAbilitiesBoundToInput = false;
+	AttackSphere = CreateDefaultSubobject<USphereComponent>(FName("Attack Sphere"));
 
 	CameraBoom->bUsePawnControlRotation = true;
 	FollowCamera->bUsePawnControlRotation = false;
@@ -46,12 +48,19 @@ AMyCharacter::AMyCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 
+	AttackSphere->SetCollisionObjectType(ECC_WorldDynamic);
+	AttackSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AttackSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	AttackSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
 	if (GetMesh())
 	{
 		GetMesh()->SetCollisionObjectType(ECC_Pawn);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
 		GetMesh()->SetGenerateOverlapEvents(false);
+
+		AttackSphere->SetupAttachment(GetMesh(), FName("FX_WeaponBase_L"));
 	}
 }
 
@@ -60,6 +69,10 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ASC->GetGameplayAttributeValueChangeDelegate(UMyAttributeSet::GetHealthAttribute()).AddUObject(this, &AMyCharacter::HealthAttributeUpdated);
+
+	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AMyCharacter::AttackSphereBeginOverlap);
+	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AMyCharacter::AttackSphereEndOverlap);
 }
 
 // Called every frame
@@ -125,11 +138,6 @@ void AMyCharacter::MoveRight(float scale)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, scale);
 	}
-}
-
-void AMyCharacter::OnAttackStart()
-{
-	
 }
 
 void AMyCharacter::SaveData()
@@ -251,6 +259,28 @@ void AMyCharacter::BindAbilitiesActivationToInputComponent()
 		ASC->BindAbilityActivationToInputComponent(InputComponent, BindInfo);
 		bIsAbilitiesBoundToInput = true;
 	}
+}
+
+void AMyCharacter::BeginAttack()
+{
+	AttackSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+}
+
+void AMyCharacter::EndAttack()
+{
+	AttackSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AMyCharacter::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	
+}
+
+void AMyCharacter::AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	
 }
 
 UAbilitySystemComponent* AMyCharacter::GetAbilitySystemComponent() const

@@ -30,7 +30,10 @@ public:
 	class USphereComponent* Collider;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item | Mesh")
-	class UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* Mesh;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item | Effect")
+	TSubclassOf<class UGameplayEffect> PoisonEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item | Properties")
 	bool bIsRotate;

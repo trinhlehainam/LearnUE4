@@ -3,9 +3,11 @@
 
 #include "Item.h"
 
+#include "AbilitySystemComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
+#include "MyCharacter.h"
 
 // Sets default values
 AItem::AItem()
@@ -47,6 +49,20 @@ void AItem::Tick(float DeltaTime)
 
 void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!PoisonEffect) return;
+	
+	auto Player = Cast<AMyCharacter>(OtherActor);
+	if (!Player) return;
+	UAbilitySystemComponent* ASC = Player->GetAbilitySystemComponent();
+	if (!ASC) return;
+
+	FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+	FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(PoisonEffect, 1, Context);
+	if (Spec.IsValid())
+	{
+		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Dat.Get());
+	}
+	
 	Destroy();
 }
 

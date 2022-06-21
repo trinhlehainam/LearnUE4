@@ -18,6 +18,6 @@ public:
 	UMyGameplayAbility();
 	
 	// Activated immediately when granted
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Ability")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 };

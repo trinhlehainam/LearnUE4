@@ -44,6 +44,9 @@ public:
 	
 	UFUNCTION()
 	void OnRep_AttackPower(const FGameplayAttributeData& OldValue);
+
+	// Clamp calculated value before actually applying to Attribute
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	
 private:
 	UPROPERTY()
