@@ -4,6 +4,7 @@
 #include "MyAttributeSet.h"
 
 #include "Net/UnrealNetwork.h"
+#include "GameplayEffectExtension.h"
 
 void UMyAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -46,4 +47,21 @@ void UMyAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, fl
 	Super::PreAttributeChange(Attribute, NewValue);
 
 	NewValue = FMath::Max(NewValue, 0.f);
+}
+
+void UMyAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
+{
+	Super::PreAttributeBaseChange(Attribute, NewValue);
+
+	NewValue = FMath::Max(NewValue, 0.f);
+}
+
+void UMyAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp<float>(GetHealth(), 0.f, GetMaxHealth()));
+	}
 }

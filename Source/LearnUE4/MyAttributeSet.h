@@ -46,7 +46,13 @@ public:
 	void OnRep_AttackPower(const FGameplayAttributeData& OldValue);
 
 	// Clamp calculated value before actually applying to Attribute
+	// ExecutionCalc and MMC modifiers can still modify NewVale later
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
+
+	// Clamping attribute value again after modified
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
 private:
 	UPROPERTY()

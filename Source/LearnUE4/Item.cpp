@@ -60,9 +60,8 @@ void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(PoisonEffect, 1, Context);
 	if (Spec.IsValid())
 	{
-		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Dat.Get());
+		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 	}
 	
 	Destroy();
 }
-
