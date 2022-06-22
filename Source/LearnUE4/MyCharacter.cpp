@@ -69,7 +69,8 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ASC->GetGameplayAttributeValueChangeDelegate(UMyAttributeSet::GetHealthAttribute()).AddUObject(this, &AMyCharacter::HealthAttributeUpdated);
+	ASC->GetGameplayAttributeValueChangeDelegate(UMyAttributeSet::GetHealthAttribute()).AddUObject(
+		this, &AMyCharacter::HealthAttributeUpdated);
 
 	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AMyCharacter::AttackSphereBeginOverlap);
 	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AMyCharacter::AttackSphereEndOverlap);
@@ -90,7 +91,8 @@ void AMyCharacter::Tick(float DeltaTime)
 		GetWorld()->SweepMultiByChannel(HitResults, GetActorLocation(), CameraBoom->GetUnfixedCameraPosition(),
 		                                FQuat::Identity, ECC_Camera,
 		                                FCollisionShape::MakeSphere(CameraBoom->ProbeSize), CollisionQueryParams);
-		DrawSphereSweeps(GetWorld(), GetActorLocation(), CameraBoom->GetUnfixedCameraPosition(), CameraBoom->ProbeSize, HitResults, -1.f);
+		DrawSphereSweeps(GetWorld(), GetActorLocation(), CameraBoom->GetUnfixedCameraPosition(), CameraBoom->ProbeSize,
+		                 HitResults, -1.f);
 		for (const auto& HitResult : HitResults)
 			if (HitResult.bBlockingHit)
 				DrawDebugSphere(GetWorld(), HitResult.Location, CameraBoom->ProbeSize, 16, FColor::Yellow);
@@ -115,7 +117,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("StopJump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("TogglePauseMenu", IE_Pressed, this, &AMyCharacter::TogglePauseMenu);
 
-	BindAbilitiesActivationToInputComponent();
+	BindASCInput();
 }
 
 void AMyCharacter::MoveFoward(float scale)
@@ -194,7 +196,7 @@ void AMyCharacter::OnRep_PlayerState()
 
 	ASC->InitAbilityActorInfo(this, this);
 	InitAttributes();
-	BindAbilitiesActivationToInputComponent();
+	BindASCInput();
 }
 
 float AMyCharacter::GetHealth() const
@@ -227,14 +229,17 @@ float AMyCharacter::GetMaxMana() const
 
 void AMyCharacter::InitAttributes()
 {
-	if (ASC && DefaultGameplayEffect)
+	if (ASC)
 	{
 		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
 		Context.AddSourceObject(this);
 
-		FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DefaultGameplayEffect, 1, Context);
-		if (SpecHandle.IsValid())
-			ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		for (const TSubclassOf<UGameplayEffect>& DefaultEffect : DefaultGameplayEffects)
+		{
+			FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DefaultEffect, 1, Context);
+			if (SpecHandle.IsValid())
+				ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
 	}
 }
 
@@ -245,17 +250,19 @@ void AMyCharacter::GiveDefaultAbilities()
 		for (TSubclassOf<UMyGameplayAbility>& DefaultAbility : DefaultAbilities)
 		{
 			ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
-				static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID), this));
+			                                      static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),
+			                                      this));
 		}
 	}
 }
 
-void AMyCharacter::BindAbilitiesActivationToInputComponent()
+void AMyCharacter::BindASCInput()
 {
 	if (InputComponent && ASC && !bIsAbilitiesBoundToInput)
 	{
 		FGameplayAbilityInputBinds BindInfo("Confirm", "Cancel", "EAbilityInputID",
-			static_cast<int32>(EAbilityInputID::Confirm), static_cast<int32>(EAbilityInputID::Cancel));
+		                                    static_cast<int32>(EAbilityInputID::Confirm),
+		                                    static_cast<int32>(EAbilityInputID::Cancel));
 		ASC->BindAbilityActivationToInputComponent(InputComponent, BindInfo);
 		bIsAbilitiesBoundToInput = true;
 	}
@@ -272,15 +279,14 @@ void AMyCharacter::EndAttack()
 }
 
 void AMyCharacter::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                            const FHitResult& SweepResult)
 {
-	
 }
 
 void AMyCharacter::AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+                                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	
 }
 
 UAbilitySystemComponent* AMyCharacter::GetAbilitySystemComponent() const

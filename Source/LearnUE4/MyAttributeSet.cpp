@@ -53,9 +53,13 @@ void UMyAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute
 {
 	Super::PreAttributeBaseChange(Attribute, NewValue);
 
-	NewValue = FMath::Max(NewValue, 0.f);
+	if (Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp<float>(NewValue, 0.f, GetMaxHealth());
+	}
 }
 
+/*
 void UMyAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -65,3 +69,4 @@ void UMyAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallback
 		SetHealth(FMath::Clamp<float>(GetHealth(), 0.f, GetMaxHealth()));
 	}
 }
+*/

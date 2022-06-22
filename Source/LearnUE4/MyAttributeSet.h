@@ -52,7 +52,7 @@ public:
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 
 	// Clamping attribute value again after modified
-	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	// virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
 private:
 	UPROPERTY()

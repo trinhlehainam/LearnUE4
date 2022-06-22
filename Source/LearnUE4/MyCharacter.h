@@ -55,7 +55,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	void InitAttributes();
 	void GiveDefaultAbilities();
-	void BindAbilitiesActivationToInputComponent();
+	void BindASCInput();
 
 	FOnAttributeChange OnHealthAttributeChange;
 	FOnAttributeChange OnMaxHealthAttributeChange;
@@ -86,7 +86,7 @@ private:
 	bool bIsAbilitiesBoundToInput;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay Ability|Default Ability", meta=(AllowPrivateAccess))
-	TSubclassOf<class UGameplayEffect> DefaultGameplayEffect;
+	TArray<TSubclassOf<class UGameplayEffect>> DefaultGameplayEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay Ability|Default Ability", meta=(AllowPrivateAccess))
 	TArray<TSubclassOf<class UMyGameplayAbility>> DefaultAbilities;
