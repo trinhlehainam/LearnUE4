@@ -4,11 +4,11 @@
 #include "MyCharacter.h"
 
 #include "AbilitySystemComponent.h"
-#include "CharacterController.h"
+#include "PlayerController_PlayerCharacter.h"
 #include "CharacterSaveGame.h"
 #include "CollisionDebugDrawingPublic.h"
 #include "DrawDebugHelpers.h"
-#include "MyAttributeSet.h"
+#include "AttributeSet_BaseAttributes.h"
 #include "MyGameplayAbility.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -69,7 +69,7 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ASC->GetGameplayAttributeValueChangeDelegate(UMyAttributeSet::GetHealthAttribute()).AddUObject(
+	ASC->GetGameplayAttributeValueChangeDelegate(UAttributeSet_BaseAttributes::GetHealthAttribute()).AddUObject(
 		this, &AMyCharacter::HealthAttributeUpdated);
 
 	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AMyCharacter::AttackSphereBeginOverlap);
@@ -177,7 +177,7 @@ void AMyCharacter::PostInitializeComponents()
 
 	if (ASC)
 	{
-		ASC->AddSet<UMyAttributeSet>();
+		ASC->AddSet<UAttributeSet_BaseAttributes>();
 	}
 }
 
@@ -202,28 +202,28 @@ void AMyCharacter::OnRep_PlayerState()
 float AMyCharacter::GetHealth() const
 {
 	if (ASC)
-		return ASC->GetNumericAttribute(UMyAttributeSet::GetHealthAttribute());
+		return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetHealthAttribute());
 	return 0.f;
 }
 
 float AMyCharacter::GetMaxHealth() const
 {
 	if (ASC)
-		return ASC->GetNumericAttribute(UMyAttributeSet::GetMaxHealthAttribute());
+		return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxHealthAttribute());
 	return 0.f;
 }
 
 float AMyCharacter::GetMana() const
 {
 	if (ASC)
-		return ASC->GetNumericAttribute(UMyAttributeSet::GetManaAttribute());
+		return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetManaAttribute());
 	return 0.f;
 }
 
 float AMyCharacter::GetMaxMana() const
 {
 	if (ASC)
-		return ASC->GetNumericAttribute(UMyAttributeSet::GetMaxManaAttribute());
+		return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxManaAttribute());
 	return 0.f;
 }
 
@@ -298,7 +298,7 @@ void AMyCharacter::TogglePauseMenu()
 {
 	if (Controller)
 	{
-		ACharacterController* CharaController = Cast<ACharacterController>(Controller);
+		APlayerController_PlayerCharacter* CharaController = Cast<APlayerController_PlayerCharacter>(Controller);
 		CharaController->TogglePauseMenu();
 	}
 }

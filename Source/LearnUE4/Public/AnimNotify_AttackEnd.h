@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "AttackEndAnimNotify.generated.h"
+#include "AnimNotify_AttackEnd.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API UAttackEndAnimNotify : public UAnimNotify
+class LEARNUE4_API UAnimNotify_AttackEnd : public UAnimNotify
 {
 	GENERATED_BODY()
 	

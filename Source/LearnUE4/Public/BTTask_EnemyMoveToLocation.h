@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "BTT_EnemyMoveToLocation.generated.h"
+#include "BTTask_EnemyMoveToLocation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API UBTT_EnemyMoveToLocation : public UBTTask_BlackboardBase
+class LEARNUE4_API UBTTask_EnemyMoveToLocation : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
 public:
-	UBTT_EnemyMoveToLocation(const FObjectInitializer& ObjectInitializer);
+	UBTTask_EnemyMoveToLocation(const FObjectInitializer& ObjectInitializer);
 
 	FString GetStaticDescription() const final;
 

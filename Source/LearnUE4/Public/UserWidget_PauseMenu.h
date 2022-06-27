@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "PauseMenuWidget.generated.h"
+#include "UserWidget_PauseMenu.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API UPauseMenuWidget : public UUserWidget
+class LEARNUE4_API UUserWidget_PauseMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -31,7 +31,7 @@ private:
 	class UButton* QuitButton;
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
-	class ACharacterController* Controller;
+	class APlayerController_PlayerCharacter* Controller;
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	class AMyCharacter* Character;

@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HUDPlayerStats.h"
+#include "UserWidget_PlayerHUD.h"
 
 #include "AbilitySystemComponent.h"
 #include "Components/ProgressBar.h"
 #include "MyCharacter.h"
 
-void UHUDPlayerStats::NativeConstruct()
+void UUserWidget_PlayerHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
-void UHUDPlayerStats::NativeOnInitialized()
+void UUserWidget_PlayerHUD::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
@@ -21,7 +21,7 @@ void UHUDPlayerStats::NativeOnInitialized()
 
 	if (OwningCharacter)
 	{
-		OwningCharacter->OnHealthAttributeChange.AddDynamic(this, &UHUDPlayerStats::OnHealthAttributeChange);
+		OwningCharacter->OnHealthAttributeChange.AddDynamic(this, &UUserWidget_PlayerHUD::OnHealthAttributeChange);
 		Health = OwningCharacter->GetHealth();
 		MaxHealth = OwningCharacter->GetMaxHealth();
 	}
@@ -32,13 +32,13 @@ void UHUDPlayerStats::NativeOnInitialized()
 	}
 }
 
-void UHUDPlayerStats::OnHealthAttributeChange(float NewValue)
+void UUserWidget_PlayerHUD::OnHealthAttributeChange(float NewValue)
 {
 	Health = NewValue;
 	HealthBar->SetPercent(Health / MaxHealth);
 }
 
-void UHUDPlayerStats::OnMaxHealthAttributeChange(float NewValue)
+void UUserWidget_PlayerHUD::OnMaxHealthAttributeChange(float NewValue)
 {
 	MaxHealth = NewValue;
 	HealthBar->SetPercent(Health / MaxHealth);

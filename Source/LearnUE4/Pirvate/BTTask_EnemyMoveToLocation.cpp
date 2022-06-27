@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTT_EnemyMoveToLocation.h"
+#include "BTTask_EnemyMoveToLocation.h"
 
 #include "Enemy.h"
 #include "EnemyController.h"
@@ -10,16 +10,16 @@
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "Tasks/AITask_MoveTo.h"
 
-UBTT_EnemyMoveToLocation::UBTT_EnemyMoveToLocation(const FObjectInitializer& ObjectInitializer): Super(
+UBTTask_EnemyMoveToLocation::UBTTask_EnemyMoveToLocation(const FObjectInitializer& ObjectInitializer): Super(
 	ObjectInitializer)
 {
 	NodeName = "Enemy Move To Location";
 
 	// accept vector only
-	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UBTT_EnemyMoveToLocation, BlackboardKey));
+	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_EnemyMoveToLocation, BlackboardKey));
 }
 
-FString UBTT_EnemyMoveToLocation::GetStaticDescription() const
+FString UBTTask_EnemyMoveToLocation::GetStaticDescription() const
 {
 	FString ClassDesc("MoveTo");
 	FString KeyDesc("invalid");
@@ -29,7 +29,7 @@ FString UBTT_EnemyMoveToLocation::GetStaticDescription() const
 	return FString::Printf(TEXT("%s: %s"), *ClassDesc, *KeyDesc);
 }
 
-EBTNodeResult::Type UBTT_EnemyMoveToLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_EnemyMoveToLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	if (BlackboardKey.SelectedKeyType != UBlackboardKeyType_Vector::StaticClass())
 		return EBTNodeResult::Failed;
@@ -51,7 +51,7 @@ EBTNodeResult::Type UBTT_EnemyMoveToLocation::ExecuteTask(UBehaviorTreeComponent
 	return EBTNodeResult::InProgress;
 }
 
-void UBTT_EnemyMoveToLocation::OnMessage(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, FName Message,
+void UBTTask_EnemyMoveToLocation::OnMessage(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, FName Message,
                                          int32 RequestID, bool bSuccess)
 {
 	// AIMessage_RepathFailed means task has failed

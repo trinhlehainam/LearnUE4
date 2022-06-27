@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CharacterController.h"
+#include "PlayerController_PlayerCharacter.h"
 #include "Blueprint/UserWidget.h"
 
-void ACharacterController::BeginPlay()
+void APlayerController_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
@@ -24,13 +24,13 @@ void ACharacterController::BeginPlay()
 	}
 }
 
-void ACharacterController::TogglePauseMenu()
+void APlayerController_PlayerCharacter::TogglePauseMenu()
 {
 	bIsPauseMenuVisible = !bIsPauseMenuVisible;
 	bIsPauseMenuVisible ? DisplayPauseMenu() : HidePauseMenu();
 }
 
-void ACharacterController::DisplayPauseMenu()
+void APlayerController_PlayerCharacter::DisplayPauseMenu()
 {
 	if (PauseMenu)
 	{
@@ -42,7 +42,7 @@ void ACharacterController::DisplayPauseMenu()
 	}
 }
 
-void ACharacterController::HidePauseMenu()
+void APlayerController_PlayerCharacter::HidePauseMenu()
 {
 	if (PauseMenu)
 	{

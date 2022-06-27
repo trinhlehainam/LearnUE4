@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
-#include "MyAttributeSet.generated.h"
+#include "AttributeSet_BaseAttributes.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
@@ -17,19 +17,29 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
  * 
  */
 UCLASS()
-class LEARNUE4_API UMyAttributeSet : public UAttributeSet
+class LEARNUE4_API UAttributeSet_BaseAttributes : public UAttributeSet
 {
 	GENERATED_BODY()
 
 public:
-	ATTRIBUTE_ACCESSORS(UMyAttributeSet, Health);
-	ATTRIBUTE_ACCESSORS(UMyAttributeSet, MaxHealth);
-	ATTRIBUTE_ACCESSORS(UMyAttributeSet, Mana);
-	ATTRIBUTE_ACCESSORS(UMyAttributeSet, MaxMana);
-	ATTRIBUTE_ACCESSORS(UMyAttributeSet, AttackPower);
+	ATTRIBUTE_ACCESSORS(UAttributeSet_BaseAttributes, Health);
+	ATTRIBUTE_ACCESSORS(UAttributeSet_BaseAttributes, MaxHealth);
+	ATTRIBUTE_ACCESSORS(UAttributeSet_BaseAttributes, Mana);
+	ATTRIBUTE_ACCESSORS(UAttributeSet_BaseAttributes, MaxMana);
+	ATTRIBUTE_ACCESSORS(UAttributeSet_BaseAttributes, AttackPower);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	// Clamp calculated value before actually applying to Attribute
+	// ExecutionCalc and MMC modifiers can still modify NewVale later
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
+
+	// Clamping attribute value again after modified
+	// virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	
+private:
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldValue);
 	
@@ -45,28 +55,18 @@ public:
 	UFUNCTION()
 	void OnRep_AttackPower(const FGameplayAttributeData& OldValue);
 
-	// Clamp calculated value before actually applying to Attribute
-	// ExecutionCalc and MMC modifiers can still modify NewVale later
-	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
-
-	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
-
-	// Clamping attribute value again after modified
-	// virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
-	
-private:
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing=OnRep_Health)
 	FGameplayAttributeData Health;
 	
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing=OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
 	
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing=OnRep_Mana)
 	FGameplayAttributeData Mana;
 	
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing=OnRep_MaxMana)
 	FGameplayAttributeData MaxMana;
 	
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing=OnRep_AttackPower)
 	FGameplayAttributeData AttackPower;
 };
