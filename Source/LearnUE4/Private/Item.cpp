@@ -4,9 +4,9 @@
 #include "Item.h"
 
 #include "AbilitySystemComponent.h"
+#include "Characters/BaseCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Characters/MyCharacter.h"
 
 // Sets default values
 AItem::AItem()
@@ -50,9 +50,9 @@ void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	if (!PoisonEffect) return;
 	
-	auto Player = Cast<AMyCharacter>(OtherActor);
-	if (!Player) return;
-	UAbilitySystemComponent* ASC = Player->GetAbilitySystemComponent();
+	auto Character = Cast<ABaseCharacter>(OtherActor);
+	if (!Character) return;
+	UAbilitySystemComponent* ASC = Character->GetAbilitySystemComponent();
 	if (!ASC) return;
 
 	FGameplayEffectContextHandle Context = ASC->MakeEffectContext();

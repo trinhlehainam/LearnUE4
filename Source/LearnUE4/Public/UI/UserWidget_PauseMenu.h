@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "UserWidget_PauseMenu.generated.h"
 
+class UButton;
+class APlayerController_PlayerCharacter;
+
 /**
  * 
  */
@@ -19,22 +22,19 @@ protected:
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	class UButton* ResumeButton;
+	UButton* ResumeButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* SaveButton;
+	UButton* SaveButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* LoadButton;
+	UButton* LoadButton;
 
 	UPROPERTY(meta = (BindWidget))
-	class UButton* QuitButton;
+	UButton* QuitButton;
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
-	class APlayerController_PlayerCharacter* Controller;
-
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
-	class AMyCharacter* Character;
+	APlayerController_PlayerCharacter* PlayerController;
 
 	UFUNCTION()
 	void Resume();

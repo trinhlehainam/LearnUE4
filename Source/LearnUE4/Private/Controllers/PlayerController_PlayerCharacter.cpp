@@ -7,8 +7,9 @@
 void APlayerController_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (WBP_HUDCharacterStats) {
+
+	if (WBP_HUDCharacterStats)
+	{
 		HUDCharaterStats = CreateWidget<UUserWidget>(this, WBP_HUDCharacterStats);
 		HUDCharaterStats->AddToViewport();
 		HUDCharaterStats->SetVisibility(ESlateVisibility::Visible);
@@ -22,6 +23,16 @@ void APlayerController_PlayerCharacter::BeginPlay()
 		// Hidden by default
 		PauseMenu->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+void APlayerController_PlayerCharacter::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	check(InputComponent);
+
+	InputComponent->BindAction("TogglePauseMenu", IE_Pressed, this,
+	                           &APlayerController_PlayerCharacter::TogglePauseMenu);
 }
 
 void APlayerController_PlayerCharacter::TogglePauseMenu()

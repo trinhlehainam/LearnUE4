@@ -14,8 +14,6 @@ class LEARNUE4_API APlayerController_PlayerCharacter : public APlayerController
 {
 	GENERATED_BODY()
 	
-protected:
-	virtual void BeginPlay() override;
 public:
 	// Reference to User Widget Blueprint
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Widgets)
@@ -33,7 +31,13 @@ public:
 
 	bool bIsPauseMenuVisible;
 
+	UFUNCTION()
 	void TogglePauseMenu();
+	
+protected:
+	virtual void BeginPlay() override;
+
+	virtual void SetupInputComponent() override;
 private:
 	
 	UFUNCTION(BlueprintCallable)

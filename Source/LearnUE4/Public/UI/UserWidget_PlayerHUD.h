@@ -26,8 +26,6 @@ private:
 	void OnHealthAttributeChange(float NewValue);
 	void OnMaxHealthAttributeChange(float NewValue);
 
-	class AMyCharacter* OwningCharacter;
-
 	float Health;
 	float MaxHealth;
 	float Mana;

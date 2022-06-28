@@ -12,8 +12,7 @@ void UUserWidget_PauseMenu::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	Controller = Cast<APlayerController_PlayerCharacter>(UGameplayStatics::GetPlayerController(this, 0));
-	Character = Cast<AMyCharacter>(Controller->GetCharacter());
+	PlayerController = GetOwningPlayer<APlayerController_PlayerCharacter>();
 
 	if (ResumeButton) ResumeButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Resume);
 	if (SaveButton) SaveButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Save);
@@ -23,36 +22,18 @@ void UUserWidget_PauseMenu::NativeOnInitialized()
 
 void UUserWidget_PauseMenu::Resume()
 {
-	if (!Controller)
-		Controller = Cast<APlayerController_PlayerCharacter>(UGameplayStatics::GetPlayerController(this, 0));
+	if (!PlayerController)
+		PlayerController = GetOwningPlayer<APlayerController_PlayerCharacter>();
 	else
-	{
-		Controller->TogglePauseMenu();
-	}
+		PlayerController->TogglePauseMenu();
 }
 
 void UUserWidget_PauseMenu::Save()
 {
-	if (!Character)
-	{
-		Character = Cast<AMyCharacter>(Controller->GetCharacter());
-	}
-	else
-	{
-		Character->SaveData();
-	}
 }
 
 void UUserWidget_PauseMenu::Load()
 {
-	if (!Character)
-	{
-		Character = Cast<AMyCharacter>(Controller->GetCharacter());
-	}
-	else
-	{
-		Character->LoadData();
-	}
 }
 
 void UUserWidget_PauseMenu::Quit()

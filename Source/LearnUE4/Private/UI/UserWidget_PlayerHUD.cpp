@@ -3,9 +3,8 @@
 
 #include "UI/UserWidget_PlayerHUD.h"
 
-#include "AbilitySystemComponent.h"
+#include "Characters/PlayerCharacter.h"
 #include "Components/ProgressBar.h"
-#include "Characters/MyCharacter.h"
 
 void UUserWidget_PlayerHUD::NativeConstruct()
 {
@@ -16,15 +15,13 @@ void UUserWidget_PlayerHUD::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	if (!OwningCharacter)
-		OwningCharacter = Cast<AMyCharacter>(GetOwningPlayerPawn());
+	APlayerCharacter* PlayerPawn = GetOwningPlayerPawn<APlayerCharacter>();
 
-	if (OwningCharacter)
-	{
-		OwningCharacter->OnHealthAttributeChange.AddDynamic(this, &UUserWidget_PlayerHUD::OnHealthAttributeChange);
-		Health = OwningCharacter->GetHealth();
-		MaxHealth = OwningCharacter->GetMaxHealth();
-	}
+	check(PlayerPawn);
+
+	PlayerPawn->OnHealthChange.AddDynamic(this, &UUserWidget_PlayerHUD::OnHealthAttributeChange);
+	Health = PlayerPawn->GetHealth();
+	MaxHealth = PlayerPawn->GetMaxHealth();
 
 	if (HealthBar)
 	{
