@@ -6,8 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "DrawDebugHelpers.h"
-#include "MyCharacter.h"
+#include "Characters/MyCharacter.h"
 
 // Sets default values
 AItem::AItem()

@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UserWidget_PlayerHUD.h"
+#include "UI/UserWidget_PlayerHUD.h"
 
 #include "AbilitySystemComponent.h"
 #include "Components/ProgressBar.h"
-#include "MyCharacter.h"
+#include "Characters/MyCharacter.h"
 
 void UUserWidget_PlayerHUD::NativeConstruct()
 {

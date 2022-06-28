@@ -5,17 +5,17 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "LearnUE4/Common/AbilityInputID.h"
-#include "MyGameplayAbility.generated.h"
+#include "GameplayAbility_BaseAbility.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API UMyGameplayAbility : public UGameplayAbility
+class LEARNUE4_API UGameplayAbility_BaseAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 public:
-	UMyGameplayAbility();
+	UGameplayAbility_BaseAbility();
 	
 	// Activated immediately when granted
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")

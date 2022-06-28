@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EnemyController.h"
-#include "Enemy.h"
+#include "Controllers/AIController_Enemy.h"
+#include "Characters/Enemy.h"
 #include "BehaviorTree/BehaviorTree.h"
 
-void AEnemyController::OnPossess(APawn* InPawn)
+void AAIController_Enemy::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	if (!InPawn) return;

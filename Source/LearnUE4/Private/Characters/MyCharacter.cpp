@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MyCharacter.h"
+#include "Characters/MyCharacter.h"
 
 #include "AbilitySystemComponent.h"
-#include "PlayerController_PlayerCharacter.h"
+#include "Controllers/PlayerController_PlayerCharacter.h"
 #include "CharacterSaveGame.h"
 #include "CollisionDebugDrawingPublic.h"
 #include "DrawDebugHelpers.h"
-#include "AttributeSet_BaseAttributes.h"
-#include "MyGameplayAbility.h"
+#include "Abilities/AttributeSet_BaseAttributes.h"
+#include "Abilities/GameplayAbility_BaseAbility.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
@@ -247,7 +247,7 @@ void AMyCharacter::GiveDefaultAbilities()
 {
 	if (HasAuthority() && ASC)
 	{
-		for (TSubclassOf<UMyGameplayAbility>& DefaultAbility : DefaultAbilities)
+		for (TSubclassOf<UGameplayAbility_BaseAbility>& DefaultAbility : DefaultAbilities)
 		{
 			ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
 			                                      static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),

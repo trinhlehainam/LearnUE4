@@ -3,7 +3,7 @@
 
 #include "AnimNotify_AttackEnd.h"
 
-#include "MyCharacter.h"
+#include "Characters/MyCharacter.h"
 
 void UAnimNotify_AttackEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {

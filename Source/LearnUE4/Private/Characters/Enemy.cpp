@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Enemy.h"
+#include "Characters/Enemy.h"
 
-#include "EnemyController.h"
-#include "MyCharacter.h"
+#include "Controllers/AIController_Enemy.h"
+#include "Characters/MyCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -56,7 +56,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EnemyController = Cast<AEnemyController>(GetController());
+	EnemyController = Cast<AAIController_Enemy>(GetController());
 	if (EnemyController)
 	{
 		FVector Location = GetActorLocation();

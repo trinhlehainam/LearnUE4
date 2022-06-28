@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "EnemyController.generated.h"
+#include "AIController_Enemy.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API AEnemyController : public AAIController
+class LEARNUE4_API AAIController_Enemy : public AAIController
 {
 	GENERATED_BODY()
 protected:

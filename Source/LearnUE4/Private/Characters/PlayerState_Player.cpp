@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PlayerState_Player.h"
+#include "Characters/PlayerState_Player.h"
 
 #include "AbilitySystemComponent.h"
-#include "AttributeSet_BaseAttributes.h"
+#include "Abilities/AttributeSet_BaseAttributes.h"
 
 
 APlayerState_Player::APlayerState_Player()

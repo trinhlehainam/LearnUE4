@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTask_EnemyMoveToLocation.h"
+#include "AI/BTTask_EnemyMoveToLocation.h"
 
-#include "Enemy.h"
-#include "EnemyController.h"
+#include "Characters/Enemy.h"
+#include "Controllers/AIController_Enemy.h"
 #include "NavigationPath.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
@@ -34,7 +34,7 @@ EBTNodeResult::Type UBTTask_EnemyMoveToLocation::ExecuteTask(UBehaviorTreeCompon
 	if (BlackboardKey.SelectedKeyType != UBlackboardKeyType_Vector::StaticClass())
 		return EBTNodeResult::Failed;
 
-	AEnemyController* EnemyController = Cast<AEnemyController>(OwnerComp.GetAIOwner());
+	AAIController_Enemy* EnemyController = Cast<AAIController_Enemy>(OwnerComp.GetAIOwner());
 	AEnemy* Enemy = Cast<AEnemy>(EnemyController->GetPawn());
 	if (!EnemyController || !Enemy) return EBTNodeResult::Failed;
 

@@ -1,13 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UserWidget_PauseMenu.h"
+#include "UI/UserWidget_PauseMenu.h"
 
-#include "PlayerController_PlayerCharacter.h"
-#include "MyCharacter.h"
+#include "Controllers/PlayerController_PlayerCharacter.h"
+#include "Characters/MyCharacter.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
-#include "Media/Public/IMediaControls.h"
 
 void UUserWidget_PauseMenu::NativeOnInitialized()
 {

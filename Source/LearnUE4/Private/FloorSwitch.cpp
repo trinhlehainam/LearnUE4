@@ -5,7 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 
-#include "MyCharacter.h"
+#include "Characters/MyCharacter.h"
 
 // Sets default values
 AFloorSwitch::AFloorSwitch()
