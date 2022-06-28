@@ -26,6 +26,16 @@ public:
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	void InitializeAttributes();
+	void GiveDefaultAbilities();
+	
 private:
 	TWeakObjectPtr<UAbilitySystemComponent> ASC;
+
+	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
+	TArray<TSubclassOf<class UGameplayEffect>> DefaultGameplayEffects;
+	
+	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
+	TArray<TSubclassOf<class UGameplayAbility_BaseAbility>> DefaultAbilities;
 };

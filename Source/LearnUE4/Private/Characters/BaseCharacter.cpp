@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/AttributeSet_BaseAttributes.h"
+#include "Abilities/GameplayAbility_BaseAbility.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -51,5 +52,34 @@ float ABaseCharacter::GeManaHealth() const
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// No binding by default because this base class for both Player and AICharacter
+}
+
+void ABaseCharacter::InitializeAttributes()
+{
+	if (ASC.IsValid())
+	{
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+		Context.AddSourceObject(this);
+
+		for (const TSubclassOf<UGameplayEffect>& DefaultEffect : DefaultGameplayEffects)
+		{
+			FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DefaultEffect, 1, Context);
+			if (SpecHandle.IsValid())
+				ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
+	}
+}
+
+void ABaseCharacter::GiveDefaultAbilities()
+{
+	if (HasAuthority() && ASC.IsValid())
+	{
+		for (TSubclassOf<UGameplayAbility_BaseAbility>& DefaultAbility : DefaultAbilities)
+		{
+			ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
+			                                      static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),
+			                                      this));
+		}
+	}
 }
 
