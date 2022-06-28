@@ -10,9 +10,8 @@
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -41,7 +40,7 @@ float ABaseCharacter::GetMana() const
 	return ASC.Get()->GetNumericAttribute(UAttributeSet_BaseAttributes::GetManaAttribute());
 }
 
-float ABaseCharacter::GeManaHealth() const
+float ABaseCharacter::GetMaxMana() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
@@ -83,3 +82,26 @@ void ABaseCharacter::GiveDefaultAbilities()
 	}
 }
 
+void ABaseCharacter::SetHealth(float Value)
+{
+	if (ASC.IsValid())
+		ASC->SetNumericAttributeBase(UAttributeSet_BaseAttributes::GetHealthAttribute(), Value);
+}
+
+void ABaseCharacter::SetMaxHealth(float Value)
+{
+	if (ASC.IsValid())
+		ASC->SetNumericAttributeBase(UAttributeSet_BaseAttributes::GetMaxHealthAttribute(), Value);
+}
+
+void ABaseCharacter::SetMana(float Value)
+{
+	if (ASC.IsValid())
+		ASC->SetNumericAttributeBase(UAttributeSet_BaseAttributes::GetManaAttribute(), Value);
+}
+
+void ABaseCharacter::SetMaxMana(float Value)
+{
+	if (ASC.IsValid())
+		ASC->SetNumericAttributeBase(UAttributeSet_BaseAttributes::GetMaxManaAttribute(), Value);
+}

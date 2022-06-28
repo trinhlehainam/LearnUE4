@@ -21,7 +21,7 @@ public:
 	float GetHealth() const;
 	float GetMaxHealth() const;
 	float GetMana() const;
-	float GeManaHealth() const;
+	float GetMaxMana() const;
 	
 protected:
 	// Called to bind functionality to input
@@ -29,8 +29,12 @@ protected:
 
 	void InitializeAttributes();
 	void GiveDefaultAbilities();
+
+	void SetHealth(float Value);
+	void SetMaxHealth(float Value);
+	void SetMana(float Value);
+	void SetMaxMana(float Value);
 	
-private:
 	TWeakObjectPtr<UAbilitySystemComponent> ASC;
 
 	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
