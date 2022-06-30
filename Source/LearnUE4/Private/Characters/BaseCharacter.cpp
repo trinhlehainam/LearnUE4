@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/AttributeSet_BaseAttributes.h"
 #include "Abilities/GameplayAbility_BaseAbility.h"
+#include "Characters/BaseCharacterState.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -51,6 +52,33 @@ float ABaseCharacter::GetMaxMana() const
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// No binding by default because this base class for both Player and AICharacter
+}
+
+void ABaseCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	ABaseCharacterState* PS = GetPlayerState<ABaseCharacterState>();
+	if (!PS) return;
+	ASC = PS->GetAbilitySystemComponent();
+
+	if (!ASC.IsValid()) return;
+	ASC->InitAbilityActorInfo(PS, this);
+	InitializeAttributes();
+	GiveDefaultAbilities();
+}
+
+void ABaseCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	ABaseCharacterState* PS = GetPlayerState<ABaseCharacterState>();
+	if (!PS) return;
+	ASC = PS->GetAbilitySystemComponent();
+
+	if (!ASC.IsValid()) return;
+	ASC->InitAbilityActorInfo(PS, this);
+	InitializeAttributes();
 }
 
 void ABaseCharacter::InitializeAttributes()

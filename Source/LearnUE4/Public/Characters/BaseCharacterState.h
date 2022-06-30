@@ -5,17 +5,17 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
-#include "PlayerState_Player.generated.h"
+#include "BaseCharacterState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API APlayerState_Player : public APlayerState, public IAbilitySystemInterface
+class LEARNUE4_API ABaseCharacterState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 public:
-	APlayerState_Player();
+	ABaseCharacterState();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 	float GetHealth() const;

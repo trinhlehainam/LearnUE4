@@ -56,7 +56,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EnemyController = Cast<AAIController_Enemy>(GetController());
+	EnemyController = GetController<AAIController_Enemy>();
 	if (EnemyController)
 	{
 		FVector Location = GetActorLocation();
@@ -74,12 +74,6 @@ void AEnemy::BeginPlay()
 	ArgoSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::ArgoEndOverlap);
 	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::AttackEndOverlap);
 	WeaponCollider->OnComponentEndOverlap.AddDynamic(this, &AEnemy::WeaponEndOverlap);
-
-	if (GetMesh()->SkeletalMesh)
-	{
-		UPhysicsAsset* PhysicsAsset = GetMesh()->SkeletalMesh->GetPhysicsAsset();
-		int32 BodyIndex = PhysicsAsset->FindBodyIndex(FName("weapon_l"));
-	}
 }
 
 // Called every frame

@@ -1,51 +1,51 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/PlayerState_Player.h"
+#include "Characters/BaseCharacterState.h"
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/AttributeSet_BaseAttributes.h"
 
 
-APlayerState_Player::APlayerState_Player()
+ABaseCharacterState::ABaseCharacterState()
 {
 	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(FName("ASC"));
 }
 
-UAbilitySystemComponent* APlayerState_Player::GetAbilitySystemComponent() const
+UAbilitySystemComponent* ABaseCharacterState::GetAbilitySystemComponent() const
 {
 	return ASC;
 }
 
-float APlayerState_Player::GetHealth() const
+float ABaseCharacterState::GetHealth() const
 {
 	if (!ASC)
 		return 0.f;
 	return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetHealthAttribute());
 }
 
-float APlayerState_Player::GetMaxHealth() const
+float ABaseCharacterState::GetMaxHealth() const
 {
 	if (!ASC)
 		return 0.f;
 	return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxHealthAttribute());
 }
 
-float APlayerState_Player::GeMana() const
+float ABaseCharacterState::GeMana() const
 {
 	if (!ASC)
 		return 0.f;
 	return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetManaAttribute());
 }
 
-float APlayerState_Player::GetMaxMana() const
+float ABaseCharacterState::GetMaxMana() const
 {
 	if (!ASC)
 		return 0.f;
 	return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxManaAttribute());
 }
 
-void APlayerState_Player::PostInitializeComponents()
+void ABaseCharacterState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
