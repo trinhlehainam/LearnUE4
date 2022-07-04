@@ -17,7 +17,6 @@ class LEARNUE4_API UGameplayAbility_BaseAbility : public UGameplayAbility
 public:
 	UGameplayAbility_BaseAbility();
 	
-	// Activated immediately when granted
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 };

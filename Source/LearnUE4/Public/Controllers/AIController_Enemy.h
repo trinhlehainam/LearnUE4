@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "AI/BTTask_EnemyMoveToLocation.h"
 #include "AIController_Enemy.generated.h"
 
 /**
