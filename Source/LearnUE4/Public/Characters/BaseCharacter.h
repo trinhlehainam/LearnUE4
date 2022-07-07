@@ -29,6 +29,8 @@ public:
 	float GetMaxMana() const;
 
 protected:
+	//~ Begin ACharacter Interface.
+	
 	// Called to bind functionality to input
 	// Because this is base character class for both Player and NPCS, we let this method empty here
 	// Override this method when our derived class use for Player
@@ -36,6 +38,7 @@ protected:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+	//~ End APawn Interface
 
 	void InitializeAttributes();
 	void GiveDefaultAbilities();

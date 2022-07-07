@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Characters/BaseCharacter.h"
+#include "AI/PatrolTypes.h"
 #include "BaseNPC.generated.h"
 
 /**
@@ -20,19 +21,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	
 private:
-	UPROPERTY(EditAnywhere, Category = AI)
-	class UBehaviorTree* BehaviorTree;
-	
-	UFUNCTION()
-	void AttackRangeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-							UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-							const FHitResult& SweepResult);
-	
-	UFUNCTION()
-	void AttackRangeEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-						  int32 OtherBodyIndex);
-
-	UPROPERTY(EditAnywhere, Category=Combat)
-	class USphereComponent* AttackRangeSphere;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
+	TArray<FPatrolInfo> PatrolInfos;
 };
