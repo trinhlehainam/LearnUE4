@@ -4,12 +4,12 @@
 #include "Characters/MyCharacter.h"
 
 #include "AbilitySystemComponent.h"
-#include "Controllers/PlayerController_PlayerCharacter.h"
+#include "Controllers/CustomPlayerController.h"
 #include "CharacterSaveGame.h"
 #include "CollisionDebugDrawingPublic.h"
 #include "DrawDebugHelpers.h"
 #include "Abilities/AttributeSet_BaseAttributes.h"
-#include "Abilities/GameplayAbility_BaseAbility.h"
+#include "Abilities/BaseGameplayAbility.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
@@ -247,7 +247,7 @@ void AMyCharacter::GiveDefaultAbilities()
 {
 	if (HasAuthority() && ASC)
 	{
-		for (TSubclassOf<UGameplayAbility_BaseAbility>& DefaultAbility : DefaultAbilities)
+		for (TSubclassOf<UBaseGameplayAbility>& DefaultAbility : DefaultAbilities)
 		{
 			ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
 			                                      static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),
@@ -298,7 +298,7 @@ void AMyCharacter::TogglePauseMenu()
 {
 	if (Controller)
 	{
-		APlayerController_PlayerCharacter* CharaController = Cast<APlayerController_PlayerCharacter>(Controller);
+		ACustomPlayerController* CharaController = Cast<ACustomPlayerController>(Controller);
 		CharaController->TogglePauseMenu();
 	}
 }

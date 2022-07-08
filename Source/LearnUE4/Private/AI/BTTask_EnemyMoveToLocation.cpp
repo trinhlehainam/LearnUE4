@@ -4,7 +4,7 @@
 #include "AI/BTTask_EnemyMoveToLocation.h"
 
 #include "Characters/Enemy.h"
-#include "Controllers/AIController_Enemy.h"
+#include "Controllers/NPCController.h"
 #include "NavigationPath.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
@@ -34,7 +34,7 @@ EBTNodeResult::Type UBTTask_EnemyMoveToLocation::ExecuteTask(UBehaviorTreeCompon
 	if (BlackboardKey.SelectedKeyType != UBlackboardKeyType_Vector::StaticClass())
 		return EBTNodeResult::Failed;
 
-	AAIController_Enemy* EnemyController = Cast<AAIController_Enemy>(OwnerComp.GetAIOwner());
+	ANPCController* EnemyController = Cast<ANPCController>(OwnerComp.GetAIOwner());
 	AEnemy* Enemy = Cast<AEnemy>(EnemyController->GetPawn());
 	if (!EnemyController || !Enemy) return EBTNodeResult::Failed;
 

@@ -5,7 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/AttributeSet_BaseAttributes.h"
-#include "Abilities/GameplayAbility_BaseAbility.h"
+#include "Abilities/BaseGameplayAbility.h"
 #include "Characters/BaseCharacterState.h"
 
 // Sets default values
@@ -109,7 +109,7 @@ void ABaseCharacter::GiveDefaultAbilities()
 {
 	if (HasAuthority() && ASC.IsValid())
 	{
-		for (TSubclassOf<UGameplayAbility_BaseAbility>& DefaultAbility : DefaultAbilities)
+		for (TSubclassOf<UBaseGameplayAbility>& DefaultAbility : DefaultAbilities)
 		{
 			ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
 			                                      static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),

@@ -3,7 +3,7 @@
 
 #include "UI/UserWidget_PauseMenu.h"
 
-#include "Controllers/PlayerController_PlayerCharacter.h"
+#include "Controllers/CustomPlayerController.h"
 #include "Characters/MyCharacter.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
@@ -12,7 +12,7 @@ void UUserWidget_PauseMenu::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	PlayerController = GetOwningPlayer<APlayerController_PlayerCharacter>();
+	PlayerController = GetOwningPlayer<ACustomPlayerController>();
 
 	if (ResumeButton) ResumeButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Resume);
 	if (SaveButton) SaveButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Save);
@@ -23,7 +23,7 @@ void UUserWidget_PauseMenu::NativeOnInitialized()
 void UUserWidget_PauseMenu::Resume()
 {
 	if (!PlayerController)
-		PlayerController = GetOwningPlayer<APlayerController_PlayerCharacter>();
+		PlayerController = GetOwningPlayer<ACustomPlayerController>();
 	else
 		PlayerController->TogglePauseMenu();
 }

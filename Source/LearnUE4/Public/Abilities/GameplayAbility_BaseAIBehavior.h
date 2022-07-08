@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Abilities/GameplayAbility_BaseAbility.h"
+#include "Abilities/BaseGameplayAbility.h"
 #include "AI/BTTask_EnemyMoveToLocation.h"
 #include "GameplayAbility_BaseAIBehavior.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class LEARNUE4_API UGameplayAbility_BaseAIBehavior : public UGameplayAbility_BaseAbility
+class LEARNUE4_API UGameplayAbility_BaseAIBehavior : public UBaseGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -25,7 +25,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
 	UBehaviorTree* BehaviorTree;
 
-
 	// Cached AIController object
-	TWeakObjectPtr<class AAIController_Enemy> AIController;
+	TWeakObjectPtr<class ANPCController> AIController;
 };

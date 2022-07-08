@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "AI/BTTask_EnemyMoveToLocation.h"
-#include "AIController_Enemy.generated.h"
+#include "NPCController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API AAIController_Enemy : public AAIController
+class LEARNUE4_API ANPCController : public AAIController
 {
 	GENERATED_BODY()
 protected:

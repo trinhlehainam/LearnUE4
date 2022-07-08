@@ -3,7 +3,7 @@
 
 #include "Characters/Enemy.h"
 
-#include "Controllers/AIController_Enemy.h"
+#include "Controllers/NPCController.h"
 #include "Characters/MyCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/SphereComponent.h"
@@ -56,7 +56,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EnemyController = GetController<AAIController_Enemy>();
+	EnemyController = GetController<ANPCController>();
 	if (EnemyController)
 	{
 		FVector Location = GetActorLocation();

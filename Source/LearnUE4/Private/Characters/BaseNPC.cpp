@@ -3,11 +3,11 @@
 
 #include "Characters/BaseNPC.h"
 
-#include "Controllers/AIController_Enemy.h"
+#include "Controllers/NPCController.h"
 
 ABaseNPC::ABaseNPC()
 {
-	AIControllerClass = AAIController_Enemy::StaticClass();
+	AIControllerClass = ANPCController::StaticClass();
 }
 
 void ABaseNPC::BeginPlay()

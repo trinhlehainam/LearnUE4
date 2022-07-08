@@ -7,7 +7,7 @@
 #include "UserWidget_PauseMenu.generated.h"
 
 class UButton;
-class APlayerController_PlayerCharacter;
+class ACustomPlayerController;
 
 /**
  * 
@@ -34,7 +34,7 @@ private:
 	UButton* QuitButton;
 
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
-	APlayerController_PlayerCharacter* PlayerController;
+	ACustomPlayerController* PlayerController;
 
 	UFUNCTION()
 	void Resume();

@@ -54,5 +54,5 @@ protected:
 	TArray<TSubclassOf<class UGameplayEffect>> DefaultGameplayEffects;
 
 	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
-	TArray<TSubclassOf<class UGameplayAbility_BaseAbility>> DefaultAbilities;
+	TArray<TSubclassOf<class UBaseGameplayAbility>> DefaultAbilities;
 };

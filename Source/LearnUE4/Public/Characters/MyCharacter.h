@@ -89,7 +89,7 @@ private:
 	TArray<TSubclassOf<class UGameplayEffect>> DefaultGameplayEffects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Gameplay Ability|Default Ability", meta=(AllowPrivateAccess))
-	TArray<TSubclassOf<class UGameplayAbility_BaseAbility>> DefaultAbilities;
+	TArray<TSubclassOf<class UBaseGameplayAbility>> DefaultAbilities;
 
 	void TogglePauseMenu();
 

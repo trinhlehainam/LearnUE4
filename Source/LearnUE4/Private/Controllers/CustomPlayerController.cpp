@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Controllers/PlayerController_PlayerCharacter.h"
+#include "Controllers/CustomPlayerController.h"
 #include "Blueprint/UserWidget.h"
 
-void APlayerController_PlayerCharacter::BeginPlay()
+void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -25,23 +25,23 @@ void APlayerController_PlayerCharacter::BeginPlay()
 	}
 }
 
-void APlayerController_PlayerCharacter::SetupInputComponent()
+void ACustomPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
 	check(InputComponent);
 
 	InputComponent->BindAction("TogglePauseMenu", IE_Pressed, this,
-	                           &APlayerController_PlayerCharacter::TogglePauseMenu);
+	                           &ACustomPlayerController::TogglePauseMenu);
 }
 
-void APlayerController_PlayerCharacter::TogglePauseMenu()
+void ACustomPlayerController::TogglePauseMenu()
 {
 	bIsPauseMenuVisible = !bIsPauseMenuVisible;
 	bIsPauseMenuVisible ? DisplayPauseMenu() : HidePauseMenu();
 }
 
-void APlayerController_PlayerCharacter::DisplayPauseMenu()
+void ACustomPlayerController::DisplayPauseMenu()
 {
 	if (PauseMenu)
 	{
@@ -53,7 +53,7 @@ void APlayerController_PlayerCharacter::DisplayPauseMenu()
 	}
 }
 
-void APlayerController_PlayerCharacter::HidePauseMenu()
+void ACustomPlayerController::HidePauseMenu()
 {
 	if (PauseMenu)
 	{

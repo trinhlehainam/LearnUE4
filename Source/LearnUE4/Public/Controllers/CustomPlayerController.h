@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "PlayerController_PlayerCharacter.generated.h"
+#include "CustomPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API APlayerController_PlayerCharacter : public APlayerController
+class LEARNUE4_API ACustomPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	

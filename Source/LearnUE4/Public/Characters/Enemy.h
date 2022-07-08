@@ -79,7 +79,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category="AI Stats")
 	bool bIsInAttackRange;
 
-	class AAIController_Enemy* EnemyController;
+	class ANPCController* EnemyController;
 
 	FTimerHandle AttackTimerHandle;
 	

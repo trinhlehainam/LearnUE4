@@ -4,8 +4,7 @@
 #include "Abilities/GameplayAbility_BaseAIBehavior.h"
 
 #include "BehaviorTree/BehaviorTree.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "Controllers/AIController_Enemy.h"
+#include "Controllers/NPCController.h"
 
 void UGameplayAbility_BaseAIBehavior::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo,
                                                   const FGameplayAbilitySpec& Spec)
@@ -13,13 +12,8 @@ void UGameplayAbility_BaseAIBehavior::OnAvatarSet(const FGameplayAbilityActorInf
 	if (!ActorInfo) return;
 	if (!ActorInfo->AvatarActor.IsValid()) return;
 
-	AIController = Cast<AAIController_Enemy>(ActorInfo->AvatarActor->GetOwner());
-
-	if (BehaviorTree && BehaviorTree->BlackboardAsset && AIController.IsValid())
-	{
-		UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent();
-		AIController->UseBlackboard(BehaviorTree->BlackboardAsset, BlackboardComp);
-	}
+	// Owner of a Character class is a Controller
+	AIController = Cast<ANPCController>(ActorInfo->AvatarActor->GetOwner());
 }
 
 bool UGameplayAbility_BaseAIBehavior::StartBehaviorTree()
@@ -31,7 +25,9 @@ bool UGameplayAbility_BaseAIBehavior::StartBehaviorTree()
 		FGameplayAbilityActorInfo ActorInfo = GetActorInfo();
 		if (!ActorInfo.OwnerActor.IsValid()) return false;
 
-		AIController = Cast<AAIController_Enemy>(ActorInfo.OwnerActor->GetInstigatorController());
+		AIController = Cast<ANPCController>(ActorInfo.AvatarActor->GetOwner());
+
+		if (!AIController.IsValid()) return false;
 	}
 	else
 	{
