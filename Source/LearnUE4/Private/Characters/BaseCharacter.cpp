@@ -7,6 +7,7 @@
 #include "Abilities/AttributeSet_BaseAttributes.h"
 #include "Abilities/BaseGameplayAbility.h"
 #include "Characters/BaseCharacterState.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -14,12 +15,12 @@ ABaseCharacter::ABaseCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	if (GetMesh())
+	if (USkeletalMeshComponent* MeshComp = GetMesh())
 	{
-		GetMesh()->SetCollisionObjectType(ECC_Pawn);
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		GetMesh()->SetCollisionResponseToAllChannels(ECR_Ignore);
-		GetMesh()->SetGenerateOverlapEvents(false);
+		MeshComp->SetCollisionObjectType(ECC_Pawn);
+		MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		MeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+		MeshComp->SetGenerateOverlapEvents(false);
 	}
 }
 

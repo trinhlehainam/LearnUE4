@@ -3,12 +3,19 @@
 
 #include "Controllers/NPCController.h"
 
+#include "BehaviorTree/BehaviorTree.h"
+#include "Characters/BaseNPC.h"
+
 void ANPCController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+
+	ABaseNPC* NPC = GetPawn<ABaseNPC>();
+
+	if (!NPC) return;
 	
-	/*
-	check(UseBlackboard(Enemy->BehaviorTree->BlackboardAsset, Blackboard));
-	check(RunBehaviorTree(Enemy->BehaviorTree));
-*/
+	UBehaviorTree* NPCBehavior = NPC->GetBehaviorTree();
+	if (!NPCBehavior) return;
+	
+	RunBehaviorTree(NPCBehavior);
 }

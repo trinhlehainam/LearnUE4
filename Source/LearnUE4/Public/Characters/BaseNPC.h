@@ -7,6 +7,8 @@
 #include "AI/PatrolTypes.h"
 #include "BaseNPC.generated.h"
 
+class UBehaviorTree;
+
 /**
  * 
  */
@@ -17,12 +19,45 @@ class LEARNUE4_API ABaseNPC : public ABaseCharacter
 
 public:
 	ABaseNPC();
+
+	UFUNCTION(BlueprintCallable, Category="AI")
+	UBehaviorTree* GetBehaviorTree() const;
+	
+	UFUNCTION(BlueprintCallable, Category="AI")
+	const TArray<FPatrolInfo>& GetPatrolInfos() const;
+
+	UFUNCTION(BlueprintCallable, Category="AI")
+	int32 GetCurrentPatrolInfoIndex() const;
+	
+	UFUNCTION(BlueprintCallable, Category="AI")
+	void SetCurrentPatrolInfoIndex(int32 Index);
+
+	UFUNCTION(BlueprintCallable, Category="AI")
+	void SetNextPatrolInfoIndex();
+	
+	UFUNCTION(BlueprintCallable, Category="AI")
+	int32 GetPatrolDirection() const;
+
+	UFUNCTION(BlueprintCallable, Category="AI")
+	void SetPatrolDirection(int32 Value);
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	
+
 private:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
+	UBehaviorTree* BehaviorTree;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
 	TArray<FPatrolInfo> PatrolInfos;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
+	TEnumAsByte<EPatrolMovementType> PatrolType;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
+	int32 CurrentPatrolInfoIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
+	int32 PatrolDirection;
 };

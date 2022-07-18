@@ -17,6 +17,9 @@ public class LearnUE4 : ModuleRules
 		// AI Modules
 		PublicDependencyModuleNames.AddRange(new string[] { "NavigationSystem", "AIModule" });
 
+		// Input
+		PublicDependencyModuleNames.AddRange(new string[] { "EnhancedInput" });
+
 		// UI Modules
 		PublicDependencyModuleNames.AddRange(new string[] { "UMG" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

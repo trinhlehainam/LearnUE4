@@ -6,13 +6,13 @@
 #include "PatrolTypes.generated.h"
 
 UENUM(BlueprintType)
-namespace Patrol
+enum class EPatrolMovementType : uint8
 {
-	enum Type
-	{
-		None
-	};
-}
+	None,
+	Loop,
+	ReverseLoop,
+	BackAndForthLoop,
+};
 
 /**
  * 

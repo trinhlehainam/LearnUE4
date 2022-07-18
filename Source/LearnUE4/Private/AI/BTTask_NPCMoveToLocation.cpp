@@ -1,25 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/BTTask_EnemyMoveToLocation.h"
+#include "AI/BTTask_NPCMoveToLocation.h"
 
-#include "Characters/Enemy.h"
 #include "Controllers/NPCController.h"
 #include "NavigationPath.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
+#include "Characters/BaseNPC.h"
 #include "Tasks/AITask_MoveTo.h"
 
-UBTTask_EnemyMoveToLocation::UBTTask_EnemyMoveToLocation(const FObjectInitializer& ObjectInitializer): Super(
+UBTTask_NPCMoveToLocation::UBTTask_NPCMoveToLocation(const FObjectInitializer& ObjectInitializer): Super(
 	ObjectInitializer)
 {
-	NodeName = "Enemy Move To Location";
+	NodeName = "NPC Move To Location";
 
 	// accept vector only
-	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_EnemyMoveToLocation, BlackboardKey));
+	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UBTTask_NPCMoveToLocation, BlackboardKey));
 }
 
-FString UBTTask_EnemyMoveToLocation::GetStaticDescription() const
+FString UBTTask_NPCMoveToLocation::GetStaticDescription() const
 {
 	FString ClassDesc("MoveTo");
 	FString KeyDesc("invalid");
@@ -29,29 +29,29 @@ FString UBTTask_EnemyMoveToLocation::GetStaticDescription() const
 	return FString::Printf(TEXT("%s: %s"), *ClassDesc, *KeyDesc);
 }
 
-EBTNodeResult::Type UBTTask_EnemyMoveToLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_NPCMoveToLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	if (BlackboardKey.SelectedKeyType != UBlackboardKeyType_Vector::StaticClass())
 		return EBTNodeResult::Failed;
 
-	ANPCController* EnemyController = Cast<ANPCController>(OwnerComp.GetAIOwner());
-	AEnemy* Enemy = Cast<AEnemy>(EnemyController->GetPawn());
-	if (!EnemyController || !Enemy) return EBTNodeResult::Failed;
+	ANPCController* NPCController = Cast<ANPCController>(OwnerComp.GetAIOwner());
+	ABaseNPC* NPC = Cast<ABaseNPC>(NPCController->GetPawn());
+	if (!NPCController || !NPC) return EBTNodeResult::Failed;
 
 	FVector Destination = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
-	EPathFollowingRequestResult::Type RequestResult = EnemyController->MoveToLocation(Destination);
+	EPathFollowingRequestResult::Type RequestResult = NPCController->MoveToLocation(Destination);
 
 	if (RequestResult == EPathFollowingRequestResult::Failed) return EBTNodeResult::Failed;
 
 	if (RequestResult == EPathFollowingRequestResult::AlreadyAtGoal) return EBTNodeResult::Succeeded;
 
-	FAIRequestID RequestID = EnemyController->GetCurrentMoveRequestID();
+	FAIRequestID RequestID = NPCController->GetCurrentMoveRequestID();
 	WaitForMessage(OwnerComp, UBrainComponent::AIMessage_MoveFinished, RequestID);
 
 	return EBTNodeResult::InProgress;
 }
 
-void UBTTask_EnemyMoveToLocation::OnMessage(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, FName Message,
+void UBTTask_NPCMoveToLocation::OnMessage(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, FName Message,
                                          int32 RequestID, bool bSuccess)
 {
 	// AIMessage_RepathFailed means task has failed

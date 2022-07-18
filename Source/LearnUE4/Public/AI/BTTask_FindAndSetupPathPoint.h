@@ -4,24 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "BTTask_EnemyMoveToLocation.generated.h"
+#include "BTTask_FindAndSetupPathPoint.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API UBTTask_EnemyMoveToLocation : public UBTTask_BlackboardBase
+class LEARNUE4_API UBTTask_FindAndSetupPathPoint : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_EnemyMoveToLocation(const FObjectInitializer& ObjectInitializer);
+	UBTTask_FindAndSetupPathPoint(const FObjectInitializer& ObjectInitializer);
 
 	FString GetStaticDescription() const final;
-
-protected:
+private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) final;
 
 	void OnMessage(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, FName Message, int32 RequestID, bool bSuccess) final;
-
 };
