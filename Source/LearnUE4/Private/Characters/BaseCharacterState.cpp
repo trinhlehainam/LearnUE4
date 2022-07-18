@@ -4,7 +4,7 @@
 #include "Characters/BaseCharacterState.h"
 
 #include "AbilitySystemComponent.h"
-#include "Abilities/AttributeSet_BaseAttributes.h"
+#include "Abilities/BaseAttributeSet.h"
 
 
 ABaseCharacterState::ABaseCharacterState()
@@ -21,28 +21,28 @@ float ABaseCharacterState::GetHealth() const
 {
 	if (!ASC)
 		return 0.f;
-	return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetHealthAttribute());
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetHealthAttribute());
 }
 
 float ABaseCharacterState::GetMaxHealth() const
 {
 	if (!ASC)
 		return 0.f;
-	return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxHealthAttribute());
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetMaxHealthAttribute());
 }
 
 float ABaseCharacterState::GeMana() const
 {
 	if (!ASC)
 		return 0.f;
-	return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetManaAttribute());
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetManaAttribute());
 }
 
 float ABaseCharacterState::GetMaxMana() const
 {
 	if (!ASC)
 		return 0.f;
-	return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxManaAttribute());
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetMaxManaAttribute());
 }
 
 void ABaseCharacterState::PostInitializeComponents()
@@ -50,5 +50,5 @@ void ABaseCharacterState::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	if (ASC)
-		ASC->AddSet<UAttributeSet_BaseAttributes>();
+		ASC->AddSet<UBaseAttributeSet>();
 }

@@ -4,12 +4,12 @@
 #include "Characters/PlayerCharacter.h"
 
 #include "AbilitySystemComponent.h"
-#include "Abilities/AttributeSet_BaseAttributes.h"
+#include "Abilities/BaseAttributeSet.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "LearnUE4/Common/AbilityInputID.h"
+#include "Abilities/AbilityInputID.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -39,7 +39,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	if (!ASC.IsValid()) return;
-	ASC->GetGameplayAttributeValueChangeDelegate(UAttributeSet_BaseAttributes::GetHealthAttribute()).AddUObject(
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetHealthAttribute()).AddUObject(
 		this, &APlayerCharacter::OnHealthAttributeValueChange);
 }
 

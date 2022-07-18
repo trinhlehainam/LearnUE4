@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "LearnUE4/Common/AbilityInputID.h"
+#include "Abilities/AbilityInputID.h"
 #include "BaseGameplayAbility.generated.h"
 
 /**

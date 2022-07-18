@@ -8,7 +8,7 @@
 #include "CharacterSaveGame.h"
 #include "CollisionDebugDrawingPublic.h"
 #include "DrawDebugHelpers.h"
-#include "Abilities/AttributeSet_BaseAttributes.h"
+#include "Abilities/BaseAttributeSet.h"
 #include "Abilities/BaseGameplayAbility.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -69,7 +69,7 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ASC->GetGameplayAttributeValueChangeDelegate(UAttributeSet_BaseAttributes::GetHealthAttribute()).AddUObject(
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetHealthAttribute()).AddUObject(
 		this, &AMyCharacter::HealthAttributeUpdated);
 
 	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AMyCharacter::AttackSphereBeginOverlap);
@@ -177,7 +177,7 @@ void AMyCharacter::PostInitializeComponents()
 
 	if (ASC)
 	{
-		ASC->AddSet<UAttributeSet_BaseAttributes>();
+		ASC->AddSet<UBaseAttributeSet>();
 	}
 }
 
@@ -202,28 +202,28 @@ void AMyCharacter::OnRep_PlayerState()
 float AMyCharacter::GetHealth() const
 {
 	if (ASC)
-		return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetHealthAttribute());
+		return ASC->GetNumericAttribute(UBaseAttributeSet::GetHealthAttribute());
 	return 0.f;
 }
 
 float AMyCharacter::GetMaxHealth() const
 {
 	if (ASC)
-		return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxHealthAttribute());
+		return ASC->GetNumericAttribute(UBaseAttributeSet::GetMaxHealthAttribute());
 	return 0.f;
 }
 
 float AMyCharacter::GetMana() const
 {
 	if (ASC)
-		return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetManaAttribute());
+		return ASC->GetNumericAttribute(UBaseAttributeSet::GetManaAttribute());
 	return 0.f;
 }
 
 float AMyCharacter::GetMaxMana() const
 {
 	if (ASC)
-		return ASC->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxManaAttribute());
+		return ASC->GetNumericAttribute(UBaseAttributeSet::GetMaxManaAttribute());
 	return 0.f;
 }
 

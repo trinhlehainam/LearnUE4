@@ -33,9 +33,6 @@ public:
 	void SetCurrentPatrolInfoIndex(int32 Index);
 
 	UFUNCTION(BlueprintCallable, Category="AI")
-	void SetNextPatrolInfoIndex();
-	
-	UFUNCTION(BlueprintCallable, Category="AI")
 	int32 GetPatrolDirection() const;
 
 	UFUNCTION(BlueprintCallable, Category="AI")
@@ -53,7 +50,7 @@ private:
 	TArray<FPatrolInfo> PatrolInfos;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
-	TEnumAsByte<EPatrolMovementType> PatrolType;
+	EPatrolMovementType PatrolType;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess), Category="AI")
 	int32 CurrentPatrolInfoIndex;

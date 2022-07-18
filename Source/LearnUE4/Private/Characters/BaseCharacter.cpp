@@ -4,7 +4,7 @@
 #include "Characters/BaseCharacter.h"
 
 #include "AbilitySystemComponent.h"
-#include "Abilities/AttributeSet_BaseAttributes.h"
+#include "Abilities/BaseAttributeSet.h"
 #include "Abilities/BaseGameplayAbility.h"
 #include "Characters/BaseCharacterState.h"
 #include "Kismet/GameplayStatics.h"
@@ -33,28 +33,28 @@ float ABaseCharacter::GetHealth() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UAttributeSet_BaseAttributes::GetHealthAttribute());
+	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetHealthAttribute());
 }
 
 float ABaseCharacter::GetMaxHealth() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxHealthAttribute());
+	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetMaxHealthAttribute());
 }
 
 float ABaseCharacter::GetMana() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UAttributeSet_BaseAttributes::GetManaAttribute());
+	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetManaAttribute());
 }
 
 float ABaseCharacter::GetMaxMana() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UAttributeSet_BaseAttributes::GetMaxManaAttribute());
+	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetMaxManaAttribute());
 }
 
 // Called to bind functionality to input
@@ -122,23 +122,23 @@ void ABaseCharacter::GiveDefaultAbilities()
 void ABaseCharacter::SetHealth(float Value)
 {
 	if (ASC.IsValid())
-		ASC->SetNumericAttributeBase(UAttributeSet_BaseAttributes::GetHealthAttribute(), Value);
+		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetHealthAttribute(), Value);
 }
 
 void ABaseCharacter::SetMaxHealth(float Value)
 {
 	if (ASC.IsValid())
-		ASC->SetNumericAttributeBase(UAttributeSet_BaseAttributes::GetMaxHealthAttribute(), Value);
+		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetMaxHealthAttribute(), Value);
 }
 
 void ABaseCharacter::SetMana(float Value)
 {
 	if (ASC.IsValid())
-		ASC->SetNumericAttributeBase(UAttributeSet_BaseAttributes::GetManaAttribute(), Value);
+		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetManaAttribute(), Value);
 }
 
 void ABaseCharacter::SetMaxMana(float Value)
 {
 	if (ASC.IsValid())
-		ASC->SetNumericAttributeBase(UAttributeSet_BaseAttributes::GetMaxManaAttribute(), Value);
+		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetMaxManaAttribute(), Value);
 }

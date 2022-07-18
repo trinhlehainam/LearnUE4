@@ -47,11 +47,6 @@ void ABaseNPC::SetCurrentPatrolInfoIndex(int32 Index)
 	CurrentPatrolInfoIndex = Index;
 }
 
-void ABaseNPC::SetNextPatrolInfoIndex()
-{
-	CurrentPatrolInfoIndex = (CurrentPatrolInfoIndex + 1) % PatrolInfos.Num();
-}
-
 int32 ABaseNPC::GetPatrolDirection() const
 {
 	return PatrolDirection;
