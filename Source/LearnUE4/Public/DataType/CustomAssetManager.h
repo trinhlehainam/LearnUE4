@@ -16,14 +16,10 @@ class LEARNUE4_API UCustomAssetManager : public UAssetManager
 public:
 	UCustomAssetManager();
 	
-	static FPrimaryAssetType GetWeaponItemType();	
-	static FPrimaryAssetType GetPoisonItemType();	
+	static const FPrimaryAssetType WeaponItemType;
+	static const FPrimaryAssetType PoisonItemType;
 
 	static UCustomAssetManager& Get();
 	
 	virtual void StartInitialLoading() override;
-	
-private:
-	const FPrimaryAssetType WeaponItemType;
-	const FPrimaryAssetType PoisonItemType;
 };

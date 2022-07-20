@@ -24,5 +24,7 @@ class LEARNUE4_API IInteractable
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
 	void Interact();
-	virtual void Interact_Implementation() = 0;
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
+	void IsInteractable();
 };

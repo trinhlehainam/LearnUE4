@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Abilities/BaseGameplayAbility.h"
 #include "Engine/DataAsset.h"
 #include "ItemDataAsset.generated.h"
 
@@ -15,4 +16,16 @@ class LEARNUE4_API UItemDataAsset : public UPrimaryDataAsset
 	GENERATED_BODY()
 public:
 	UItemDataAsset();
+
+	FPrimaryAssetType ItemType;
+
+	FName ItemName;
+
+	FString ItemDescription;
+
+	int32 MaxCapacity;
+
+	TSubclassOf<UBaseGameplayAbility> AbilityClass;
+
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override;	
 };
