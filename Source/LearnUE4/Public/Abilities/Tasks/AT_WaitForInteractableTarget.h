@@ -18,6 +18,8 @@ class LEARNUE4_API UAT_WaitForInteractableTarget : public UAbilityTask
 	GENERATED_BODY()
 
 public:
+	UAT_WaitForInteractableTarget();
+	
 	UPROPERTY(BlueprintAssignable)
 	FWaitForInteractableTargetDelegate OnFoundNewTarget;
 
@@ -45,13 +47,20 @@ protected:
 	FCollisionProfileName TraceProfileName;
 	float TraceRange;
 	float FireRage;
+	int32 bUseSourceDirectionToTrace:1;
 
 	FTimerHandle TraceTimerHandle;
+	FGameplayAbilityTargetDataHandle TargetDataHandle;
 
 	// Do LineTraceSingleByProfile to find Actor implementing IInteractable Interface
-	void LineTraceInteractableTarget(FHitResult& OutResult, FVector TraceStart, FVector TraceEnd, FName ProfileName, FCollisionQueryParams Params);
+	void LineTraceInteractableTarget(FHitResult& OutResult, const FVector& TraceStart, const FVector& TraceEnd,
+	                                 FName ProfileName,
+	                                 const FCollisionQueryParams& Params);
 
-	FVector AdjustTraceEndDependOnViewTarget(FVector ViewStart, FVector ViewRotation, FVector TraceStart, FVector TraceDir);
+	void AdjustTraceEndDependOnViewTarget(FVector& OutTraceEnd, const FVector& ViewStart, const FVector& ViewDir,
+	                                      const FVector& TraceStart,
+	                                      const FVector& TraceDir);
+	void AimWithPlayerControllerViewTarget(FVector& OutTraceEnd, const FVector& TraceStart, const FVector& TraceDir);
 
 	UFUNCTION()
 	void ScanInteractabletarget();
