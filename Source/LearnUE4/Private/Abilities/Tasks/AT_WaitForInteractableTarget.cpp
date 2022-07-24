@@ -3,6 +3,7 @@
 
 #include "Abilities/Tasks/AT_WaitForInteractableTarget.h"
 
+#include "DrawDebugHelpers.h"
 #include "Interactable.h"
 
 UAT_WaitForInteractableTarget::UAT_WaitForInteractableTarget()
@@ -10,40 +11,32 @@ UAT_WaitForInteractableTarget::UAT_WaitForInteractableTarget()
 }
 
 UAT_WaitForInteractableTarget* UAT_WaitForInteractableTarget::WaitForInteractableTarget(UGameplayAbility* OwningAbility,
-	FCollisionProfileName TraceProfileName, EGameplayAbilityTargetingLocationType::Type TraceLocationType,
-	FName SocketName, FName MeshComponentVariableName, FName TaskInstanceName, float TraceRange, float FireRate)
+	ECollisionChannel TraceChannel, EGameplayAbilityTargetingLocationType::Type TraceLocationType, FName SocketName,
+	FName MeshComponentVariableName, float TraceRange, float FireRate, bool bShowDebug, FName TaskInstanceName)
 {
 	UAT_WaitForInteractableTarget* TaskInstance = NewAbilityTask<UAT_WaitForInteractableTarget>(
 		OwningAbility, TaskInstanceName);
 
-	TaskInstance->TraceProfileName = TraceProfileName;
+	TaskInstance->TraceChannel = TraceChannel;
 	TaskInstance->TraceRange = TraceRange;
-	TaskInstance->FireRage = FireRate;
+	TaskInstance->FireRate = FireRate;
+	TaskInstance->bShowDebug = bShowDebug;
 
 	// TODO: Adjust this value depend on Trace Location Type
 	TaskInstance->bUseSourceDirectionToTrace = false;
 
 	AActor* SourceActor = OwningAbility->GetCurrentActorInfo()->AvatarActor.Get();
 
+	// TODO: Depend on Trace Location Type, Source Component doesn't need to be queried
 	// Find Mesh Component has variable name same as MeshComponentVariableName
-	TArray<UMeshComponent*> MeshComps;
-	SourceActor->GetComponents<UMeshComponent>(MeshComps, true);
-	UMeshComponent* SourceComponent = nullptr;
-	for (UMeshComponent* MeshComp : MeshComps)
-	{
-		if (MeshComp->GetFName().Compare(MeshComponentVariableName) == 0)
-		{
-			SourceComponent = MeshComp;
-			break;
-		}
-	}
+	// UMeshComponent* SourceComponent = Cast<USkeletalMeshComponent>(SourceActor->GetDefaultSubobjectByName(MeshComponentVariableName));
+	// check(SourceComponent);
 	//
 
-	check(SourceComponent);
 
 	TaskInstance->StartLocationInfo.SourceActor = SourceActor;
 	TaskInstance->StartLocationInfo.LocationType = TraceLocationType;
-	TaskInstance->StartLocationInfo.SourceComponent = SourceComponent;
+	// TaskInstance->StartLocationInfo.SourceComponent = SourceComponent;
 	TaskInstance->StartLocationInfo.SourceSocketName = SocketName;
 	TaskInstance->StartLocationInfo.SourceAbility = OwningAbility;
 
@@ -52,28 +45,33 @@ UAT_WaitForInteractableTarget* UAT_WaitForInteractableTarget::WaitForInteractabl
 
 void UAT_WaitForInteractableTarget::Activate()
 {
-	GetWorld()->GetTimerManager().SetTimer(TraceTimerHandle, this,
-	                                       &UAT_WaitForInteractableTarget::ScanInteractabletarget, true);
+	GetWorld()->GetTimerManager().SetTimer(TraceTimerHandle,
+	                                       this, &UAT_WaitForInteractableTarget::ScanInteractabletarget,
+	                                       FireRate, true);
 }
 
 void UAT_WaitForInteractableTarget::OnDestroy(bool bInOwnerFinished)
 {
 	GetWorld()->GetTimerManager().ClearTimer(TraceTimerHandle);
+	OnTargetLost.Clear();
+	OnFoundNewTarget.Clear();
 
 	Super::OnDestroy(bInOwnerFinished);
 }
 
 void UAT_WaitForInteractableTarget::LineTraceInteractableTarget(FHitResult& OutResult, const FVector& TraceStart,
-                                                                const FVector& TraceEnd, FName ProfileName,
+                                                                const FVector& TraceEnd,
                                                                 const FCollisionQueryParams& Params)
 {
 	// Only accept hit result when Line Trace found valid Interactable Target
 	OutResult.bBlockingHit = false;
 
 	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByProfile(HitResult, TraceStart, TraceEnd, ProfileName, Params);
+	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, TraceChannel, Params);
 
 	if (!HitResult.bBlockingHit) return;
+
+	if (HitResult.Component.Get()->GetCollisionEnabled() != ECollisionEnabled::QueryOnly) return;
 
 	if (!HitResult.Actor->Implements<UInteractable>()) return;
 
@@ -96,6 +94,8 @@ void UAT_WaitForInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& Ou
 
 	float AltitudeSquare = ViewToSource.SizeSquared() - FMath::Square(ProjectionOnViewDir);
 	float TraceRangeSquared = FMath::Square(TraceRange);
+
+	// Reject case when Distance from Source Trace to View Direction larger than Trace Range
 	if (AltitudeSquare > TraceRangeSquared) return;
 
 	float ExtendedRange = FMath::Sqrt(TraceRangeSquared - AltitudeSquare);
@@ -114,7 +114,7 @@ void UAT_WaitForInteractableTarget::AimWithPlayerControllerViewTarget(FVector& O
 	FVector ViewStart;
 	FRotator ViewRotation;
 	PC->GetPlayerViewPoint(ViewStart, ViewRotation);
-	
+
 	FVector ViewDir = ViewRotation.Vector();
 	FVector ViewEnd = ViewStart + (ViewDir * TraceRange);
 	AdjustTraceEndDependOnViewTarget(ViewEnd, ViewStart, ViewDir, TraceStart, TraceDir);
@@ -122,8 +122,8 @@ void UAT_WaitForInteractableTarget::AimWithPlayerControllerViewTarget(FVector& O
 	FHitResult HitResult;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(StartLocationInfo.SourceActor);
-	LineTraceInteractableTarget(HitResult, ViewStart, ViewEnd, TraceProfileName.Name, Params);
-	
+	LineTraceInteractableTarget(HitResult, ViewStart, ViewEnd, Params);
+
 	if (!HitResult.bBlockingHit) return;
 
 	// Use Hit Location as Trace End result when Hit Location inside Source Trace Range
@@ -147,7 +147,7 @@ void UAT_WaitForInteractableTarget::ScanInteractabletarget()
 	FHitResult HitResult;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(StartLocationInfo.SourceActor);
-	LineTraceInteractableTarget(HitResult, TraceStart, TraceEnd, TraceProfileName.Name, Params);
+	LineTraceInteractableTarget(HitResult, TraceStart, TraceEnd, Params);
 
 	if (!HitResult.bBlockingHit)
 	{
@@ -157,27 +157,38 @@ void UAT_WaitForInteractableTarget::ScanInteractabletarget()
 		}
 
 		HitResult.Location = TraceEnd;
-	    MakeTargetData(HitResult);
+		MakeTargetData(HitResult);
 	}
 	else
 	{
+		bool bNotifyFoundNewTarget = true;
 		if (TargetDataHandle.Num() > 0)
 		{
+			bNotifyFoundNewTarget = false;
 			AActor* InteractableTarget = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+
 			if (HitResult.GetActor() != InteractableTarget)
 			{
+				bNotifyFoundNewTarget = true;
 				OnTargetLost.Broadcast(TargetDataHandle);
-				MakeTargetData(HitResult);
-				OnFoundNewTarget.Broadcast(TargetDataHandle);
 			}
 		}
-		else
+
+		if (bNotifyFoundNewTarget)
 		{
 			MakeTargetData(HitResult);
 			OnFoundNewTarget.Broadcast(TargetDataHandle);
 		}
 	}
-	
+
+#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
+	if (bShowDebug)
+	{
+		FColor DebugSphereColor = HitResult.bBlockingHit ? FColor::Red : FColor::Green;
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false, -1, 0, 1.f);
+		DrawDebugSphere(GetWorld(), TraceEnd, 20.f, 32, DebugSphereColor, false, -1, 0, 1.f);
+	}
+#endif
 }
 
 FGameplayAbilityTargetDataHandle UAT_WaitForInteractableTarget::MakeTargetData(const FHitResult& HitResult)

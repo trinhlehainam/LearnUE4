@@ -14,7 +14,7 @@ ABaseCharacter::ABaseCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	if (USkeletalMeshComponent* MeshComp = GetMesh())
 	{
 		MeshComp->SetCollisionObjectType(ECC_Pawn);
@@ -66,7 +66,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void ABaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	
+
 	ABaseCharacterState* PS = GetPlayerState<ABaseCharacterState>();
 	if (!PS) return;
 	ASC = PS->GetAbilitySystemComponent();
@@ -112,9 +112,12 @@ void ABaseCharacter::GiveDefaultAbilities()
 	{
 		for (TSubclassOf<UBaseGameplayAbility>& DefaultAbility : DefaultAbilities)
 		{
-			ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
-			                                      static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),
-			                                      this));
+			FGameplayAbilitySpecHandle AbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
+				static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),
+				this));
+			
+			if (DefaultAbility.GetDefaultObject()->bActivateOnGranted)
+				ASC->TryActivateAbility(AbilityHandle);
 		}
 	}
 }

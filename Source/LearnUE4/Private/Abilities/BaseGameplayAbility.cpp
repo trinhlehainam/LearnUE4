@@ -5,4 +5,7 @@
 
 UBaseGameplayAbility::UBaseGameplayAbility()
 {
+	AbilityInputID = EAbilityInputID::None;
+	bActivateOnGranted = false;
+	bShowDebug = false;
 }

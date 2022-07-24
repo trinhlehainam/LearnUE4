@@ -19,7 +19,7 @@ class LEARNUE4_API UAT_WaitForInteractableTarget : public UAbilityTask
 
 public:
 	UAT_WaitForInteractableTarget();
-	
+
 	UPROPERTY(BlueprintAssignable)
 	FWaitForInteractableTargetDelegate OnFoundNewTarget;
 
@@ -30,36 +30,40 @@ public:
 		meta=(HidePin="OwningAbility", DefaultToSelf="OwningAbility"))
 	static UAT_WaitForInteractableTarget* WaitForInteractableTarget(
 		UGameplayAbility* OwningAbility,
-		FCollisionProfileName TraceProfileName,
+		ECollisionChannel TraceChannel,
 		EGameplayAbilityTargetingLocationType::Type TraceLocationType,
 		FName SocketName,
 		FName MeshComponentVariableName = FName("Mesh"),
-		FName TaskInstanceName = FName("WaitForInteractableTarget"),
 		float TraceRange = 200.f,
-		float FireRate = 0.1f
+		float FireRate = 0.1f,
+		bool bShowDebug = false,
+		FName TaskInstanceName = FName("WaitForInteractableTarget")
 	);
 
-protected:
 	virtual void Activate() override;
+
+protected:
 	virtual void OnDestroy(bool bInOwnerFinished) override;
 
 	FGameplayAbilityTargetingLocationInfo StartLocationInfo;
-	FCollisionProfileName TraceProfileName;
+	ECollisionChannel TraceChannel;
 	float TraceRange;
-	float FireRage;
-	int32 bUseSourceDirectionToTrace:1;
+	float FireRate;
+
+	int8 bUseSourceDirectionToTrace:1;
+	int8 bShowDebug:1;
 
 	FTimerHandle TraceTimerHandle;
 	FGameplayAbilityTargetDataHandle TargetDataHandle;
 
 	// Do LineTraceSingleByProfile to find Actor implementing IInteractable Interface
 	void LineTraceInteractableTarget(FHitResult& OutResult, const FVector& TraceStart, const FVector& TraceEnd,
-	                                 FName ProfileName,
 	                                 const FCollisionQueryParams& Params);
 
 	void AdjustTraceEndDependOnViewTarget(FVector& OutTraceEnd, const FVector& ViewStart, const FVector& ViewDir,
 	                                      const FVector& TraceStart,
 	                                      const FVector& TraceDir);
+
 	void AimWithPlayerControllerViewTarget(FVector& OutTraceEnd, const FVector& TraceStart, const FVector& TraceDir);
 
 	UFUNCTION()

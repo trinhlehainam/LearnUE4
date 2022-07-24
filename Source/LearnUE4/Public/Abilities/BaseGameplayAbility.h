@@ -18,5 +18,11 @@ public:
 	UBaseGameplayAbility();
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
-	EAbilityInputID AbilityInputID = EAbilityInputID::None;
+	EAbilityInputID AbilityInputID;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
+	bool bActivateOnGranted;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
+	bool bShowDebug;	
 };
