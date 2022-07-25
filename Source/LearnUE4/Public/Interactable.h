@@ -24,10 +24,4 @@ class LEARNUE4_API IInteractable
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
 	bool IsAvailableForInteraction(UPrimitiveComponent* InteractingComponent);
-	
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
-	void Interact();
-	
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
-	void IsInteractable();
 };

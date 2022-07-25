@@ -71,7 +71,8 @@ void UAT_WaitForInteractableTarget::LineTraceInteractableTarget(FHitResult& OutR
 
 	if (!HitResult.bBlockingHit) return;
 
-	if (HitResult.Component.Get()->GetCollisionEnabled() != ECollisionEnabled::QueryOnly) return;
+	// Only accept collision overlap to Trace Channel
+	if (HitResult.Component.Get()->GetCollisionResponseToChannel(TraceChannel) != ECR_Overlap) return;
 
 	if (!HitResult.Actor->Implements<UInteractable>()) return;
 
@@ -84,12 +85,11 @@ void UAT_WaitForInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& Ou
                                                                      const FVector& ViewDir, const FVector& TraceStart,
                                                                      const FVector& TraceDir)
 {
-	OutTraceEnd = TraceStart + (TraceDir * TraceRange);
-
 	FVector ViewToSource = ViewStart - TraceStart;
 	float ProjectionOnViewDir = FVector::DotProduct(ViewToSource, ViewDir);
 
 	// Reject case when ViewPoint is at or in front of Source Trace
+	// WARN: This also reject the case when View (Camera) is at behind Character, and View Direction goes through Character
 	if (ProjectionOnViewDir <= 0.f) return;
 
 	float AltitudeSquare = ViewToSource.SizeSquared() - FMath::Square(ProjectionOnViewDir);
@@ -185,8 +185,12 @@ void UAT_WaitForInteractableTarget::ScanInteractabletarget()
 	if (bShowDebug)
 	{
 		FColor DebugSphereColor = HitResult.bBlockingHit ? FColor::Red : FColor::Green;
-		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false, -1, 0, 1.f);
-		DrawDebugSphere(GetWorld(), TraceEnd, 20.f, 32, DebugSphereColor, false, -1, 0, 1.f);
+		// Line Trace
+		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false, FireRate, 0, 1.f);
+		// Visual Trace End Point with Sphere
+		DrawDebugSphere(GetWorld(), TraceEnd, 5.f, 32, DebugSphereColor, false, FireRate, 0, 1.f);
+		// Trace Range
+		DrawDebugSphere(GetWorld(), TraceStart, TraceRange, 32, FColor::Green, false, FireRate, 0, 1.f);
 	}
 #endif
 }
