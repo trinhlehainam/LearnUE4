@@ -32,6 +32,11 @@ void AItem::BeginPlay()
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnBeginOverlap);
 }
 
+bool AItem::IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractingComponent)
+{
+	return true;
+}
+
 // Called every frame
 void AItem::Tick(float DeltaTime)
 {

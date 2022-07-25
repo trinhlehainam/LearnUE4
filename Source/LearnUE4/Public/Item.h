@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Interactable.h"
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
 UCLASS()
-class LEARNUE4_API AItem : public AActor
+class LEARNUE4_API AItem : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 	
@@ -19,7 +20,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
+	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractingComponent) override;
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

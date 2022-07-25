@@ -5,8 +5,6 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 
-#include "Characters/MyCharacter.h"
-
 // Sets default values
 AFloorSwitch::AFloorSwitch()
 {
@@ -48,16 +46,10 @@ void AFloorSwitch::Tick(float DeltaTime)
 
 void AFloorSwitch::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AMyCharacter* Character = Cast<AMyCharacter>(OtherActor);
-	if (Character)
-		Activate();
 }
 
 void AFloorSwitch::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	AMyCharacter* Character = Cast<AMyCharacter>(OtherActor);
-	if (Character)
-		Deactivate();
 }
 
 void AFloorSwitch::UpdateNewLocation(float DoorLocation, float SwitchLocation) 

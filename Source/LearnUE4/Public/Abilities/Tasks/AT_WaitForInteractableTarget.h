@@ -54,20 +54,25 @@ protected:
 	int8 bShowDebug:1;
 
 	FTimerHandle TraceTimerHandle;
+
+	// Cache TargetDataHandle from MakeTargetData method
 	FGameplayAbilityTargetDataHandle TargetDataHandle;
 
+	/*LINE TRACE*/
+
 	// Do LineTraceSingleByProfile to find Actor implementing IInteractable Interface
-	void LineTraceInteractableTarget(FHitResult& OutResult, const FVector& TraceStart, const FVector& TraceEnd,
-	                                 const FCollisionQueryParams& Params);
+	void LineTraceInteractableTarget(FHitResult& OutHitResult, const FVector& TraceStart, const FVector& TraceEnd);
 
 	void AdjustTraceEndDependOnViewTarget(FVector& OutTraceEnd, const FVector& ViewStart, const FVector& ViewDir,
 	                                      const FVector& TraceStart,
 	                                      const FVector& TraceDir);
 
-	void AimWithPlayerControllerViewTarget(FVector& OutTraceEnd, const FVector& TraceStart, const FVector& TraceDir);
+	void UsePlayerControllerViewToTrace(FVector& OutTraceEnd, const FVector& TraceStart, const FVector& TraceDir);
+
+	/**/
 
 	UFUNCTION()
-	void ScanInteractabletarget();
+	void ScanInteraction();
 
 	FGameplayAbilityTargetDataHandle MakeTargetData(const FHitResult& HitResult);
 };

@@ -46,7 +46,7 @@ UAT_WaitForInteractableTarget* UAT_WaitForInteractableTarget::WaitForInteractabl
 void UAT_WaitForInteractableTarget::Activate()
 {
 	GetWorld()->GetTimerManager().SetTimer(TraceTimerHandle,
-	                                       this, &UAT_WaitForInteractableTarget::ScanInteractabletarget,
+	                                       this, &UAT_WaitForInteractableTarget::ScanInteraction,
 	                                       FireRate, true);
 }
 
@@ -59,33 +59,33 @@ void UAT_WaitForInteractableTarget::OnDestroy(bool bInOwnerFinished)
 	Super::OnDestroy(bInOwnerFinished);
 }
 
-void UAT_WaitForInteractableTarget::LineTraceInteractableTarget(FHitResult& OutResult, const FVector& TraceStart,
-                                                                const FVector& TraceEnd,
-                                                                const FCollisionQueryParams& Params)
+void UAT_WaitForInteractableTarget::LineTraceInteractableTarget(FHitResult& OutHitResult, const FVector& TraceStart,
+                                                                const FVector& TraceEnd)
 {
 	// Only accept hit result when Line Trace found valid Interactable Target
-	OutResult.bBlockingHit = false;
+	OutHitResult.bBlockingHit = false;
 
 	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, TraceChannel, Params);
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(StartLocationInfo.SourceActor);
+	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, TraceChannel, QueryParams);
+
+	// TODO: Use Collision Response
 
 	if (!HitResult.bBlockingHit) return;
-
-	// Only accept collision overlap to Trace Channel
-	if (HitResult.Component.Get()->GetCollisionResponseToChannel(TraceChannel) != ECR_Overlap) return;
 
 	if (!HitResult.Actor->Implements<UInteractable>()) return;
 
 	if (!IInteractable::Execute_IsAvailableForInteraction(HitResult.Actor.Get(), HitResult.Component.Get())) return;
 
-	OutResult = HitResult;
+	OutHitResult = HitResult;
 }
 
 void UAT_WaitForInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& OutTraceEnd, const FVector& ViewStart,
                                                                      const FVector& ViewDir, const FVector& TraceStart,
                                                                      const FVector& TraceDir)
 {
-	FVector ViewToSource = ViewStart - TraceStart;
+	FVector ViewToSource = TraceStart - ViewStart;
 	float ProjectionOnViewDir = FVector::DotProduct(ViewToSource, ViewDir);
 
 	// Reject case when ViewPoint is at or in front of Source Trace
@@ -104,8 +104,8 @@ void UAT_WaitForInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& Ou
 	OutTraceEnd = ViewStart + (ViewDir * NewRange);
 }
 
-void UAT_WaitForInteractableTarget::AimWithPlayerControllerViewTarget(FVector& OutTraceEnd, const FVector& TraceStart,
-                                                                      const FVector& TraceDir)
+void UAT_WaitForInteractableTarget::UsePlayerControllerViewToTrace(FVector& OutTraceEnd, const FVector& TraceStart,
+                                                                   const FVector& TraceDir)
 {
 	APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get();
 	if (!PC) return;
@@ -119,20 +119,27 @@ void UAT_WaitForInteractableTarget::AimWithPlayerControllerViewTarget(FVector& O
 	FVector ViewEnd = ViewStart + (ViewDir * TraceRange);
 	AdjustTraceEndDependOnViewTarget(ViewEnd, ViewStart, ViewDir, TraceStart, TraceDir);
 
+	OutTraceEnd = ViewEnd;
+
 	FHitResult HitResult;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(StartLocationInfo.SourceActor);
-	LineTraceInteractableTarget(HitResult, ViewStart, ViewEnd, Params);
+	LineTraceInteractableTarget(HitResult, ViewStart, ViewEnd);
 
 	if (!HitResult.bBlockingHit) return;
 
 	// Use Hit Location as Trace End result when Hit Location inside Source Trace Range
-	bool bUseHitLocation = (HitResult.Location - TraceStart).SizeSquared() <= FMath::Square(TraceRange);
+	bool bUseHitLocation = FVector::DistSquared(HitResult.Location, TraceStart) <= FMath::Square(TraceRange);
+	if (!bUseHitLocation) return;
 
-	OutTraceEnd = bUseHitLocation ? HitResult.Location : ViewEnd;
+	// TODO: Write document
+	// We want to offset Hit Location inside Component a bit for next Line Trace
+	float OffsetScale = 0.01f;
+	FVector HitLocationOffset = HitResult.Location + (ViewDir * OffsetScale);
+	//
+
+	OutTraceEnd = HitLocationOffset;
 }
 
-void UAT_WaitForInteractableTarget::ScanInteractabletarget()
+void UAT_WaitForInteractableTarget::ScanInteraction()
 {
 	if (!Ability) return;
 
@@ -142,12 +149,12 @@ void UAT_WaitForInteractableTarget::ScanInteractabletarget()
 	FVector TraceDir = SourceTransform.GetRotation().Rotator().Vector();
 	FVector TraceEnd = TraceStart + (TraceDir * TraceRange);
 
-	AimWithPlayerControllerViewTarget(TraceEnd, TraceStart, TraceDir);
+	UsePlayerControllerViewToTrace(TraceEnd, TraceStart, TraceDir);
 
+	// TODO: Write document about this potential bug
+	// BUG: May have a Interactable Target between Hit Object found by Player Controller View and Source Actor
 	FHitResult HitResult;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(StartLocationInfo.SourceActor);
-	LineTraceInteractableTarget(HitResult, TraceStart, TraceEnd, Params);
+	LineTraceInteractableTarget(HitResult, TraceStart, TraceEnd);
 
 	if (!HitResult.bBlockingHit)
 	{
@@ -157,7 +164,7 @@ void UAT_WaitForInteractableTarget::ScanInteractabletarget()
 		}
 
 		HitResult.Location = TraceEnd;
-		MakeTargetData(HitResult);
+		TargetDataHandle = MakeTargetData(HitResult);
 	}
 	else
 	{
@@ -165,9 +172,9 @@ void UAT_WaitForInteractableTarget::ScanInteractabletarget()
 		if (TargetDataHandle.Num() > 0)
 		{
 			bNotifyFoundNewTarget = false;
-			AActor* InteractableTarget = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+			AActor* OldInteractableTarget = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 
-			if (HitResult.GetActor() != InteractableTarget)
+			if (HitResult.GetActor() != OldInteractableTarget)
 			{
 				bNotifyFoundNewTarget = true;
 				OnTargetLost.Broadcast(TargetDataHandle);
@@ -176,7 +183,7 @@ void UAT_WaitForInteractableTarget::ScanInteractabletarget()
 
 		if (bNotifyFoundNewTarget)
 		{
-			MakeTargetData(HitResult);
+			TargetDataHandle = MakeTargetData(HitResult);
 			OnFoundNewTarget.Broadcast(TargetDataHandle);
 		}
 	}

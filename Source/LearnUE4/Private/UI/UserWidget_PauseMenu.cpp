@@ -4,7 +4,6 @@
 #include "UI/UserWidget_PauseMenu.h"
 
 #include "Controllers/CustomPlayerController.h"
-#include "Characters/MyCharacter.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 

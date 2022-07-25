@@ -24,4 +24,9 @@ class LEARNUE4_API IInteractable
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
 	bool IsAvailableForInteraction(UPrimitiveComponent* InteractingComponent);
+	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractingComponent);
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
+	float GetInteractionDuration() const;
+	virtual float GetInteractionDuration_Implementation() const;
 };
