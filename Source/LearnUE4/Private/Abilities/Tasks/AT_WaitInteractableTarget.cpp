@@ -1,20 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Abilities/Tasks/AT_WaitForInteractableTarget.h"
+#include "Abilities/Tasks/AT_WaitInteractableTarget.h"
 
 #include "DrawDebugHelpers.h"
 #include "Interactable.h"
 
-UAT_WaitForInteractableTarget::UAT_WaitForInteractableTarget()
+UAT_WaitInteractableTarget::UAT_WaitInteractableTarget()
 {
 }
 
-UAT_WaitForInteractableTarget* UAT_WaitForInteractableTarget::WaitForInteractableTarget(UGameplayAbility* OwningAbility,
+UAT_WaitInteractableTarget* UAT_WaitInteractableTarget::WaitForInteractableTarget(UGameplayAbility* OwningAbility,
 	ECollisionChannel TraceChannel, EGameplayAbilityTargetingLocationType::Type TraceLocationType, FName SocketName,
 	FName MeshComponentVariableName, float TraceRange, float FireRate, bool bShowDebug, FName TaskInstanceName)
 {
-	UAT_WaitForInteractableTarget* TaskInstance = NewAbilityTask<UAT_WaitForInteractableTarget>(
+	UAT_WaitInteractableTarget* TaskInstance = NewAbilityTask<UAT_WaitInteractableTarget>(
 		OwningAbility, TaskInstanceName);
 
 	TaskInstance->TraceChannel = TraceChannel;
@@ -43,14 +43,14 @@ UAT_WaitForInteractableTarget* UAT_WaitForInteractableTarget::WaitForInteractabl
 	return TaskInstance;
 }
 
-void UAT_WaitForInteractableTarget::Activate()
+void UAT_WaitInteractableTarget::Activate()
 {
 	GetWorld()->GetTimerManager().SetTimer(TraceTimerHandle,
-	                                       this, &UAT_WaitForInteractableTarget::ScanInteraction,
+	                                       this, &UAT_WaitInteractableTarget::ScanInteraction,
 	                                       FireRate, true);
 }
 
-void UAT_WaitForInteractableTarget::OnDestroy(bool bInOwnerFinished)
+void UAT_WaitInteractableTarget::OnDestroy(bool bInOwnerFinished)
 {
 	GetWorld()->GetTimerManager().ClearTimer(TraceTimerHandle);
 	OnTargetLost.Clear();
@@ -59,7 +59,7 @@ void UAT_WaitForInteractableTarget::OnDestroy(bool bInOwnerFinished)
 	Super::OnDestroy(bInOwnerFinished);
 }
 
-void UAT_WaitForInteractableTarget::LineTraceInteractableTarget(FHitResult& OutHitResult, const FVector& TraceStart,
+void UAT_WaitInteractableTarget::LineTraceInteractableTarget(FHitResult& OutHitResult, const FVector& TraceStart,
                                                                 const FVector& TraceEnd)
 {
 	// Only accept hit result when Line Trace found valid Interactable Target
@@ -81,7 +81,7 @@ void UAT_WaitForInteractableTarget::LineTraceInteractableTarget(FHitResult& OutH
 	OutHitResult = HitResult;
 }
 
-void UAT_WaitForInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& OutTraceEnd, const FVector& ViewStart,
+void UAT_WaitInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& OutTraceEnd, const FVector& ViewStart,
                                                                      const FVector& ViewDir, const FVector& TraceStart,
                                                                      const FVector& TraceDir)
 {
@@ -104,7 +104,7 @@ void UAT_WaitForInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& Ou
 	OutTraceEnd = ViewStart + (ViewDir * NewRange);
 }
 
-void UAT_WaitForInteractableTarget::UsePlayerControllerViewToTrace(FVector& OutTraceEnd, const FVector& TraceStart,
+void UAT_WaitInteractableTarget::UsePlayerControllerViewToTrace(FVector& OutTraceEnd, const FVector& TraceStart,
                                                                    const FVector& TraceDir)
 {
 	APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get();
@@ -131,6 +131,7 @@ void UAT_WaitForInteractableTarget::UsePlayerControllerViewToTrace(FVector& OutT
 	if (!bUseHitLocation) return;
 
 	// TODO: Write document
+	// Hit Location sometimes may not at Surface of Component's Material, 
 	// We want to offset Hit Location inside Component a bit for next Line Trace
 	float OffsetScale = 0.01f;
 	FVector HitLocationOffset = HitResult.Location + (ViewDir * OffsetScale);
@@ -139,7 +140,7 @@ void UAT_WaitForInteractableTarget::UsePlayerControllerViewToTrace(FVector& OutT
 	OutTraceEnd = HitLocationOffset;
 }
 
-void UAT_WaitForInteractableTarget::ScanInteraction()
+void UAT_WaitInteractableTarget::ScanInteraction()
 {
 	if (!Ability) return;
 
@@ -202,7 +203,7 @@ void UAT_WaitForInteractableTarget::ScanInteraction()
 #endif
 }
 
-FGameplayAbilityTargetDataHandle UAT_WaitForInteractableTarget::MakeTargetData(const FHitResult& HitResult)
+FGameplayAbilityTargetDataHandle UAT_WaitInteractableTarget::MakeTargetData(const FHitResult& HitResult)
 {
 	return StartLocationInfo.MakeTargetDataHandleFromHitResult(Ability, HitResult);
 }

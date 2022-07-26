@@ -20,6 +20,7 @@ public:
 	static const FPrimaryAssetType PoisonItemType;
 
 	static UCustomAssetManager& Get();
-	
+
+	// Init all custom managers here
 	virtual void StartInitialLoading() override;
 };

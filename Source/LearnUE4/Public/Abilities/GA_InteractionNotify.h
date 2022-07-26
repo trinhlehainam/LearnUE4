@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/BaseGameplayAbility.h"
-#include "GA_ScanInteractPassive.generated.h"
+#include "GA_InteractionNotify.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API UGA_ScanInteractPassive : public UBaseGameplayAbility
+class LEARNUE4_API UGA_InteractionNotify : public UBaseGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UGA_ScanInteractPassive();
+	UGA_InteractionNotify();
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
@@ -45,5 +45,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction")
 	float FireRate;
-
 };

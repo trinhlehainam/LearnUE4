@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
-#include "AT_WaitForInteractableTarget.generated.h"
+#include "AT_WaitInteractableTarget.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForInteractableTargetDelegate, const FGameplayAbilityTargetDataHandle&,
                                             DataHandle);
@@ -13,12 +13,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForInteractableTargetDelegate, 
  * 
  */
 UCLASS()
-class LEARNUE4_API UAT_WaitForInteractableTarget : public UAbilityTask
+class LEARNUE4_API UAT_WaitInteractableTarget : public UAbilityTask
 {
 	GENERATED_BODY()
 
 public:
-	UAT_WaitForInteractableTarget();
+	UAT_WaitInteractableTarget();
 
 	UPROPERTY(BlueprintAssignable)
 	FWaitForInteractableTargetDelegate OnFoundNewTarget;
@@ -28,7 +28,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Ability|Tasks",
 		meta=(HidePin="OwningAbility", DefaultToSelf="OwningAbility"))
-	static UAT_WaitForInteractableTarget* WaitForInteractableTarget(
+	static UAT_WaitInteractableTarget* WaitForInteractableTarget(
 		UGameplayAbility* OwningAbility,
 		ECollisionChannel TraceChannel,
 		EGameplayAbilityTargetingLocationType::Type TraceLocationType,
