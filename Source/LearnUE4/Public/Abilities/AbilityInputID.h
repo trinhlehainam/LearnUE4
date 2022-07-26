@@ -13,5 +13,6 @@ enum class EAbilityInputID : uint8
  None,
  Confirm,
  Cancel,
- Attack
+ Attack,
+ Interact
 };

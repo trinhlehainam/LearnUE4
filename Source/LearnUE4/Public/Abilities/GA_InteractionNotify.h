@@ -20,13 +20,13 @@ public:
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Ability|Interaction")
+	UFUNCTION()
 	void OnFoundNewTarget(const FGameplayAbilityTargetDataHandle& DataHandle);
-	void OnFoundNewTarget_Implementation(const FGameplayAbilityTargetDataHandle& DataHandle);
 	
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Ability|Interaction")
+	UFUNCTION()
 	void OnTargetLost(const FGameplayAbilityTargetDataHandle& DataHandle);
-	void OnTargetLost_Implementation(const FGameplayAbilityTargetDataHandle& DataHandle);
+	
+	void SentUpdateTargetDataGameplayEvent(const FGameplayAbilityTargetDataHandle& DataHandle);
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction")
 	TEnumAsByte<ECollisionChannel> TraceChannel;

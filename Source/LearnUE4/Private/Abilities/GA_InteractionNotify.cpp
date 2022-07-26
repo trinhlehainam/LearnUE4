@@ -4,6 +4,8 @@
 #include "Abilities/GA_InteractionNotify.h"
 
 #include "AbilitySystemComponent.h"
+#include "Interactable.h"
+#include "Abilities/CustomGameplayTags.h"
 #include "Abilities/Tasks/AT_WaitInteractableTarget.h"
 
 UGA_InteractionNotify::UGA_InteractionNotify()
@@ -37,11 +39,33 @@ void UGA_InteractionNotify::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	ScanInteractionTask->ReadyForActivation();
 }
 
-void UGA_InteractionNotify::OnFoundNewTarget_Implementation(const FGameplayAbilityTargetDataHandle& DataHandle)
+void UGA_InteractionNotify::OnFoundNewTarget(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
-	FGameplayEventData EventData;
+	const FHitResult* HitResult = DataHandle.Get(0)->GetHitResult();
+	AActor* InteractedActor = HitResult->GetActor();
+	if (InteractedActor->Implements<UInteractable>())
+	{
+		IInteractable::Execute_OnFoundNewTarget(InteractedActor, GetCurrentActorInfo()->AvatarActor.Get(), HitResult->GetComponent());
+	}
+
+	SentUpdateTargetDataGameplayEvent(DataHandle);
 }
 
-void UGA_InteractionNotify::OnTargetLost_Implementation(const FGameplayAbilityTargetDataHandle& DataHandle)
+void UGA_InteractionNotify::OnTargetLost(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
+	const FHitResult* HitResult = DataHandle.Get(0)->GetHitResult();
+	AActor* InteractedActor = HitResult->GetActor();
+	if (InteractedActor->Implements<UInteractable>())
+	{
+		IInteractable::Execute_OnTargetLost(InteractedActor, GetCurrentActorInfo()->AvatarActor.Get(), HitResult->GetComponent());
+	}
+
+	SentUpdateTargetDataGameplayEvent(DataHandle);
+}
+
+void UGA_InteractionNotify::SentUpdateTargetDataGameplayEvent(const FGameplayAbilityTargetDataHandle& DataHandle)
+{
+	FGameplayEventData EventData;
+	EventData.TargetData = DataHandle;
+	SendGameplayEvent(FCustomGameplayTags::Get().UpdateInteractableTargetDataEvent, EventData);
 }

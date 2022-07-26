@@ -5,20 +5,18 @@
 
 #include "GameplayTagsManager.h"
 
-namespace
-{
-	FCustomGameplayTags Singleton;
-}
-
 const FCustomGameplayTags& FCustomGameplayTags::Get()
 {
+	static FCustomGameplayTags Singleton;
 	return Singleton;
 }
 
 void FCustomGameplayTags::AddTags()
 {
 	UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
-	NotifyInteractionEvent = Manager.AddNativeGameplayTag(FName("GameplayEvent.NotifyInteraction"));
+	
+	UpdateInteractableTargetDataEvent = Manager.AddNativeGameplayTag(FName("GameplayEvent.UpdateInteractableTargetData"));
 	InteractionHandleAbility = Manager.AddNativeGameplayTag(FName("Ability.InteractionHandle"));
 	InteractionNotifyAbility = Manager.AddNativeGameplayTag(FName("Ability.InteractionNotify"));
+	InteractingState = Manager.AddNativeGameplayTag(FName("State.Interacting"));
 }
