@@ -23,6 +23,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FWaitForInteractableTargetDelegate OnFoundNewTarget;
 
+	// TODO: Explain better about this case
+	// Target Data Handle stores Target Data is lost at this trace 
 	UPROPERTY(BlueprintAssignable)
 	FWaitForInteractableTargetDelegate OnTargetLost;
 

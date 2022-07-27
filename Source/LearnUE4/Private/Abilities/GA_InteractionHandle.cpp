@@ -76,12 +76,13 @@ void UGA_InteractionHandle::OnUpdatedTargetData(FGameplayEventData Payload)
 			return;
 		}
 
+		// Update Target Data
 		TargetDataHandle = Payload.TargetData;
 
 		const FHitResult* HitResult = TargetDataHandle.Get(0)->GetHitResult();
 		AActor* InteractedActor = HitResult->GetActor();
 
-		if (!IsValid(InteractedActor) && !InteractedActor->Implements<UInteractable>())
+		if (!IsValid(InteractedActor) || !InteractedActor->Implements<UInteractable>())
 		{
 			CancelAbility(SpecHandle, &ActorInfo, ActivationInfo, true);
 			return;
