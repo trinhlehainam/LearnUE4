@@ -29,11 +29,13 @@ void UGA_InteractionNotify::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	UAT_WaitInteractableTarget* ScanInteractionTask = UAT_WaitInteractableTarget::WaitForInteractableTarget(
 		this, TraceChannel, TraceLocationType, SocketName, MeshComponentVariableName, TraceRange, FireRate, bShowDebug);
 
-	if (!ScanInteractionTask) return;
+	if (!ScanInteractionTask)
+		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 
 	// WaitForInteractionTarget Task will clean up these delegates OnDestroy
 	ScanInteractionTask->OnTargetLost.AddDynamic(this, &UGA_InteractionNotify::OnTargetLost);
 	ScanInteractionTask->OnFoundNewTarget.AddDynamic(this, &UGA_InteractionNotify::OnFoundNewTarget);
+	//
 
 	// Activate this task
 	ScanInteractionTask->ReadyForActivation();
@@ -43,7 +45,7 @@ void UGA_InteractionNotify::OnFoundNewTarget(const FGameplayAbilityTargetDataHan
 {
 	const FHitResult* HitResult = DataHandle.Get(0)->GetHitResult();
 	AActor* InteractedActor = HitResult->GetActor();
-	if (InteractedActor->Implements<UInteractable>())
+	if (IsValid(InteractedActor) && InteractedActor->Implements<UInteractable>())
 	{
 		IInteractable::Execute_OnFoundNewTarget(InteractedActor, GetCurrentActorInfo()->AvatarActor.Get(), HitResult->GetComponent());
 	}
@@ -55,7 +57,7 @@ void UGA_InteractionNotify::OnTargetLost(const FGameplayAbilityTargetDataHandle&
 {
 	const FHitResult* HitResult = DataHandle.Get(0)->GetHitResult();
 	AActor* InteractedActor = HitResult->GetActor();
-	if (InteractedActor->Implements<UInteractable>())
+	if (IsValid(InteractedActor) && InteractedActor->Implements<UInteractable>())
 	{
 		IInteractable::Execute_OnTargetLost(InteractedActor, GetCurrentActorInfo()->AvatarActor.Get(), HitResult->GetComponent());
 	}

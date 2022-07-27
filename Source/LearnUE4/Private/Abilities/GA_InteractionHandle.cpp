@@ -21,6 +21,10 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	// Listen UpdateDataEvent Gameplay Event sent from GA_InteractionNotify
 	UAbilityTask_WaitGameplayEvent* UpdateTargetDataEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 		this, FCustomGameplayTags::Get().UpdateInteractableTargetDataEvent);
+
+	if (!UpdateTargetDataEvent)
+		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+	
 	UpdateTargetDataEvent->EventReceived.AddDynamic(this, &UGA_InteractionHandle::OnUpdatedTargetData);
 
 	UpdateTargetDataEvent->ReadyForActivation();
@@ -83,11 +87,13 @@ void UGA_InteractionHandle::OnUpdatedTargetData(FGameplayEventData Payload)
 			return;
 		}
 
-		// TODO: Show Interaction Timer HUD
+		// TODO: Handle case when Interaction Duration > 0.0f
 		// float InteractionDuration = IInteractable::Execute_GetInteractionDuration(InteractedActor);
 		
 		IInteractable::Execute_PreInteract(InteractedActor, ActorInfo.AvatarActor.Get(), HitResult->GetComponent());
 		IInteractable::Execute_PostInteract(InteractedActor, ActorInfo.AvatarActor.Get(), HitResult->GetComponent());
+
+		EndAbility(SpecHandle, &ActorInfo, ActivationInfo, true, false);
 	}
 	else
 	{

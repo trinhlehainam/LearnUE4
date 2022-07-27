@@ -169,7 +169,9 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 	}
 	else
 	{
+		TraceEnd = HitResult.Location;
 		bool bNotifyFoundNewTarget = true;
+		
 		if (TargetDataHandle.Num() > 0)
 		{
 			bNotifyFoundNewTarget = false;
