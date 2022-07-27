@@ -25,7 +25,17 @@ protected:
 	UFUNCTION()
 	void OnUpdatedTargetData(FGameplayEventData Payload);
 
+	UFUNCTION()
+	void HandleOnInputRelease(float TimeHold);
+
+	// TODO: choose appropriate name for wait Interaction Duration done
+	UFUNCTION()
+	void HandleWaitDelay();
+
+	void PerformInteraction();
+
 	FGameplayAbilityTargetDataHandle TargetDataHandle;
+	float InteractionDuration;
 };
 
 

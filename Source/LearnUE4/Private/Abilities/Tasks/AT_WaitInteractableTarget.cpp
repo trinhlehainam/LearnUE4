@@ -60,7 +60,7 @@ void UAT_WaitInteractableTarget::OnDestroy(bool bInOwnerFinished)
 }
 
 void UAT_WaitInteractableTarget::LineTraceInteractableTarget(FHitResult& OutHitResult, const FVector& TraceStart,
-                                                                const FVector& TraceEnd)
+                                                             const FVector& TraceEnd)
 {
 	// Only accept hit result when Line Trace found valid Interactable Target
 	OutHitResult.bBlockingHit = false;
@@ -82,8 +82,8 @@ void UAT_WaitInteractableTarget::LineTraceInteractableTarget(FHitResult& OutHitR
 }
 
 void UAT_WaitInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& OutTraceEnd, const FVector& ViewStart,
-                                                                     const FVector& ViewDir, const FVector& TraceStart,
-                                                                     const FVector& TraceDir)
+                                                                  const FVector& ViewDir, const FVector& TraceStart,
+                                                                  const FVector& TraceDir)
 {
 	FVector ViewToSource = TraceStart - ViewStart;
 	float ProjectionOnViewDir = FVector::DotProduct(ViewToSource, ViewDir);
@@ -104,8 +104,8 @@ void UAT_WaitInteractableTarget::AdjustTraceEndDependOnViewTarget(FVector& OutTr
 	OutTraceEnd = ViewStart + (ViewDir * NewRange);
 }
 
-void UAT_WaitInteractableTarget::UsePlayerControllerViewToTrace(FVector& OutTraceEnd, const FVector& TraceStart,
-                                                                   const FVector& TraceDir)
+void UAT_WaitInteractableTarget::UsePlayerControllerViewToTrace(FHitResult& OutHitResult, const FVector& TraceStart,
+                                                                const FVector& TraceDir)
 {
 	APlayerController* PC = Ability->GetCurrentActorInfo()->PlayerController.Get();
 	if (!PC) return;
@@ -119,25 +119,25 @@ void UAT_WaitInteractableTarget::UsePlayerControllerViewToTrace(FVector& OutTrac
 	FVector ViewEnd = ViewStart + (ViewDir * TraceRange);
 	AdjustTraceEndDependOnViewTarget(ViewEnd, ViewStart, ViewDir, TraceStart, TraceDir);
 
-	OutTraceEnd = ViewEnd;
+	LineTraceInteractableTarget(OutHitResult, ViewStart, ViewEnd);
 
-	FHitResult HitResult;
-	LineTraceInteractableTarget(HitResult, ViewStart, ViewEnd);
-
-	if (!HitResult.bBlockingHit) return;
+	// Because Hit Result doesn't save TraceEnd value when there Trace doesn't Hit
+	// So Cache ViewEnd to Hit Result's TraceEnd
+	OutHitResult.TraceEnd = ViewEnd;
+	if (!OutHitResult.bBlockingHit) return;
 
 	// Use Hit Location as Trace End result when Hit Location inside Source Trace Range
-	bool bUseHitLocation = FVector::DistSquared(HitResult.Location, TraceStart) <= FMath::Square(TraceRange);
+	bool bUseHitLocation = FVector::DistSquared(OutHitResult.Location, TraceStart) <= FMath::Square(TraceRange);
 	if (!bUseHitLocation) return;
 
 	// TODO: Write document
 	// Hit Location sometimes may not at Surface of Component's Material, 
 	// We want to offset Hit Location inside Component a bit for next Line Trace
 	float OffsetScale = 0.01f;
-	FVector HitLocationOffset = HitResult.Location + (ViewDir * OffsetScale);
+	FVector HitLocationOffset = OutHitResult.Location + (ViewDir * OffsetScale);
 	//
 
-	OutTraceEnd = HitLocationOffset;
+	OutHitResult.TraceEnd = HitLocationOffset;
 }
 
 void UAT_WaitInteractableTarget::ScanInteraction()
@@ -150,34 +150,54 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 	FVector TraceDir = SourceTransform.GetRotation().Rotator().Vector();
 	FVector TraceEnd = TraceStart + (TraceDir * TraceRange);
 
-	UsePlayerControllerViewToTrace(TraceEnd, TraceStart, TraceDir);
+	// Hit Result Trace from PlayerController's View
+	FHitResult ViewHitResult;
+	UsePlayerControllerViewToTrace(ViewHitResult, TraceStart, TraceDir);
 
-	// TODO: Write document about this potential bug
-	// BUG: May have a Interactable Target between Hit Object found by Player Controller View and Source Actor
-	FHitResult HitResult;
-	LineTraceInteractableTarget(HitResult, TraceStart, TraceEnd);
+	TraceEnd = ViewHitResult.TraceEnd;
 
-	if (!HitResult.bBlockingHit)
+	// Hit Result Trace from Source Location
+	FHitResult SourceHitResult;
+	LineTraceInteractableTarget(SourceHitResult, TraceStart, TraceEnd);
+
+	bool bFoundTarget = false;
+	
+	// TODO: Write document
+	// There are 2 POSSIBLE cases when Trace from Source Location
+	// 1. Source Trace Hits different Target Actor
+	// 2. Source Trace Hits different Component part of Target Actor
+	if (ViewHitResult.bBlockingHit && SourceHitResult.bBlockingHit)
+	{
+		bFoundTarget = ViewHitResult.Actor == SourceHitResult.Actor &&
+			ViewHitResult.Component == SourceHitResult.Component;
+	}
+
+	if (!bFoundTarget)
 	{
 		if (TargetDataHandle.Num() > 0 && TargetDataHandle.Get(0)->GetHitResult()->GetActor())
 		{
 			OnTargetLost.Broadcast(TargetDataHandle);
 		}
-
-		HitResult.Location = TraceEnd;
-		TargetDataHandle = MakeTargetData(HitResult);
+		
+		// TODO: Write document
+		// Even bFoundTarget is false, SourceHitResult can still be hit
+		// We need to adjust SourceHitResult before MakeTargetData
+		SourceHitResult.Init(TraceStart, TraceEnd);
+		//
+		
+		TargetDataHandle = MakeTargetData(SourceHitResult);
 	}
 	else
 	{
-		TraceEnd = HitResult.Location;
+		TraceEnd = SourceHitResult.Location;
 		bool bNotifyFoundNewTarget = true;
-		
+
 		if (TargetDataHandle.Num() > 0)
 		{
 			bNotifyFoundNewTarget = false;
 			AActor* OldInteractableTarget = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 
-			if (HitResult.GetActor() != OldInteractableTarget)
+			if (SourceHitResult.GetActor() != OldInteractableTarget)
 			{
 				bNotifyFoundNewTarget = true;
 				OnTargetLost.Broadcast(TargetDataHandle);
@@ -186,7 +206,7 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 
 		if (bNotifyFoundNewTarget)
 		{
-			TargetDataHandle = MakeTargetData(HitResult);
+			TargetDataHandle = MakeTargetData(SourceHitResult);
 			OnFoundNewTarget.Broadcast(TargetDataHandle);
 		}
 	}
@@ -194,7 +214,7 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 #if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
 	if (bShowDebug)
 	{
-		FColor DebugSphereColor = HitResult.bBlockingHit ? FColor::Red : FColor::Green;
+		FColor DebugSphereColor = SourceHitResult.bBlockingHit ? FColor::Red : FColor::Green;
 		// Line Trace
 		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false, FireRate, 0, 1.f);
 		// Visual Trace End Point with Sphere

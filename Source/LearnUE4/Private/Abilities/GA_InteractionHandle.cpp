@@ -3,12 +3,16 @@
 
 #include "Abilities/GA_InteractionHandle.h"
 
-#include "Interactable.h"
 #include "Abilities/CustomGameplayTags.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
+#include "Abilities/Tasks/AbilityTask_WaitDelay.h"
+
+#include "Interactable.h"
 
 UGA_InteractionHandle::UGA_InteractionHandle()
 {
+	InteractionDuration = 0.f;
 }
 
 void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -19,16 +23,19 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 
 	// Listen UpdateDataEvent Gameplay Event sent from GA_InteractionNotify
-	UAbilityTask_WaitGameplayEvent* UpdateTargetDataEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+	UAbilityTask_WaitGameplayEvent* UpdateTargetDataEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 		this, FCustomGameplayTags::Get().UpdateInteractableTargetDataEvent);
-
-	if (!UpdateTargetDataEvent)
+	if (!UpdateTargetDataEventTask)
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
-	
-	UpdateTargetDataEvent->EventReceived.AddDynamic(this, &UGA_InteractionHandle::OnUpdatedTargetData);
-
-	UpdateTargetDataEvent->ReadyForActivation();
+	UpdateTargetDataEventTask->EventReceived.AddDynamic(this, &UGA_InteractionHandle::OnUpdatedTargetData);
+	UpdateTargetDataEventTask->ReadyForActivation();
 	//
+
+	UAbilityTask_WaitInputRelease* WaitInputReleaseTask = UAbilityTask_WaitInputRelease::WaitInputRelease(this);
+	if (!WaitInputReleaseTask)
+		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+	WaitInputReleaseTask->OnRelease.AddDynamic(this, &UGA_InteractionHandle::HandleOnInputRelease);
+	WaitInputReleaseTask->ReadyForActivation();
 }
 
 void UGA_InteractionHandle::EndAbility(const FGameplayAbilitySpecHandle Handle,
@@ -48,20 +55,17 @@ void UGA_InteractionHandle::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 
 	TargetDataHandle.Clear();
-	
+
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UGA_InteractionHandle::OnUpdatedTargetData(FGameplayEventData Payload)
 {
-	const FGameplayAbilitySpecHandle SpecHandle = GetCurrentAbilitySpecHandle();
-	const FGameplayAbilityActorInfo ActorInfo = GetActorInfo();
-	const FGameplayAbilityActivationInfo ActivationInfo = GetCurrentActivationInfo();
-	const UAbilitySystemComponent* ASC = ActorInfo.AbilitySystemComponent.Get();
+	const UAbilitySystemComponent* ASC = GetActorInfo().AbilitySystemComponent.Get();
 
 	if (!ASC)
 	{
-		CancelAbility(SpecHandle, &ActorInfo, ActivationInfo, true);
+		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 		return;
 	}
 
@@ -72,7 +76,7 @@ void UGA_InteractionHandle::OnUpdatedTargetData(FGameplayEventData Payload)
 		// Target is lost and hasn't found new one
 		if (Payload.TargetData.Num() == 0)
 		{
-			CancelAbility(SpecHandle, &ActorInfo, ActivationInfo, true);
+			CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 			return;
 		}
 
@@ -84,24 +88,33 @@ void UGA_InteractionHandle::OnUpdatedTargetData(FGameplayEventData Payload)
 
 		if (!IsValid(InteractedActor) || !InteractedActor->Implements<UInteractable>())
 		{
-			CancelAbility(SpecHandle, &ActorInfo, ActivationInfo, true);
+			CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 			return;
 		}
 
-		// TODO: Handle case when Interaction Duration > 0.0f
-		// float InteractionDuration = IInteractable::Execute_GetInteractionDuration(InteractedActor);
-		
-		IInteractable::Execute_PreInteract(InteractedActor, ActorInfo.AvatarActor.Get(), HitResult->GetComponent());
-		IInteractable::Execute_PostInteract(InteractedActor, ActorInfo.AvatarActor.Get(), HitResult->GetComponent());
+		InteractionDuration = IInteractable::Execute_GetInteractionDuration(InteractedActor, HitResult->GetComponent());
 
-		EndAbility(SpecHandle, &ActorInfo, ActivationInfo, true, false);
+		if (InteractionDuration > 0.f)
+		{
+			UAbilityTask_WaitDelay* WaitDelay = UAbilityTask_WaitDelay::WaitDelay(this, InteractionDuration);
+			WaitDelay->OnFinish.AddDynamic(this, &UGA_InteractionHandle::HandleWaitDelay);
+			WaitDelay->ReadyForActivation();
+			return;
+		}
+
+		IInteractable::Execute_PreInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
+		                                   HitResult->GetComponent());
+		IInteractable::Execute_PostInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
+		                                    HitResult->GetComponent());
+
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 	else
 	{
 		// Lost Target
 		if (Payload.TargetData.Num() == 0)
 		{
-			CancelAbility(SpecHandle, &ActorInfo, ActivationInfo, true);
+			CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 			return;
 		}
 
@@ -111,7 +124,36 @@ void UGA_InteractionHandle::OnUpdatedTargetData(FGameplayEventData Payload)
 		// Found New Target
 		if (HitResult->GetActor() != UpdatedHitResult->GetActor())
 		{
-			CancelAbility(SpecHandle, &ActorInfo, ActivationInfo, true);
+			CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 		}
 	}
+}
+
+void UGA_InteractionHandle::HandleOnInputRelease(float TimeHold)
+{
+	if (TimeHold < InteractionDuration)
+		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+}
+
+void UGA_InteractionHandle::HandleWaitDelay()
+{
+}
+
+void UGA_InteractionHandle::PerformInteraction()
+{
+	const FHitResult* HitResult = TargetDataHandle.Get(0)->GetHitResult();
+	AActor* InteractedActor = HitResult->GetActor();
+
+	if (!IsValid(InteractedActor) || !InteractedActor->Implements<UInteractable>())
+	{
+		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+		return;
+	}
+	
+	IInteractable::Execute_PreInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
+									   HitResult->GetComponent());
+	IInteractable::Execute_PostInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
+										HitResult->GetComponent());
+	
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }

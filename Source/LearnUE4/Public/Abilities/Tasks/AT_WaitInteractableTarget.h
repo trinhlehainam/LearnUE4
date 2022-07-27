@@ -69,7 +69,7 @@ protected:
 	                                      const FVector& TraceStart,
 	                                      const FVector& TraceDir);
 
-	void UsePlayerControllerViewToTrace(FVector& OutTraceEnd, const FVector& TraceStart, const FVector& TraceDir);
+	void UsePlayerControllerViewToTrace(FHitResult& OutHitResult, const FVector& TraceStart, const FVector& TraceDir);
 
 	/**/
 
