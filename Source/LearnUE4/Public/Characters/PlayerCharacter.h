@@ -41,7 +41,7 @@ protected:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
-	void BindASCInput(UInputComponent* PlayerInputComponent);
+	void BindGameplayAbilitiesToInputComponent(UInputComponent* PlayerInputComponent);
 
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);

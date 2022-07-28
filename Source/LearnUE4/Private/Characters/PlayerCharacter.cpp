@@ -56,7 +56,7 @@ void APlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	BindASCInput(InputComponent);
+	BindGameplayAbilitiesToInputComponent(InputComponent);
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -78,10 +78,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			ETriggerEvent::Started, this, &APlayerCharacter::Jump);
 	}
 
-	BindASCInput(PlayerInputComponent);
+	BindGameplayAbilitiesToInputComponent(PlayerInputComponent);
 }
 
-void APlayerCharacter::BindASCInput(UInputComponent* PlayerInputComponent)
+void APlayerCharacter::BindGameplayAbilitiesToInputComponent(UInputComponent* PlayerInputComponent)
 {
 	UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(PlayerInputComponent);
 

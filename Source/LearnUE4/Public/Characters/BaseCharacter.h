@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "Abilities/GameplayAbilityTargetTypes.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
@@ -28,6 +29,11 @@ public:
 	float GetMana() const;
 	float GetMaxMana() const;
 
+	// This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
+	void SetInteractableTargetDataHandle(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
+	FGameplayAbilityTargetDataHandle GetInteractableTargetDataHandle() const;
+	//
+
 protected:
 	//~ Begin ACharacter Interface.
 	
@@ -38,6 +44,7 @@ protected:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+	
 	//~ End APawn Interface
 
 	void InitializeAttributes();
@@ -55,4 +62,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
 	TArray<TSubclassOf<class UBaseGameplayAbility>> DefaultAbilities;
+
+	// TODO: Find a wait to not depend on Character
+	// This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
+	FGameplayAbilityTargetDataHandle InteractableTargetDataHandle;
 };

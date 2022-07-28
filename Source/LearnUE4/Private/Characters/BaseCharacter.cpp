@@ -57,6 +57,16 @@ float ABaseCharacter::GetMaxMana() const
 	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetMaxManaAttribute());
 }
 
+void ABaseCharacter::SetInteractableTargetDataHandle(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	InteractableTargetDataHandle = TargetDataHandle;
+}
+
+FGameplayAbilityTargetDataHandle ABaseCharacter::GetInteractableTargetDataHandle() const
+{
+	return InteractableTargetDataHandle;
+}
+
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

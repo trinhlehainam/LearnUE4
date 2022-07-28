@@ -9,6 +9,11 @@ bool IInteractable::IsAvailableForInteraction_Implementation(UPrimitiveComponent
 	return false;
 }
 
+bool IInteractable::HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& GameplayTagContainer)
+{
+	return false;
+}
+
 float IInteractable::GetInteractionDuration_Implementation(UPrimitiveComponent* InteractedComponent) const
 {
 	return 0.f;

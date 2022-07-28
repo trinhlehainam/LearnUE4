@@ -7,6 +7,7 @@
 #include "Interactable.h"
 #include "Abilities/CustomGameplayTags.h"
 #include "Abilities/Tasks/AT_WaitInteractableTarget.h"
+#include "Characters/BaseCharacter.h"
 
 UGA_InteractionNotify::UGA_InteractionNotify()
 {
@@ -29,9 +30,6 @@ void UGA_InteractionNotify::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	UAT_WaitInteractableTarget* ScanInteractionTask = UAT_WaitInteractableTarget::WaitForInteractableTarget(
 		this, TraceChannel, TraceLocationType, SocketName, MeshComponentVariableName, TraceRange, FireRate, bShowDebug);
 
-	if (!ScanInteractionTask)
-		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
-
 	// WaitForInteractionTarget Task will clean up these delegates OnDestroy
 	ScanInteractionTask->OnTargetLost.AddDynamic(this, &UGA_InteractionNotify::OnTargetLost);
 	ScanInteractionTask->OnFoundNewTarget.AddDynamic(this, &UGA_InteractionNotify::OnFoundNewTarget);
@@ -51,6 +49,12 @@ void UGA_InteractionNotify::OnFoundNewTarget(const FGameplayAbilityTargetDataHan
 		IInteractable::Execute_OnFoundNewTarget(InteractedActor, GetCurrentActorInfo()->AvatarActor.Get(), HitResult->GetComponent());
 	}
 
+	// TODO: Hard coded to update Target Data from GA_InteractingNotify to ABaseCharacter
+	if (ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(CurrentActorInfo->AvatarActor.Get()))
+	{
+		InteractingActor->SetInteractableTargetDataHandle(DataHandle);
+	}
+	
 	SentUpdateTargetDataGameplayEvent(DataHandle);
 }
 
@@ -68,6 +72,12 @@ void UGA_InteractionNotify::OnTargetLost(const FGameplayAbilityTargetDataHandle&
 	// So we need to update new TargetDataHandle before send to GA_InteractionHandle
 
 	// TODO: Implement better solution to handle UpdateTargetData when TargetLost
+	// Hard coded to update Target Data from GA_InteractingNotify to ABaseCharacter
+	if (ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(CurrentActorInfo->AvatarActor.Get()))
+	{
+		InteractingActor->SetInteractableTargetDataHandle(FGameplayAbilityTargetDataHandle());
+	}
+	
 	SentUpdateTargetDataGameplayEvent(FGameplayAbilityTargetDataHandle());
 }
 

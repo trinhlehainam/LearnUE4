@@ -3,6 +3,7 @@
 
 #include "Abilities/Tasks/AT_WaitInteractableTarget.h"
 
+#include "AbilitySystemComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Interactable.h"
 
@@ -76,7 +77,11 @@ void UAT_WaitInteractableTarget::LineTraceInteractableTarget(FHitResult& OutHitR
 
 	if (!HitResult.Actor->Implements<UInteractable>()) return;
 
-	if (!IInteractable::Execute_IsAvailableForInteraction(HitResult.Actor.Get(), HitResult.Component.Get())) return;
+	if (!IInteractable::Execute_IsAvailableForInteraction(HitResult.GetActor(), HitResult.GetComponent())) return;
+
+	FGameplayTagContainer TagContainer;
+	AbilitySystemComponent->GetOwnedGameplayTags(TagContainer);
+	if (!IInteractable::Execute_HasRequiredGameplayTags(HitResult.GetActor(), TagContainer)) return;
 
 	OutHitResult = HitResult;
 }

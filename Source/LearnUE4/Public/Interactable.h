@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "GameplayTagContainer.h"
 #include "Interactable.generated.h"
 
 // This class does not need to be modified.
@@ -25,6 +26,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
 	bool IsAvailableForInteraction(UPrimitiveComponent* InteractedComponent);
 	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
+	bool HasRequiredGameplayTags(const FGameplayTagContainer& GameplayTagContainer);
+	virtual bool HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& GameplayTagContainer);
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
 	float GetInteractionDuration(UPrimitiveComponent* InteractedComponent) const;
