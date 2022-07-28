@@ -4,14 +4,15 @@
 
 #include "GameplayTagContainer.h"
 
-// Need to be used in game's project for Engine able to show these Gameplay Tags in Editor
+// Need to be used in game's project for Editor recognizing our Native Gameplay Tags
+// Need to restart Editor after we add/remove Gameplay Tag and recompile in order for Editor recognizing our Native Gameplay Tags
 struct LEARNUE4_API FCustomGameplayTags : FGameplayTagNativeAdder
 {
 	FGameplayTag GameplayEvent_UpdateInteractableTargetData;
 	FGameplayTag Ability_InteractionHandle;
 	FGameplayTag Ability_InteractionNotify;
 	FGameplayTag State_Interacting;
-	
+
 	FGameplayTag InputTag_TogglePauseMenu;
 	FGameplayTag InputTag_Move;
 	FGameplayTag InputTag_Jump;

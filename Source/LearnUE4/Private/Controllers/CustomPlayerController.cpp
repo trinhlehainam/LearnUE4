@@ -12,17 +12,9 @@ void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RemoveInputMappingContexts();
 	AddInputMappingContexts();
 
 	CreateHUD();
-}
-
-void ACustomPlayerController::Destroyed()
-{
-	RemoveInputMappingContexts();	
-	
-	Super::Destroyed();
 }
 
 void ACustomPlayerController::SetupInputComponent()
@@ -33,6 +25,7 @@ void ACustomPlayerController::SetupInputComponent()
 
 	if (UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(InputComponent))
 	{
+		// BUG: Value in static FCustomGameplayTags instance become null when recompile in Editor
 		EnhancedInputComponent->BindActionByInputTag(
 			InputConfig, FCustomGameplayTags::Get().InputTag_TogglePauseMenu,
 			ETriggerEvent::Started,this, &ACustomPlayerController::TogglePauseMenu);

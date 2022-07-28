@@ -56,7 +56,7 @@ void APlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	BindASCInput();
+	BindASCInput(InputComponent);
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -78,19 +78,19 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			ETriggerEvent::Started, this, &APlayerCharacter::Jump);
 	}
 
-	BindASCInput();
+	BindASCInput(PlayerInputComponent);
 }
 
-void APlayerCharacter::BindASCInput()
+void APlayerCharacter::BindASCInput(UInputComponent* PlayerInputComponent)
 {
-	UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(InputComponent);
-	
-	if (!IsValid(EnhancedInputComponent) || !ASC.IsValid() || !bIsAbilitiesBoundToInput || !IsValid(InputConfig)) return;
+	UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(PlayerInputComponent);
+
+	if (bIsAbilitiesBoundToInput || !IsValid(EnhancedInputComponent) || !ASC.IsValid() || !IsValid(InputConfig)) return;
 
 	FGameplayAbilityInputBinds BindInfo("Confirm", "Cancel", "EAbilityInputID",
 	                                    static_cast<int32>(EAbilityInputID::Confirm),
 	                                    static_cast<int32>(EAbilityInputID::Cancel));
-	ASC->BindAbilityActivationToInputComponent(InputComponent, BindInfo);
+	ASC->BindAbilityActivationToInputComponent(PlayerInputComponent, BindInfo);
 
 	for (const FGameplayTagInputAction& Input : InputConfig->TagInputs)
 	{
