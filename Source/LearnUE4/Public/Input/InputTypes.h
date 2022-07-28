@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Abilities/BaseGameplayAbility.h"
 #include "InputTypes.generated.h"
 
 class UInputAction;
@@ -18,6 +19,9 @@ struct FGameplayTagInputAction
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
 	FGameplayTag InputTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
+	TSubclassOf<UBaseGameplayAbility> AbilityClass;
 };
 
 /**

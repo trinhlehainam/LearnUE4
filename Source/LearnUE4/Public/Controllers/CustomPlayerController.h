@@ -44,7 +44,8 @@ protected:
 
 	void CreateHUD();
 
-	void AddInputMappingContext();
+	void AddInputMappingContexts();
+	void RemoveInputMappingContexts();
 private:
 	
 	UFUNCTION(BlueprintCallable)

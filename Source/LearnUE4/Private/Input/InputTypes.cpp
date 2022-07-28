@@ -6,10 +6,8 @@
 const UInputAction* UInputConfig::FindInputActionByGameplayTag(const FGameplayTag& InputTag) const
 {
 	for (const FGameplayTagInputAction& TagInput : TagInputs)
-	{
 		if (TagInput.InputAction && TagInput.InputTag == InputTag)
 			return TagInput.InputAction;
-	}
 	
 	return nullptr;
 }
