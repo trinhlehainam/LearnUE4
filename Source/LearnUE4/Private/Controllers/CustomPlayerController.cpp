@@ -2,12 +2,37 @@
 
 
 #include "Controllers/CustomPlayerController.h"
+
+#include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
+#include "Input/CustomEnhancedInputComponent.h"
 
 void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AddInputMappingContext();
+
+	CreateHUD();
+}
+
+void ACustomPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	check(InputComponent);
+
+	if (UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(InputComponent))
+	{
+		EnhancedInputComponent->BindActionByInputTag(InputConfig,
+		                                             FGameplayTag::RequestGameplayTag(
+			                                             FName("InputTag.TogglePauseMenu")), ETriggerEvent::Started,
+		                                             this, &ACustomPlayerController::TogglePauseMenu);
+	}
+}
+
+void ACustomPlayerController::CreateHUD()
+{
 	if (WBP_HUDCharacterStats)
 	{
 		HUDCharaterStats = CreateWidget<UUserWidget>(this, WBP_HUDCharacterStats);
@@ -25,14 +50,20 @@ void ACustomPlayerController::BeginPlay()
 	}
 }
 
-void ACustomPlayerController::SetupInputComponent()
+void ACustomPlayerController::AddInputMappingContext()
 {
-	Super::SetupInputComponent();
+	// Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+		GetLocalPlayer()))
+	{
+		// PawnClientRestart can run more than once in an Actor's lifetime, so start by clearing out any leftover mappings.
+		Subsystem->RemoveMappingContext(KeyboardInputMappingContext);
+		Subsystem->RemoveMappingContext(GamepadInputMappingContext);
 
-	check(InputComponent);
-
-	InputComponent->BindAction("TogglePauseMenu", IE_Pressed, this,
-	                           &ACustomPlayerController::TogglePauseMenu);
+		// Add each mapping context, along with their priority values. Higher values outprioritize lower values.
+		Subsystem->AddMappingContext(KeyboardInputMappingContext, 0);
+		Subsystem->AddMappingContext(GamepadInputMappingContext, 0);
+	}
 }
 
 void ACustomPlayerController::TogglePauseMenu()

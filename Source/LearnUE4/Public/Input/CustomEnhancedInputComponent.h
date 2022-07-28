@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputTypes.h"
+#include "Abilities/AbilityInputID.h"
 #include "CustomEnhancedInputComponent.generated.h"
 
 struct FGameplayTag;
@@ -21,6 +23,8 @@ class LEARNUE4_API UCustomEnhancedInputComponent : public UEnhancedInputComponen
 public:
 	template<class UserClass, class FuncType>
 	void BindActionByInputTag(UInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func);
+
+	void BindGameplayAbilityInput(UAbilitySystemComponent* AbilitySystemComponent, int32 InputID, const UInputAction* InputAction);
 };
 
 template <class UserClass, class FuncType>

@@ -6,6 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "CustomPlayerController.generated.h"
 
+class UInputMappingContext;
+class UInputConfig;
+
 /**
  * 
  */
@@ -38,6 +41,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupInputComponent() override;
+
+	void CreateHUD();
+
+	void AddInputMappingContext();
 private:
 	
 	UFUNCTION(BlueprintCallable)
@@ -45,4 +52,13 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void HidePauseMenu();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputConfig* InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* KeyboardInputMappingContext;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* GamepadInputMappingContext;
 };

@@ -3,7 +3,7 @@
 
 #include "DataType/CustomAssetManager.h"
 
-#include "CustomAbilitySystemGlobals.h"
+#include "Abilities/CustomAbilitySystemGlobals.h"
 #include "Abilities/CustomGameplayTags.h"
 
 DEFINE_LOG_CATEGORY(LogAssetManager);

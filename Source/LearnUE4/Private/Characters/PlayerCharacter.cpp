@@ -4,12 +4,15 @@
 #include "Characters/PlayerCharacter.h"
 
 #include "AbilitySystemComponent.h"
-#include "Abilities/BaseAttributeSet.h"
-#include "Abilities/GameplayAbilityTypes.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "EnhancedInputSubsystems.h"
+
+#include "Input/CustomEnhancedInputComponent.h"
 #include "Abilities/AbilityInputID.h"
+#include "Abilities/BaseAttributeSet.h"
+#include "Abilities/GameplayAbilityTypes.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -17,7 +20,7 @@ APlayerCharacter::APlayerCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
-	
+
 	bIsAbilitiesBoundToInput = false;
 
 	// Let Character Movement Component rotate Character toward movement direction
@@ -51,18 +54,19 @@ void APlayerCharacter::Tick(float DeltaSeconds)
 void APlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	
+
 	BindASCInput();
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
-	
+
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveFoward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	
 	BindASCInput();
 }
 
@@ -103,4 +107,27 @@ void APlayerCharacter::MoveRight(float Scale)
 void APlayerCharacter::OnHealthAttributeValueChange(const FOnAttributeChangeData& Data)
 {
 	OnHealthChange.Broadcast(Data.NewValue);
+}
+
+void APlayerCharacter::PawnClientRestart()
+{
+	// Make sure that we have a valid PlayerController.
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		// Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			// PawnClientRestart can run more than once in an Actor's lifetime, so start by clearing out any leftover mappings.
+			// We don't want to clear all Input Mapping Contexts because PlayerController has its own Input Mapping Context to navigate UI|HUD
+			Subsystem->RemoveMappingContext(KeyboardInputMappingContext);
+			Subsystem->RemoveMappingContext(GamepadInputMappingContext);
+
+			// Add each mapping context, along with their priority values. Higher values outprioritize lower values.
+			Subsystem->AddMappingContext(KeyboardInputMappingContext, 0);
+			Subsystem->AddMappingContext(GamepadInputMappingContext, 0);
+		}
+	}
+
+	// SetupPlayerInputComponent is called inside this
+	Super::PawnClientRestart();
 }

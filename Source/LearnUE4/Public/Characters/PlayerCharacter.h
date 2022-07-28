@@ -9,6 +9,9 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeValueChange, float, Data);
 
 struct FOnAttributeChangeData;
+class USpringArmComponent;
+class UCameraComponent;
+class UInputMappingContext;
 
 /**
  * 
@@ -35,12 +38,20 @@ protected:
 	void MoveRight(float Scale);
 
 	void OnHealthAttributeValueChange(const FOnAttributeChangeData& Data);
+
+	virtual void PawnClientRestart() override;
 private:
 	bool bIsAbilitiesBoundToInput;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom | Camera", meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom | Camera", meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
+	UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom | Input", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* KeyboardInputMappingContext;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom | Input", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* GamepadInputMappingContext;
 };
