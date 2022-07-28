@@ -75,5 +75,5 @@ void UGA_InteractionNotify::SentUpdateTargetDataGameplayEvent(const FGameplayAbi
 {
 	FGameplayEventData EventData;
 	EventData.TargetData = DataHandle;
-	SendGameplayEvent(FCustomGameplayTags::Get().UpdateInteractableTargetDataEvent, EventData);
+	SendGameplayEvent(FCustomGameplayTags::Get().GameplayEvent_UpdateInteractableTargetData, EventData);
 }

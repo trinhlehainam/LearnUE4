@@ -4,6 +4,7 @@
 #include "Controllers/CustomPlayerController.h"
 
 #include "EnhancedInputSubsystems.h"
+#include "Abilities/CustomGameplayTags.h"
 #include "Blueprint/UserWidget.h"
 #include "Input/CustomEnhancedInputComponent.h"
 
@@ -24,10 +25,9 @@ void ACustomPlayerController::SetupInputComponent()
 
 	if (UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(InputComponent))
 	{
-		EnhancedInputComponent->BindActionByInputTag(InputConfig,
-		                                             FGameplayTag::RequestGameplayTag(
-			                                             FName("InputTag.TogglePauseMenu")), ETriggerEvent::Started,
-		                                             this, &ACustomPlayerController::TogglePauseMenu);
+		EnhancedInputComponent->BindActionByInputTag(
+			InputConfig, FCustomGameplayTags::Get().InputTag_TogglePauseMenu,
+			ETriggerEvent::Started,this, &ACustomPlayerController::TogglePauseMenu);
 	}
 }
 
@@ -56,10 +56,6 @@ void ACustomPlayerController::AddInputMappingContext()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
 		GetLocalPlayer()))
 	{
-		// PawnClientRestart can run more than once in an Actor's lifetime, so start by clearing out any leftover mappings.
-		Subsystem->RemoveMappingContext(KeyboardInputMappingContext);
-		Subsystem->RemoveMappingContext(GamepadInputMappingContext);
-
 		// Add each mapping context, along with their priority values. Higher values outprioritize lower values.
 		Subsystem->AddMappingContext(KeyboardInputMappingContext, 0);
 		Subsystem->AddMappingContext(GamepadInputMappingContext, 0);

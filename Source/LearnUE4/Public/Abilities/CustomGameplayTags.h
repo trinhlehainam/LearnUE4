@@ -7,10 +7,16 @@
 // Need to be used in game's project for Engine able to show these Gameplay Tags in Editor
 struct LEARNUE4_API FCustomGameplayTags : FGameplayTagNativeAdder
 {
-	FGameplayTag UpdateInteractableTargetDataEvent;
-	FGameplayTag InteractionHandleAbility;
-	FGameplayTag InteractionNotifyAbility;
-	FGameplayTag InteractingState;
+	FGameplayTag GameplayEvent_UpdateInteractableTargetData;
+	FGameplayTag Ability_InteractionHandle;
+	FGameplayTag Ability_InteractionNotify;
+	FGameplayTag State_Interacting;
+	
+	FGameplayTag InputTag_TogglePauseMenu;
+	FGameplayTag InputTag_Move;
+	FGameplayTag InputTag_Jump;
+	FGameplayTag InputTag_Look;
+	FGameplayTag InputTag_LightAttack;
 
 	static const FCustomGameplayTags& Get();
 protected:

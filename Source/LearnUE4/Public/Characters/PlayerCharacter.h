@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "Characters/BaseCharacter.h"
 #include "PlayerCharacter.generated.h"
 
@@ -12,6 +13,9 @@ struct FOnAttributeChangeData;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
+struct FInputActionValue;
+class UInputConfig;
+
 
 /**
  * 
@@ -25,6 +29,9 @@ public:
 
 	FOnAttributeValueChange OnHealthChange;
 	
+	void MoveFoward(float Scale);
+	
+	void MoveRight(float Scale);
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -32,10 +39,11 @@ protected:
 	virtual void OnRep_PlayerState() override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-	void BindASCInput();
 	
-	void MoveFoward(float Scale);
-	void MoveRight(float Scale);
+	void BindASCInput();
+
+	void Input_Move(const FInputActionValue& InputActionValue);
+	void Input_Look(const FInputActionValue& InputActionValue);
 
 	void OnHealthAttributeValueChange(const FOnAttributeChangeData& Data);
 
@@ -48,6 +56,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom | Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom | Input", meta = (AllowPrivateAccess = "true"))
+	UInputConfig* InputConfig;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom | Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* KeyboardInputMappingContext;

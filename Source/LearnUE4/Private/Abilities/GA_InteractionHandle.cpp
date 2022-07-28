@@ -24,7 +24,7 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	// Listen UpdateDataEvent Gameplay Event sent from GA_InteractionNotify
 	UAbilityTask_WaitGameplayEvent* UpdateTargetDataEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
-		this, FCustomGameplayTags::Get().UpdateInteractableTargetDataEvent);
+		this, FCustomGameplayTags::Get().GameplayEvent_UpdateInteractableTargetData);
 	if (!UpdateTargetDataEventTask)
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 	UpdateTargetDataEventTask->EventReceived.AddDynamic(this, &UGA_InteractionHandle::OnUpdatedTargetData);
