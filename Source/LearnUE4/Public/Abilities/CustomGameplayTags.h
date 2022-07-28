@@ -8,6 +8,8 @@
 // Need to restart Editor after we add/remove Gameplay Tag and recompile in order for Editor recognizing our Native Gameplay Tags
 struct LEARNUE4_API FCustomGameplayTags : FGameplayTagNativeAdder
 {
+	FCustomGameplayTags();
+	
 	FGameplayTag GameplayEvent_UpdateInteractableTargetData;
 	FGameplayTag Ability_InteractionHandle;
 	FGameplayTag Ability_InteractionNotify;
@@ -18,6 +20,7 @@ struct LEARNUE4_API FCustomGameplayTags : FGameplayTagNativeAdder
 	FGameplayTag InputTag_Jump;
 	FGameplayTag InputTag_Look;
 	FGameplayTag InputTag_LightAttack;
+	FGameplayTag InputTag_Interact;
 
 	static const FCustomGameplayTags& Get();
 protected:

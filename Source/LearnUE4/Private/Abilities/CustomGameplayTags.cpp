@@ -5,6 +5,10 @@
 
 #include "GameplayTagsManager.h"
 
+FCustomGameplayTags::FCustomGameplayTags()
+{
+}
+
 const FCustomGameplayTags& FCustomGameplayTags::Get()
 {
 	static FCustomGameplayTags Singleton;
@@ -25,4 +29,5 @@ void FCustomGameplayTags::AddTags()
 	InputTag_Look = Manager.AddNativeGameplayTag(FName("InputTag.Look"));
 	InputTag_Jump = Manager.AddNativeGameplayTag(FName("InputTag.Jump"));
 	InputTag_LightAttack = Manager.AddNativeGameplayTag(FName("InputTag.LightAttack"));
+	InputTag_Interact = Manager.AddNativeGameplayTag(FName("InputTag.Interact"));
 }
