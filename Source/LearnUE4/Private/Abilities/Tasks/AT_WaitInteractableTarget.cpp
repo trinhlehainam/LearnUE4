@@ -6,14 +6,15 @@
 #include "AbilitySystemComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Interactable.h"
+#include "GameFramework/Character.h"
 
 UAT_WaitInteractableTarget::UAT_WaitInteractableTarget()
 {
 }
 
 UAT_WaitInteractableTarget* UAT_WaitInteractableTarget::WaitForInteractableTarget(UGameplayAbility* OwningAbility,
-	ECollisionChannel TraceChannel, EGameplayAbilityTargetingLocationType::Type TraceLocationType, FName SocketName,
-	FName MeshComponentVariableName, float TraceRange, float FireRate, bool bShowDebug, FName TaskInstanceName)
+	ECollisionChannel TraceChannel, EGameplayAbilityTargetingTransformType SourceTranformType, FName SocketName,
+	float TraceRange, float FireRate, bool bShowDebug, bool bUsePlayerControllerView, FName TaskInstanceName)
 {
 	UAT_WaitInteractableTarget* TaskInstance = NewAbilityTask<UAT_WaitInteractableTarget>(
 		OwningAbility, TaskInstanceName);
@@ -23,21 +24,35 @@ UAT_WaitInteractableTarget* UAT_WaitInteractableTarget::WaitForInteractableTarge
 	TaskInstance->FireRate = FireRate;
 	TaskInstance->bShowDebug = bShowDebug;
 
-	// TODO: Adjust this value depend on Trace Location Type
-	TaskInstance->bUseSourceDirectionToTrace = false;
+	// TODO: Handle to use PlayerController's View (aka Camera) Trace to produce final result
+	TaskInstance->PerformLineTraceFunc = bUsePlayerControllerView
+		                                 ? &UAT_WaitInteractableTarget::PerformLineTraceFromSourceAndView
+		                                 : &UAT_WaitInteractableTarget::PerformLineTraceFromSource;
 
 	AActor* SourceActor = OwningAbility->GetCurrentActorInfo()->AvatarActor.Get();
+	UMeshComponent* SourceComponent = nullptr;
 
-	// TODO: Depend on Trace Location Type, Source Component doesn't need to be queried
-	// Find Mesh Component has variable name same as MeshComponentVariableName
-	// UMeshComponent* SourceComponent = Cast<USkeletalMeshComponent>(SourceActor->GetDefaultSubobjectByName(MeshComponentVariableName));
-	// check(SourceComponent);
-	//
+	EGameplayAbilityTargetingLocationType::Type LocationType;
 
+	// TODO: Depend on Targeting Transform Type, process to find appropriate SourceComponent
+	if (SourceTranformType == EGameplayAbilityTargetingTransformType::ActorTransform)
+	{
+		LocationType = EGameplayAbilityTargetingLocationType::ActorTransform;
+	}
+	else
+	{
+		// Only support using socket of Skeleton Mesh Component in ACharacter for now
+		LocationType = EGameplayAbilityTargetingLocationType::SocketTransform;
+		if (ACharacter* Character = Cast<ACharacter>(SourceActor))
+		{
+			SourceComponent = Character->GetMesh();
+		}
+		check(SourceComponent);
+	}
 
 	TaskInstance->StartLocationInfo.SourceActor = SourceActor;
-	TaskInstance->StartLocationInfo.LocationType = TraceLocationType;
-	// TaskInstance->StartLocationInfo.SourceComponent = SourceComponent;
+	TaskInstance->StartLocationInfo.LocationType = LocationType;
+	TaskInstance->StartLocationInfo.SourceComponent = SourceComponent;
 	TaskInstance->StartLocationInfo.SourceSocketName = SocketName;
 	TaskInstance->StartLocationInfo.SourceAbility = OwningAbility;
 
@@ -145,6 +160,47 @@ void UAT_WaitInteractableTarget::UsePlayerControllerViewToTrace(FHitResult& OutH
 	OutHitResult.TraceEnd = HitLocationOffset;
 }
 
+bool UAT_WaitInteractableTarget::PerformLineTraceFromSource(FHitResult& HitResult, FVector& TraceStart,
+                                                            FVector& TraceEnd, FVector& TraceDirection)
+{
+	// Hit Result Trace from Source Location
+	FHitResult SourceHitResult;
+	LineTraceInteractableTarget(SourceHitResult, TraceStart, TraceEnd);
+
+	HitResult = SourceHitResult;
+
+	return HitResult.bBlockingHit;
+}
+
+bool UAT_WaitInteractableTarget::PerformLineTraceFromSourceAndView(FHitResult& HitResult, FVector& TraceStart,
+                                                                   FVector& TraceEnd, FVector& TraceDirection)
+{
+	// Hit Result Trace from PlayerController's View
+	FHitResult ViewHitResult;
+	UsePlayerControllerViewToTrace(ViewHitResult, TraceStart, TraceDirection);
+
+	TraceEnd = ViewHitResult.TraceEnd;
+
+	// Hit Result Trace from Source Location
+	FHitResult SourceHitResult;
+	LineTraceInteractableTarget(SourceHitResult, TraceStart, TraceEnd);
+
+	bool bFoundTarget = false;
+	// TODO: Write document
+	// There are POSSIBLE cases when use both Source Transform and PlayerController's View Transform to trace
+	// - Source Trace Hits different Target Actor
+	// - Source Trace Hits different Component part of Target Actor
+	if (ViewHitResult.bBlockingHit && SourceHitResult.bBlockingHit)
+	{
+		bFoundTarget = ViewHitResult.Actor == SourceHitResult.Actor &&
+			ViewHitResult.Component == SourceHitResult.Component;
+	}
+
+	HitResult = SourceHitResult;
+
+	return bFoundTarget;
+}
+
 void UAT_WaitInteractableTarget::ScanInteraction()
 {
 	if (!Ability) return;
@@ -155,46 +211,27 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 	FVector TraceDir = SourceTransform.GetRotation().Rotator().Vector();
 	FVector TraceEnd = TraceStart + (TraceDir * TraceRange);
 
-	// Hit Result Trace from PlayerController's View
-	FHitResult ViewHitResult;
-	UsePlayerControllerViewToTrace(ViewHitResult, TraceStart, TraceDir);
+	FHitResult HitResult;
+	bool bTargetFound = (this->*PerformLineTraceFunc)(HitResult, TraceStart, TraceEnd, TraceDir);
 
-	TraceEnd = ViewHitResult.TraceEnd;
-
-	// Hit Result Trace from Source Location
-	FHitResult SourceHitResult;
-	LineTraceInteractableTarget(SourceHitResult, TraceStart, TraceEnd);
-
-	bool bFoundTarget = false;
-	
-	// TODO: Write document
-	// There are 2 POSSIBLE cases when Trace from Source Location
-	// 1. Source Trace Hits different Target Actor
-	// 2. Source Trace Hits different Component part of Target Actor
-	if (ViewHitResult.bBlockingHit && SourceHitResult.bBlockingHit)
-	{
-		bFoundTarget = ViewHitResult.Actor == SourceHitResult.Actor &&
-			ViewHitResult.Component == SourceHitResult.Component;
-	}
-
-	if (!bFoundTarget)
+	if (!bTargetFound)
 	{
 		if (TargetDataHandle.Num() > 0 && TargetDataHandle.Get(0)->GetHitResult()->GetActor())
 		{
 			OnTargetLost.Broadcast(TargetDataHandle);
 		}
-		
+
 		// TODO: Write document
 		// Even bFoundTarget is false, SourceHitResult can still be hit
 		// We need to adjust SourceHitResult before MakeTargetData
-		SourceHitResult.Init(TraceStart, TraceEnd);
+		HitResult.Init(TraceStart, TraceEnd);
 		//
-		
-		TargetDataHandle = MakeTargetData(SourceHitResult);
+
+		TargetDataHandle = MakeTargetData(HitResult);
 	}
 	else
 	{
-		TraceEnd = SourceHitResult.Location;
+		TraceEnd = HitResult.Location;
 		bool bNotifyFoundNewTarget = true;
 
 		if (TargetDataHandle.Num() > 0)
@@ -202,7 +239,7 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 			bNotifyFoundNewTarget = false;
 			AActor* OldInteractableTarget = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 
-			if (SourceHitResult.GetActor() != OldInteractableTarget)
+			if (HitResult.GetActor() != OldInteractableTarget)
 			{
 				bNotifyFoundNewTarget = true;
 				OnTargetLost.Broadcast(TargetDataHandle);
@@ -211,7 +248,7 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 
 		if (bNotifyFoundNewTarget)
 		{
-			TargetDataHandle = MakeTargetData(SourceHitResult);
+			TargetDataHandle = MakeTargetData(HitResult);
 			OnFoundNewTarget.Broadcast(TargetDataHandle);
 		}
 	}
@@ -219,7 +256,7 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 #if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
 	if (bShowDebug)
 	{
-		FColor DebugSphereColor = SourceHitResult.bBlockingHit ? FColor::Red : FColor::Green;
+		FColor DebugSphereColor = HitResult.bBlockingHit ? FColor::Red : FColor::Green;
 		// Line Trace
 		DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false, FireRate, 0, 1.f);
 		// Visual Trace End Point with Sphere

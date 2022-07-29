@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TargetingTransformType.h"
 #include "Abilities/BaseGameplayAbility.h"
 #include "GA_InteractionNotify.generated.h"
 
@@ -32,13 +33,15 @@ protected:
 	TEnumAsByte<ECollisionChannel> TraceChannel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction")
-	TEnumAsByte<EGameplayAbilityTargetingLocationType::Type> TraceLocationType;	
+	EGameplayAbilityTargetingTransformType SourceTransformType;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction")
-	FName SocketName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction")
-	FName MeshComponentVariableName;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction", meta=(DisplayName="Mesh's Socket Name"))
+	FName MeshSocketName;
+	
+	// Use Player Controller's View Transform (aka Camera) to perform additional trace to only accept Interactable Target at center of the screen
+	// Only work when Actor owning this ability is controlled by Player Controller and use Line Trace
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction", meta=(DisplayName="Use Player Controller's View"))
+	bool bUsePlayerControllerView;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction")
 	float TraceRange;

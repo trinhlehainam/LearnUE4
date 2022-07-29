@@ -6,6 +6,8 @@
 #include "Engine/AssetManager.h"
 #include "CustomAssetManager.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogCustomAssetManager, Log, All);
+
 /**
  * 
  */

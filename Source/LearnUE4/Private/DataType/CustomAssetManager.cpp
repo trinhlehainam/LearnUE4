@@ -6,7 +6,7 @@
 #include "Abilities/CustomAbilitySystemGlobals.h"
 #include "Abilities/CustomGameplayTags.h"
 
-DEFINE_LOG_CATEGORY(LogCustomAssetManager);
+DEFINE_LOG_CATEGORY(LogCustomAssetManager)
 
 const FPrimaryAssetType UCustomAssetManager::WeaponItemType = FName("WeaponType");
 const FPrimaryAssetType UCustomAssetManager::PoisonItemType = FName("PoisonType");
