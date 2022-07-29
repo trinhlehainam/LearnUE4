@@ -6,7 +6,7 @@
 #include "Abilities/CustomAbilitySystemGlobals.h"
 #include "Abilities/CustomGameplayTags.h"
 
-DEFINE_LOG_CATEGORY(LogAssetManager);
+DEFINE_LOG_CATEGORY(LogCustomAssetManager);
 
 const FPrimaryAssetType UCustomAssetManager::WeaponItemType = FName("WeaponType");
 const FPrimaryAssetType UCustomAssetManager::PoisonItemType = FName("PoisonType");
@@ -25,7 +25,7 @@ UCustomAssetManager& UCustomAssetManager::Get()
 	}
 	else
 	{
-		UE_LOG(LogAssetManager, Fatal, TEXT("Cannot use UCustomAssetManager if no AssetManagerClassName is defined!"));
+		UE_LOG(LogCustomAssetManager, Fatal, TEXT("Cannot use UCustomAssetManager if no AssetManagerClassName is defined!"));
 		return *NewObject<UCustomAssetManager>(); // never calls this
 	}
 }
