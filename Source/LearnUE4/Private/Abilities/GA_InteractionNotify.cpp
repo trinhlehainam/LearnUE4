@@ -70,9 +70,6 @@ void UGA_InteractionNotify::OnTargetLost(const FGameplayAbilityTargetDataHandle&
 		                                    HitResult->GetComponent());
 	}
 
-	// Because WaitInteractableTarget Task broadcast about Interactable Target that is lost this frame OnTargetLost
-	// So we need to update new TargetDataHandle before send to GA_InteractionHandle
-
 	// TODO: Implement better solution to handle UpdateTargetData when TargetLost
 	// Hard coded to update Target Data from GA_InteractingNotify to ABaseCharacter
 	if (ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(CurrentActorInfo->AvatarActor.Get()))
