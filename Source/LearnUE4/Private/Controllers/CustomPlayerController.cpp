@@ -23,6 +23,7 @@ void ACustomPlayerController::SetupInputComponent()
 
 	check(InputComponent);
 
+	// TODO: Use CommonUI that has own Input Action Binding for control UI
 	if (UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(InputComponent))
 	{
 		// BUG: Value in static FCustomGameplayTags instance become null when recompile in Editor
