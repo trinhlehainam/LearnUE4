@@ -7,16 +7,34 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 
-void UUserWidget_PauseMenu::NativeOnInitialized()
+void UUserWidget_PauseMenu::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
 
 	PlayerController = GetOwningPlayer<ACustomPlayerController>();
 
 	if (ResumeButton) ResumeButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Resume);
-	if (SaveButton) SaveButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Save);
-	if (LoadButton) LoadButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Load);
+	if (MainMenuButton) MainMenuButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::ReturnToMainMenu);
 	if (QuitButton) QuitButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Quit);
+
+	// TODO: Prevent Hardcoded
+	ButtonLists.Reset(3);
+	ButtonLists.Add(ResumeButton);
+	ButtonLists.Add(MainMenuButton);
+	ButtonLists.Add(QuitButton);
+}
+
+void UUserWidget_PauseMenu::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	for (UButton* Button : ButtonLists)
+	{
+		FLinearColor BackgroundColor = Button->HasKeyboardFocus()
+			                               ? FLinearColor(128, 0, 0, 255)
+			                               : FLinearColor(128, 128, 128, 255);
+		Button->SetBackgroundColor(BackgroundColor);
+	}
 }
 
 void UUserWidget_PauseMenu::Resume()
@@ -27,12 +45,12 @@ void UUserWidget_PauseMenu::Resume()
 		PlayerController->TogglePauseMenu();
 }
 
-void UUserWidget_PauseMenu::Save()
+void UUserWidget_PauseMenu::ReturnToMainMenu()
 {
-}
-
-void UUserWidget_PauseMenu::Load()
-{
+	FInputModeGameOnly InputModeGameOnly;
+	PlayerController->SetInputMode(InputModeGameOnly);
+	UGameplayStatics::OpenLevelBySoftObjectPtr(this, MainMenuLevel);
+	RemoveFromParent();
 }
 
 void UUserWidget_PauseMenu::Quit()

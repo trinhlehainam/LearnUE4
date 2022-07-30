@@ -7,6 +7,7 @@
 #include "Abilities/CustomGameplayTags.h"
 #include "Blueprint/UserWidget.h"
 #include "Input/CustomEnhancedInputComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void ACustomPlayerController::BeginPlay()
 {
@@ -29,23 +30,23 @@ void ACustomPlayerController::SetupInputComponent()
 		// BUG: Value in static FCustomGameplayTags instance become null when recompile in Editor
 		EnhancedInputComponent->BindActionByInputTag(
 			InputConfig, FCustomGameplayTags::Get().InputTag_TogglePauseMenu,
-			ETriggerEvent::Started,this, &ACustomPlayerController::TogglePauseMenu);
+			ETriggerEvent::Started, this, &ACustomPlayerController::TogglePauseMenu);
 	}
 }
 
 void ACustomPlayerController::CreateHUD()
 {
-	if (WBP_HUDCharacterStats)
+	if (PlayerHUDWidgetClass)
 	{
-		HUDCharaterStats = CreateWidget<UUserWidget>(this, WBP_HUDCharacterStats);
+		HUDCharaterStats = CreateWidget<UUserWidget>(this, PlayerHUDWidgetClass);
 		HUDCharaterStats->AddToViewport();
 		HUDCharaterStats->SetVisibility(ESlateVisibility::Visible);
 	}
 
 	bIsPauseMenuVisible = false;
-	if (WBP_PauseMenu)
+	if (PauseMenuWidgetClass)
 	{
-		PauseMenu = CreateWidget(this, WBP_PauseMenu);
+		PauseMenu = CreateWidget(this, PauseMenuWidgetClass);
 		PauseMenu->AddToViewport();
 		// Hidden by default
 		PauseMenu->SetVisibility(ESlateVisibility::Hidden);
@@ -86,9 +87,16 @@ void ACustomPlayerController::DisplayPauseMenu()
 	{
 		bIsPauseMenuVisible = true;
 		bShowMouseCursor = true;
-		PauseMenu->SetVisibility(ESlateVisibility::Visible);
+		
 		FInputModeGameAndUI InputModeGameAndUI;
 		SetInputMode(InputModeGameAndUI);
+		SetPause(true);
+		
+		PauseMenu->SetVisibility(ESlateVisibility::Visible);
+		FLatentActionInfo LatentActionInfo;
+		UKismetSystemLibrary::Delay(this, 0.1f, LatentActionInfo);
+		// TODO: Prevent hardcoded
+		PauseMenu->GetWidgetFromName("ResumeButton")->SetFocus();
 	}
 }
 
@@ -101,5 +109,6 @@ void ACustomPlayerController::HidePauseMenu()
 		PauseMenu->SetVisibility(ESlateVisibility::Hidden);
 		FInputModeGameOnly InputModeGameOnly;
 		SetInputMode(InputModeGameOnly);
+		SetPause(false);
 	}
 }

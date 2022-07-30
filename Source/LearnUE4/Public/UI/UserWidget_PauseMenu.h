@@ -18,33 +18,34 @@ class LEARNUE4_API UUserWidget_PauseMenu : public UUserWidget
 	GENERATED_BODY()
 
 protected:
-	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 private:
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(EditDefaultsOnly, Category="PauseMenu")
+	TSoftObjectPtr<UWorld> MainMenuLevel;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess))
 	UButton* ResumeButton;
 
-	UPROPERTY(meta = (BindWidget))
-	UButton* SaveButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess))
+	UButton* MainMenuButton;
 
-	UPROPERTY(meta = (BindWidget))
-	UButton* LoadButton;
-
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess))
 	UButton* QuitButton;
 
+	TArray<UButton*> ButtonLists;
+	
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	ACustomPlayerController* PlayerController;
 
 	UFUNCTION()
 	void Resume();
-	
+
 	UFUNCTION()
-	void Save();
-	
-	UFUNCTION()
-	void Load();
-	
+	void ReturnToMainMenu();
+
 	UFUNCTION()
 	void Quit();
 };

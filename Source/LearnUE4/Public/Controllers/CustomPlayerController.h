@@ -20,14 +20,14 @@ class LEARNUE4_API ACustomPlayerController : public APlayerController
 public:
 	// Reference to User Widget Blueprint
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Widgets)
-	TSubclassOf<class UUserWidget> WBP_HUDCharacterStats;
+	TSubclassOf<class UUserWidget> PlayerHUDWidgetClass;
 
 	// Pointer to widget instance after creating it
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widgets)
 	UUserWidget* HUDCharaterStats;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Widgets)
-	TSubclassOf<UUserWidget> WBP_PauseMenu;
+	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widgets)
 	UUserWidget* PauseMenu;

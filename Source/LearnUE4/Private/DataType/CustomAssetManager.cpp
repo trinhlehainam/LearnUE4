@@ -25,7 +25,7 @@ UCustomAssetManager& UCustomAssetManager::Get()
 	}
 	else
 	{
-		UE_LOG(LogAssetManager, Fatal, TEXT("Cannot use UCustomAssetManager if no AssetManagerClassName is defined!"));
+		UE_LOG(LogCustomAssetManager, Fatal, TEXT("Cannot use UCustomAssetManager if no AssetManagerClassName is defined!"));
 		return *NewObject<UCustomAssetManager>(); // never calls this
 	}
 }
