@@ -28,8 +28,8 @@ public:
 	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
-	bool HasRequiredGameplayTags(const FGameplayTagContainer& GameplayTagContainer);
-	virtual bool HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& GameplayTagContainer);
+	bool HasRequiredGameplayTags(const FGameplayTagContainer& InteractorTagContainer);
+	virtual bool HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& InteractorTagContainer);
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
 	float GetInteractionDuration(UPrimitiveComponent* InteractedComponent) const;

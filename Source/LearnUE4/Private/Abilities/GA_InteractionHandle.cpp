@@ -23,12 +23,12 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 
 	ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get());
-	
+
 	if (!IsValid(InteractingActor))
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 
 	TargetDataHandle = InteractingActor->GetInteractableTargetDataHandle();
-	
+
 	if (TargetDataHandle.Num() == 0)
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 
@@ -43,7 +43,8 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	if (InteractionDuration > 0.f)
 	{
-		UAbilityTask_WaitDelay* WaitUntilFinishInteractionTask= UAbilityTask_WaitDelay::WaitDelay(this, InteractionDuration);
+		UAbilityTask_WaitDelay* WaitUntilFinishInteractionTask = UAbilityTask_WaitDelay::WaitDelay(
+			this, InteractionDuration);
 		WaitUntilFinishInteractionTask->OnFinish.AddDynamic(this, &UGA_InteractionHandle::HandleFinishWaitInteraction);
 		WaitUntilFinishInteractionTask->ReadyForActivation();
 
@@ -55,6 +56,11 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		IInteractable::Execute_PreInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
 		                                   HitResult->GetComponent());
+
+		// Interactable Target may perform Destroy itself when execute PreInteract
+		if (!IsValid(InteractedActor))
+			return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+
 		IInteractable::Execute_PostInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
 		                                    HitResult->GetComponent());
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
@@ -100,7 +106,7 @@ void UGA_InteractionHandle::HandleOnInputRelease(float TimeHold)
 
 void UGA_InteractionHandle::HandleFinishWaitInteraction()
 {
-	PerformInteraction();		
+	PerformInteraction();
 }
 
 void UGA_InteractionHandle::PerformInteraction()
@@ -116,6 +122,11 @@ void UGA_InteractionHandle::PerformInteraction()
 
 	IInteractable::Execute_PreInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
 	                                   HitResult->GetComponent());
+
+	// Interactable Target may perform Destroy itself when execute PreInteract
+	if (!IsValid(InteractedActor))
+		return CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
+
 	IInteractable::Execute_PostInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
 	                                    HitResult->GetComponent());
 

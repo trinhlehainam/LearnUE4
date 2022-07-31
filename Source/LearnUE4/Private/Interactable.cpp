@@ -9,7 +9,7 @@ bool IInteractable::IsAvailableForInteraction_Implementation(UPrimitiveComponent
 	return false;
 }
 
-bool IInteractable::HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& GameplayTagContainer)
+bool IInteractable::HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& InteractorTagContainer)
 {
 	return false;
 }

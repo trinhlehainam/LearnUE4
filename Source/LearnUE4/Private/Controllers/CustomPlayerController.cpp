@@ -64,6 +64,7 @@ void ACustomPlayerController::DisplayPauseMenu(FKey Key)
 	bShowMouseCursor = true;
 
 	SetPause(true);
+	
 	FInputModeGameAndUI InputModeGameAndUI;
 	SetInputMode(InputModeGameAndUI);
 
@@ -85,8 +86,10 @@ void ACustomPlayerController::HidePauseMenu()
 		bIsPauseMenuVisible = false;
 		bShowMouseCursor = false;
 		PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+		
 		FInputModeGameOnly InputModeGameOnly;
 		SetInputMode(InputModeGameOnly);
+		
 		SetPause(false);
 	}
 }

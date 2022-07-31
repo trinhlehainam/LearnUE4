@@ -6,22 +6,39 @@
 // Sets default values
 AInteractableDoor::AInteractableDoor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(FName("Default Root"));
+	
+	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Door Mesh"));
+	SwitchMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Switch Mesh"));
+
+	DoorMesh->SetupAttachment(GetRootComponent());
+	SwitchMesh->SetupAttachment(GetRootComponent());
+	
+	DoorMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 }
 
 // Called when the game starts or when spawned
 void AInteractableDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-// Called every frame
-void AInteractableDoor::Tick(float DeltaTime)
+bool AInteractableDoor::IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent)
 {
-	Super::Tick(DeltaTime);
+	return true;
+}
 
+bool AInteractableDoor::HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& InteractorTagContainer)
+{
+	return RequireTags.HasAllExact(InteractorTagContainer);
+}
+
+void AInteractableDoor::UpdateDoorLocation(float Delta)
+{
+	FVector DoorLocation = DoorMesh->GetComponentLocation();
+	DoorLocation.Z += Delta;
+	DoorMesh->SetWorldLocation(DoorLocation);
 }
 
