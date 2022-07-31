@@ -1,34 +1,43 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/UserWidget_PauseMenu.h"
+#include "UI/PauseMenuWidget.h"
 
 #include "Controllers/CustomPlayerController.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 
-void UUserWidget_PauseMenu::NativeConstruct()
+bool UPauseMenuWidget::HasAnyButtonFocus() const
+{
+	for (const UButton* Button : Buttons)
+		if (Button->HasUserFocus(GetOwningPlayer()))
+			return true;	
+
+	return false;
+}
+
+void UPauseMenuWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	PlayerController = GetOwningPlayer<ACustomPlayerController>();
 
-	if (ResumeButton) ResumeButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Resume);
-	if (MainMenuButton) MainMenuButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::ReturnToMainMenu);
-	if (QuitButton) QuitButton->OnClicked.AddDynamic(this, &UUserWidget_PauseMenu::Quit);
+	if (ResumeButton) ResumeButton->OnClicked.AddDynamic(this, &UPauseMenuWidget::Resume);
+	if (MainMenuButton) MainMenuButton->OnClicked.AddDynamic(this, &UPauseMenuWidget::ReturnToMainMenu);
+	if (QuitButton) QuitButton->OnClicked.AddDynamic(this, &UPauseMenuWidget::Quit);
 
 	// TODO: Prevent Hardcoded
-	ButtonLists.Reset(3);
-	ButtonLists.Add(ResumeButton);
-	ButtonLists.Add(MainMenuButton);
-	ButtonLists.Add(QuitButton);
+	Buttons.Reset(3);
+	Buttons.Add(ResumeButton);
+	Buttons.Add(MainMenuButton);
+	Buttons.Add(QuitButton);
 }
 
-void UUserWidget_PauseMenu::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UPauseMenuWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	for (UButton* Button : ButtonLists)
+	for (UButton* Button : Buttons)
 	{
 		FLinearColor BackgroundColor = Button->HasKeyboardFocus()
 			                               ? FLinearColor(128, 0, 0, 255)
@@ -37,15 +46,15 @@ void UUserWidget_PauseMenu::NativeTick(const FGeometry& MyGeometry, float InDelt
 	}
 }
 
-void UUserWidget_PauseMenu::Resume()
+void UPauseMenuWidget::Resume()
 {
 	if (!PlayerController)
 		PlayerController = GetOwningPlayer<ACustomPlayerController>();
 	else
-		PlayerController->TogglePauseMenu();
+		PlayerController->HidePauseMenu();
 }
 
-void UUserWidget_PauseMenu::ReturnToMainMenu()
+void UPauseMenuWidget::ReturnToMainMenu()
 {
 	FInputModeGameOnly InputModeGameOnly;
 	PlayerController->SetInputMode(InputModeGameOnly);
@@ -53,7 +62,7 @@ void UUserWidget_PauseMenu::ReturnToMainMenu()
 	RemoveFromParent();
 }
 
-void UUserWidget_PauseMenu::Quit()
+void UPauseMenuWidget::Quit()
 {
 	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }

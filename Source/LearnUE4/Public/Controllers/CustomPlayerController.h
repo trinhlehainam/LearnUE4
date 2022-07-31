@@ -8,6 +8,7 @@
 
 class UInputMappingContext;
 class UInputConfig;
+class UPauseMenuWidget;
 
 /**
  * 
@@ -30,36 +31,25 @@ public:
 	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widgets)
-	UUserWidget* PauseMenu;
+	UPauseMenuWidget* PauseMenu;
 
 	bool bIsPauseMenuVisible;
 
-	UFUNCTION()
-	void TogglePauseMenu();
+	UFUNCTION(BlueprintCallable)
+	void TogglePauseMenu(FKey Key);
 	
+	UFUNCTION(BlueprintCallable)
+	void DisplayPauseMenu(FKey Key);
+
+	UFUNCTION(BlueprintCallable)
+	void HidePauseMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void HandleSwitchUI(FKey Key);
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupInputComponent() override;
 
 	void CreateHUD();
-
-	void AddInputMappingContexts();
-	void RemoveInputMappingContexts();
-private:
-	
-	UFUNCTION(BlueprintCallable)
-	void DisplayPauseMenu();
-
-	UFUNCTION(BlueprintCallable)
-	void HidePauseMenu();
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputConfig* InputConfig;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* KeyboardInputMappingContext;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* GamepadInputMappingContext;
 };

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "UserWidget_PauseMenu.generated.h"
+#include "PauseMenuWidget.generated.h"
 
 class UButton;
 class ACustomPlayerController;
@@ -13,10 +13,20 @@ class ACustomPlayerController;
  * 
  */
 UCLASS()
-class LEARNUE4_API UUserWidget_PauseMenu : public UUserWidget
+class LEARNUE4_API UPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UButton* ResumeButton;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UButton* MainMenuButton;
+
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UButton* QuitButton;
+
+	bool HasAnyButtonFocus() const;
 protected:
 	virtual void NativeConstruct() override;
 
@@ -26,16 +36,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="PauseMenu")
 	TSoftObjectPtr<UWorld> MainMenuLevel;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess))
-	UButton* ResumeButton;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess))
-	UButton* MainMenuButton;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess))
-	UButton* QuitButton;
-
-	TArray<UButton*> ButtonLists;
+	UPROPERTY()
+	TArray<UButton*> Buttons;
 	
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	ACustomPlayerController* PlayerController;

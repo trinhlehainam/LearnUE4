@@ -3,17 +3,15 @@
 
 #include "Controllers/CustomPlayerController.h"
 
-#include "EnhancedInputSubsystems.h"
-#include "Abilities/CustomGameplayTags.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
 #include "Input/CustomEnhancedInputComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "UI/PauseMenuWidget.h"
 
 void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AddInputMappingContexts();
 
 	CreateHUD();
 }
@@ -25,20 +23,19 @@ void ACustomPlayerController::SetupInputComponent()
 	check(InputComponent);
 
 	// TODO: Use CommonUI that has own Input Action Binding for control UI
-	if (UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(InputComponent))
-	{
-		// BUG: Value in static FCustomGameplayTags instance become null when recompile in Editor
-		EnhancedInputComponent->BindActionByInputTag(
-			InputConfig, FCustomGameplayTags::Get().InputTag_TogglePauseMenu,
-			ETriggerEvent::Started, this, &ACustomPlayerController::TogglePauseMenu);
-	}
+	InputComponent->BindKey(EKeys::P, IE_Pressed, this, &ACustomPlayerController::TogglePauseMenu)
+	              .bExecuteWhenPaused = true;
+	InputComponent->BindKey(EKeys::Gamepad_Special_Right, IE_Pressed, this, &ACustomPlayerController::TogglePauseMenu)
+	              .bExecuteWhenPaused = true;
+	InputComponent->BindKey(EKeys::AnyKey, IE_Pressed, this, &ACustomPlayerController::HandleSwitchUI)
+	              .bExecuteWhenPaused = true;
 }
 
 void ACustomPlayerController::CreateHUD()
 {
 	if (PlayerHUDWidgetClass)
 	{
-		HUDCharaterStats = CreateWidget<UUserWidget>(this, PlayerHUDWidgetClass);
+		HUDCharaterStats = CreateWidget(this, PlayerHUDWidgetClass);
 		HUDCharaterStats->AddToViewport();
 		HUDCharaterStats->SetVisibility(ESlateVisibility::Visible);
 	}
@@ -46,57 +43,38 @@ void ACustomPlayerController::CreateHUD()
 	bIsPauseMenuVisible = false;
 	if (PauseMenuWidgetClass)
 	{
-		PauseMenu = CreateWidget(this, PauseMenuWidgetClass);
+		PauseMenu = CreateWidget<UPauseMenuWidget>(this, PauseMenuWidgetClass);
 		PauseMenu->AddToViewport();
 		// Hidden by default
 		PauseMenu->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
-void ACustomPlayerController::AddInputMappingContexts()
-{
-	// Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-		GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(KeyboardInputMappingContext, 0);
-		Subsystem->AddMappingContext(GamepadInputMappingContext, 0);
-	}
-}
-
-void ACustomPlayerController::RemoveInputMappingContexts()
-{
-	// Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-		GetLocalPlayer()))
-	{
-		Subsystem->RemoveMappingContext(KeyboardInputMappingContext);
-		Subsystem->RemoveMappingContext(GamepadInputMappingContext);
-	}
-}
-
-void ACustomPlayerController::TogglePauseMenu()
+void ACustomPlayerController::TogglePauseMenu(FKey Key)
 {
 	bIsPauseMenuVisible = !bIsPauseMenuVisible;
-	bIsPauseMenuVisible ? DisplayPauseMenu() : HidePauseMenu();
+	bIsPauseMenuVisible ? DisplayPauseMenu(Key) : HidePauseMenu();
 }
 
-void ACustomPlayerController::DisplayPauseMenu()
+void ACustomPlayerController::DisplayPauseMenu(FKey Key)
 {
-	if (PauseMenu)
+	if (!IsValid(PauseMenu)) return;
+
+	bIsPauseMenuVisible = true;
+	bShowMouseCursor = true;
+
+	SetPause(true);
+	FInputModeGameAndUI InputModeGameAndUI;
+	SetInputMode(InputModeGameAndUI);
+
+	PauseMenu->SetVisibility(ESlateVisibility::Visible);
+	if (Key.IsGamepadKey())
 	{
-		bIsPauseMenuVisible = true;
-		bShowMouseCursor = true;
-		
-		FInputModeGameAndUI InputModeGameAndUI;
-		SetInputMode(InputModeGameAndUI);
-		SetPause(true);
-		
-		PauseMenu->SetVisibility(ESlateVisibility::Visible);
+		bShowMouseCursor = false;
+
 		FLatentActionInfo LatentActionInfo;
 		UKismetSystemLibrary::Delay(this, 0.1f, LatentActionInfo);
-		// TODO: Prevent hardcoded
-		PauseMenu->GetWidgetFromName("ResumeButton")->SetFocus();
+		PauseMenu->ResumeButton->SetFocus();
 	}
 }
 
@@ -110,5 +88,22 @@ void ACustomPlayerController::HidePauseMenu()
 		FInputModeGameOnly InputModeGameOnly;
 		SetInputMode(InputModeGameOnly);
 		SetPause(false);
+	}
+}
+
+void ACustomPlayerController::HandleSwitchUI(FKey Key)
+{
+	if (!IsValid(PauseMenu) || PauseMenu->Visibility == ESlateVisibility::Hidden) return;
+
+	bShowMouseCursor = true;
+	if (Key.IsGamepadKey())
+	{
+		bShowMouseCursor = false;
+		if (!PauseMenu->HasAnyButtonFocus())
+		{
+			FLatentActionInfo LatentActionInfo;
+			UKismetSystemLibrary::Delay(this, 0.1f, LatentActionInfo);
+			PauseMenu->ResumeButton->SetFocus();
+		}
 	}
 }
