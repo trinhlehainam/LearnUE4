@@ -1,13 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "InteractableDoor.h"
+#include "Objects/InteractableDoor.h"
 
 // Sets default values
 AInteractableDoor::AInteractableDoor()
 {
-	PrimaryActorTick.bCanEverTick = false;
-
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(USceneComponent::GetDefaultSceneRootVariableName());
 	SetRootComponent(DefaultSceneRoot);
 	
@@ -26,16 +24,6 @@ void AInteractableDoor::BeginPlay()
 	Super::BeginPlay();
 
 	DoorStartLocation = DoorMesh->GetComponentLocation();
-}
-
-bool AInteractableDoor::IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent)
-{
-	return true;
-}
-
-bool AInteractableDoor::HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& InteractorTagContainer)
-{
-	return InteractorTagContainer.HasAllExact(RequireTags);
 }
 
 void AInteractableDoor::UpdateDoorLocation(float Z_Offset)

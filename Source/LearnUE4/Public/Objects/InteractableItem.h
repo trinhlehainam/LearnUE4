@@ -3,44 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayEffect.h"
 #include "Interactable.h"
 #include "GameFramework/Actor.h"
-#include "InteractableDoor.generated.h"
+#include "InteractableItem.generated.h"
+
+class UGameplayEffect;
 
 UCLASS()
-class LEARNUE4_API AInteractableDoor : public AActor, public IInteractable
+class LEARNUE4_API AInteractableItem : public AActor, public IInteractable
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
-	AInteractableDoor();
+	AInteractableItem();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent) override;
 	virtual bool HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& InteractorTagContainer) override;
-
-	UFUNCTION(BlueprintCallable)
-	void UpdateDoorLocation(float Z_Offset);
-private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
-	UStaticMeshComponent* DoorMesh;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
-	UStaticMeshComponent* SwitchMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
-	USceneComponent* DefaultSceneRoot;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Interact", meta=(AllowPrivateAccess))
 	TSubclassOf<UGameplayEffect> ApplyEffectClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Interact", meta=(AllowPrivateAccess))
 	FGameplayTagContainer RequireTags;
-
-	FVector DoorStartLocation;
 };

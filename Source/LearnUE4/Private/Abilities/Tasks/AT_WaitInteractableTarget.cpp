@@ -5,7 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "DrawDebugHelpers.h"
-#include "Interactable.h"
+#include "Objects/Interactable.h"
 #include "GameFramework/Character.h"
 
 UAT_WaitInteractableTarget::UAT_WaitInteractableTarget()

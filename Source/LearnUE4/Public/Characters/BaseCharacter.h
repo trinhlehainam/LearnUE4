@@ -28,8 +28,8 @@ public:
 	float GetMaxHealth() const;
 	float GetMana() const;
 	float GetMaxMana() const;
-
-	// This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
+	
+	// TODO: This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
 	void SetInteractableTargetDataHandle(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	FGameplayAbilityTargetDataHandle GetInteractableTargetDataHandle() const;
 	//
