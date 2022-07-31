@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Objects/KeyItem.h"
+#include "Objects/ComsumeItem.h"
 
 
-AKeyItem::AKeyItem()
+AComsumeItem::AComsumeItem()
 {
 	KeyMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Key Mesh"));
 }

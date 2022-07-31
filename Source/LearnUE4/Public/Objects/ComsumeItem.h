@@ -5,15 +5,15 @@
 #include "CoreMinimal.h"
 #include "ApplyEffectItem.h"
 #include "GameFramework/Actor.h"
-#include "KeyItem.generated.h"
+#include "ComsumeItem.generated.h"
 
 UCLASS()
-class LEARNUE4_API AKeyItem : public AApplyEffectItem
+class LEARNUE4_API AComsumeItem : public AApplyEffectItem
 {
 	GENERATED_BODY()
 
 public:
-	AKeyItem();
+	AComsumeItem();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
