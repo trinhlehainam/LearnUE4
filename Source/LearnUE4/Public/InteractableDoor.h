@@ -24,17 +24,23 @@ protected:
 	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent) override;
 	virtual bool HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& InteractorTagContainer) override;
 
-	void UpdateDoorLocation(float Delta);
+	UFUNCTION(BlueprintCallable)
+	void UpdateDoorLocation(float Z_Offset);
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
 	UStaticMeshComponent* DoorMesh;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
 	UStaticMeshComponent* SwitchMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interact", meta=(AllowPrivateAccess))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
+	USceneComponent* DefaultSceneRoot;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Interact", meta=(AllowPrivateAccess))
 	TSubclassOf<UGameplayEffect> ApplyEffectClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interact", meta=(AllowPrivateAccess))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Interact", meta=(AllowPrivateAccess))
 	FGameplayTagContainer RequireTags;
+
+	FVector DoorStartLocation;
 };

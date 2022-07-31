@@ -8,11 +8,12 @@ AInteractableDoor::AInteractableDoor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(FName("Default Root"));
+	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(USceneComponent::GetDefaultSceneRootVariableName());
+	SetRootComponent(DefaultSceneRoot);
 	
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Door Mesh"));
 	SwitchMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Switch Mesh"));
-
+	
 	DoorMesh->SetupAttachment(GetRootComponent());
 	SwitchMesh->SetupAttachment(GetRootComponent());
 	
@@ -23,6 +24,8 @@ AInteractableDoor::AInteractableDoor()
 void AInteractableDoor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	DoorStartLocation = DoorMesh->GetComponentLocation();
 }
 
 bool AInteractableDoor::IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent)
@@ -32,13 +35,13 @@ bool AInteractableDoor::IsAvailableForInteraction_Implementation(UPrimitiveCompo
 
 bool AInteractableDoor::HasRequiredGameplayTags_Implementation(const FGameplayTagContainer& InteractorTagContainer)
 {
-	return RequireTags.HasAllExact(InteractorTagContainer);
+	return InteractorTagContainer.HasAllExact(RequireTags);
 }
 
-void AInteractableDoor::UpdateDoorLocation(float Delta)
+void AInteractableDoor::UpdateDoorLocation(float Z_Offset)
 {
-	FVector DoorLocation = DoorMesh->GetComponentLocation();
-	DoorLocation.Z += Delta;
+	FVector DoorLocation = DoorStartLocation;
+	DoorLocation.Z += Z_Offset;
 	DoorMesh->SetWorldLocation(DoorLocation);
 }
 
