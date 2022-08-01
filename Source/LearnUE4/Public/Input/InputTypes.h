@@ -21,7 +21,7 @@ struct FGameplayTagInputAction
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
-	TSubclassOf<UBaseGameplayAbility> AbilityClass;
+	EAbilityInputID AbilityInputID;
 };
 
 /**

@@ -253,7 +253,7 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 		}
 	}
 
-#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
+#if !(UE_BUILD_SHIPPING || UE_BUILD_TEST)
 	if (bShowDebug)
 	{
 		FColor DebugSphereColor = HitResult.bBlockingHit ? FColor::Red : FColor::Green;

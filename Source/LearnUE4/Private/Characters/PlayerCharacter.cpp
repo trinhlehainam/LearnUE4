@@ -73,13 +73,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 			InputConfig, FCustomGameplayTags::Get().InputTag_Look,
 			ETriggerEvent::Triggered, this, &APlayerCharacter::Input_Look);
 
-		/*
-		 * Jump Action is granted by consuming Ability Soul
-		 *
-		EnhancedInputComponent->BindActionByInputTag(
-			InputConfig, FCustomGameplayTags::Get().InputTag_Jump,
-			ETriggerEvent::Started, this, &APlayerCharacter::Jump);
-		*/
 	}
 
 	BindGameplayAbilitiesToInputComponent(PlayerInputComponent);
@@ -98,9 +91,9 @@ void APlayerCharacter::BindGameplayAbilitiesToInputComponent(UInputComponent* Pl
 
 	for (const FGameplayTagInputAction& Input : InputConfig->TagInputs)
 	{
-		if (!IsValid(Input.InputAction) || !IsValid(Input.AbilityClass)) continue;
+		if (!IsValid(Input.InputAction)) continue;
 
-		EAbilityInputID AbilityInputID = Input.AbilityClass.GetDefaultObject()->AbilityInputID;
+		EAbilityInputID AbilityInputID = Input.AbilityInputID;
 
 		if (AbilityInputID == EAbilityInputID::None || AbilityInputID == EAbilityInputID::Confirm || AbilityInputID
 			== EAbilityInputID::Cancel)

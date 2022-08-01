@@ -63,6 +63,7 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 		IInteractable::Execute_PostInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
 		                                    HitResult->GetComponent());
+		
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 }
@@ -115,15 +116,12 @@ void UGA_InteractionHandle::PerformInteraction()
 	AActor* InteractedActor = HitResult->GetActor();
 
 	if (!IsValid(InteractedActor) || !InteractedActor->Implements<UInteractable>())
-	{
-		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
-		return;
-	}
+		return CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 
 	IInteractable::Execute_PreInteract(InteractedActor, GetActorInfo().AvatarActor.Get(),
 	                                   HitResult->GetComponent());
 
-	// Interactable Target may perform Destroy itself when execute PreInteract
+	// Interacted Actor may perform Destroy itself when execute PreInteract
 	if (!IsValid(InteractedActor))
 		return CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 

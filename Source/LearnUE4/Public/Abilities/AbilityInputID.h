@@ -10,10 +10,10 @@
 UENUM(BlueprintType)
 enum class EAbilityInputID : uint8
 {
- None,
- Confirm,
- Cancel,
- Jump,
- Attack,
- Interact
+	None			UMETA(DisplayName="None, Input ID 0"),
+	Confirm			UMETA(DisplayName="Comfirm, Input ID 1"),
+	Cancel			UMETA(DisplayName="Cancel, Input ID 2"),			
+	Jump			UMETA(DisplayName="Jump, Input ID 3"),
+	Attack			UMETA(DisplayName="Attack, Input ID 4"),
+	Interact		UMETA(DisplayName="Interact, Input ID 5")
 };
