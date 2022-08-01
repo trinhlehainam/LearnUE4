@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MyAnimInstance.h"
+#include "Animation/MyAnimInstance.h"
 
 #include "GameFramework/Character.h"
-#include "GameFramework/Pawn.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UMyAnimInstance::NativeInitializeAnimation()

@@ -24,6 +24,8 @@ APlayerCharacter::APlayerCharacter()
 
 	bIsAbilitiesBoundToInput = false;
 
+	AIControllerClass = nullptr;
+	
 	// Let Character Movement Component rotate Character toward movement direction
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
