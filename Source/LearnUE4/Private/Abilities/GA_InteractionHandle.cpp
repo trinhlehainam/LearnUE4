@@ -7,7 +7,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
 #include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 
-#include "Objects/Interactable.h"
+#include "Interfaces/Interactable.h"
 #include "Characters/BaseCharacter.h"
 
 UGA_InteractionHandle::UGA_InteractionHandle()

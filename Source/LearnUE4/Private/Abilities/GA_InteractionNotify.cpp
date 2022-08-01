@@ -4,7 +4,7 @@
 #include "Abilities/GA_InteractionNotify.h"
 
 #include "AbilitySystemComponent.h"
-#include "Objects/Interactable.h"
+#include "Interfaces/Interactable.h"
 #include "Abilities/CustomGameplayTags.h"
 #include "Abilities/Tasks/AT_WaitInteractableTarget.h"
 #include "Characters/BaseCharacter.h"
