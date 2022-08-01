@@ -32,4 +32,3 @@ void AInteractableDoor::UpdateDoorLocation(float Z_Offset)
 	DoorLocation.Z += Z_Offset;
 	DoorMesh->SetWorldLocation(DoorLocation);
 }
-
