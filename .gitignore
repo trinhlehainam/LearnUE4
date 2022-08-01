@@ -75,9 +75,14 @@ DerivedDataCache/*
 
 # Ignore all assets files in Content folder
 Content/*
+# Except these folders
 !Content/Blueprints
 !Content/Maps
 !Content/Collections
 !Content/Developers
 !Content/Abilities
 !Content/Inputs
+
+# Ignore all files in .idea/
+.idea/*
+
