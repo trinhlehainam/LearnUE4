@@ -84,5 +84,5 @@ Content/*
 !Content/Inputs
 
 # Ignore all files in .idea/
-.idea/*
+# .idea/*
 

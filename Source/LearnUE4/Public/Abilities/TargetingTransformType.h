@@ -14,4 +14,6 @@ enum class EGameplayAbilityTargetingTransformType: uint8
 	
 	// Only support using socket of Skeleton Mesh Component in ACharacter for now
 	MeshSocketTransform		UMETA(Displayname = "Mesh's Socket Transform")
+
+	// TODO: Support more transform type (UPrimitiveComponent, etc)
 };

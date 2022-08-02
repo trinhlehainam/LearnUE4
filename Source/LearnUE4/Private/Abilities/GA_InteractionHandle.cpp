@@ -3,8 +3,8 @@
 
 #include "Abilities/GA_InteractionHandle.h"
 
-#include "Abilities/GE_AddInteractingTag.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "AbilitySystemComponent.h"
+#include "Abilities/Effects/GE_AddInteractingTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitInputRelease.h"
 #include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 
@@ -43,6 +43,10 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	InteractionDuration = IInteractable::Execute_GetInteractionDuration(InteractedActor, InteractedComponent);
 
+	// For Interactable Target triggers actions at start of interaction (like start animation, etc)
+	IInteractable::Execute_BeginInteraction(InteractedActor, CurrentActorInfo->AvatarActor.Get(),
+	                                        HitResult->GetComponent(), CurrentActorInfo->PlayerController.Get());
+
 	if (InteractionDuration > 0.f)
 	{
 		UAbilityTask_WaitDelay* WaitUntilFinishInteractionTask = UAbilityTask_WaitDelay::WaitDelay(
@@ -54,15 +58,18 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		WaitInputReleaseTask->OnRelease.AddDynamic(this, &UGA_InteractionHandle::OnInputReleased);
 		WaitInputReleaseTask->ReadyForActivation();
 
-		// For Interactable Target triggers actions at start of interaction (like start animation, etc)
-		IInteractable::Execute_BeginInteraction(InteractedActor, CurrentActorInfo->AvatarActor.Get(),
-		                                        HitResult->GetComponent(), CurrentActorInfo->PlayerController.Get());
+		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+		if (IsValid(ASC) && IsValid(AddInteractingTagEffectClass))
+		{
+			FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+			FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(
+				AddInteractingTagEffectClass, 1.f, ContextHandle);
+
+			AddInteractingTagEffectHandle = ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		}
 	}
 	else
 	{
-		IInteractable::Execute_BeginInteraction(InteractedActor, CurrentActorInfo->AvatarActor.Get(),
-		                                        HitResult->GetComponent(), CurrentActorInfo->PlayerController.Get());
-
 		// Interactable Target may perform Destroy itself when execute BeginInteraction
 		if (!IsValid(InteractedActor))
 			return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
@@ -86,6 +93,12 @@ void UGA_InteractionHandle::EndAbility(const FGameplayAbilitySpecHandle Handle,
 
 		if (IsValid(InteractableActor) && InteractableActor->Implements<UInteractable>())
 			IInteractable::Execute_CancelInteraction(InteractableActor);
+	}
+
+	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+	if (IsValid(ASC) && AddInteractingTagEffectHandle.IsValid())
+	{
+		ASC->RemoveActiveGameplayEffect(AddInteractingTagEffectHandle);
 	}
 
 	TargetDataHandle.Clear();

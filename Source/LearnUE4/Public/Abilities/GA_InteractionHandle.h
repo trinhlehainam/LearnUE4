@@ -36,4 +36,5 @@ protected:
 	float InteractionDuration;
 
 	TSubclassOf<UGameplayEffect> AddInteractingTagEffectClass;
+	FActiveGameplayEffectHandle AddInteractingTagEffectHandle;
 };

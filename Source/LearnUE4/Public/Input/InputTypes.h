@@ -15,13 +15,13 @@ struct FGameplayTagInputAction
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
-	const UInputAction* InputAction;
+	const UInputAction* InputAction = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Input")
-	EAbilityInputID AbilityInputID;
+	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 };
 
 /**

@@ -2,17 +2,19 @@
 
 #pragma once
 
-#include "GameplayEffect.h"
+#include "BaseGameplayEffect.h"
 #include "GE_AddInteractingTag.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API UGE_AddInteractingTag : public UGameplayEffect
+class LEARNUE4_API UGE_AddInteractingTag : public UBaseGameplayEffect
 {
 	GENERATED_BODY()
 	
 public:
 	UGE_AddInteractingTag();
+
+	virtual void InitProperties() override;
 };
