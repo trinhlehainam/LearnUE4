@@ -4,9 +4,11 @@
 #include "Abilities/GA_InteractionNotify.h"
 
 #include "AbilitySystemComponent.h"
-#include "Interfaces/Interactable.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
+
 #include "Abilities/CustomGameplayTags.h"
 #include "Abilities/Tasks/AT_WaitInteractableTarget.h"
+#include "Interfaces/Interactable.h"
 #include "Characters/BaseCharacter.h"
 
 UGA_InteractionNotify::UGA_InteractionNotify()
@@ -22,21 +24,24 @@ void UGA_InteractionNotify::ActivateAbility(const FGameplayAbilitySpecHandle Han
                                             const FGameplayAbilityActivationInfo ActivationInfo,
                                             const FGameplayEventData* TriggerEventData)
 {
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	{
-		return;
-	}
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 
-	UAT_WaitInteractableTarget* ScanInteractionTask = UAT_WaitInteractableTarget::WaitForInteractableTarget(
-		this, TraceChannel, SourceTransformType, MeshSocketName, TraceRange, FireRate, bShowDebug, bUsePlayerControllerView);
+	TraceTask = UAT_WaitInteractableTarget::WaitForInteractableTarget(
+		this, TraceChannel, SourceTransformType, MeshSocketName, TraceRange, FireRate, bShowDebug,
+		bUsePlayerControllerView);
+	TraceTask->OnTargetLost.AddDynamic(this, &UGA_InteractionNotify::OnTargetLost);
+	TraceTask->OnFoundNewTarget.AddDynamic(this, &UGA_InteractionNotify::OnFoundNewTarget);
+	TraceTask->ReadyForActivation();
 
-	// WaitForInteractionTarget Task will clean up these delegates OnDestroy
-	ScanInteractionTask->OnTargetLost.AddDynamic(this, &UGA_InteractionNotify::OnTargetLost);
-	ScanInteractionTask->OnFoundNewTarget.AddDynamic(this, &UGA_InteractionNotify::OnFoundNewTarget);
-	//
+	UAbilityTask_WaitGameplayTagAdded* WaitTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
+		this, FCustomGameplayTags::Get().State_Interacting);
+	WaitTagAddedTask->Added.AddDynamic(this, &UGA_InteractionNotify::OnInteractingTagAdded);
+	WaitTagAddedTask->ReadyForActivation();	
 
-	// Activate this task
-	ScanInteractionTask->ReadyForActivation();
+	UAbilityTask_WaitGameplayTagRemoved* WaitTagRemovedTask = UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(
+		this, FCustomGameplayTags::Get().State_Interacting);
+	WaitTagRemovedTask->Removed.AddDynamic(this, &UGA_InteractionNotify::OnInteractingTagRemoved);
+	WaitTagRemovedTask->ReadyForActivation();
 }
 
 void UGA_InteractionNotify::OnFoundNewTarget(const FGameplayAbilityTargetDataHandle& DataHandle)
@@ -78,6 +83,18 @@ void UGA_InteractionNotify::OnTargetLost(const FGameplayAbilityTargetDataHandle&
 	}
 
 	SentUpdateTargetDataGameplayEvent(FGameplayAbilityTargetDataHandle());
+}
+
+void UGA_InteractionNotify::OnInteractingTagAdded()
+{
+	if (!TraceTask.IsValid() || !TraceTask->IsActive()) return;
+	TraceTask->PauseTrace();
+}
+
+void UGA_InteractionNotify::OnInteractingTagRemoved()
+{
+	if (!TraceTask.IsValid() || !TraceTask->IsActive()) return;
+	TraceTask->ResumeTrace();
 }
 
 void UGA_InteractionNotify::SentUpdateTargetDataGameplayEvent(const FGameplayAbilityTargetDataHandle& DataHandle)

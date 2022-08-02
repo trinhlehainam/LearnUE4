@@ -59,6 +59,16 @@ UAT_WaitInteractableTarget* UAT_WaitInteractableTarget::WaitForInteractableTarge
 	return TaskInstance;
 }
 
+void UAT_WaitInteractableTarget::PauseTrace()
+{
+	GetWorld()->GetTimerManager().PauseTimer(TraceTimerHandle);
+}
+
+void UAT_WaitInteractableTarget::ResumeTrace()
+{
+	GetWorld()->GetTimerManager().UnPauseTimer(TraceTimerHandle);
+}
+
 void UAT_WaitInteractableTarget::Activate()
 {
 	GetWorld()->GetTimerManager().SetTimer(TraceTimerHandle,

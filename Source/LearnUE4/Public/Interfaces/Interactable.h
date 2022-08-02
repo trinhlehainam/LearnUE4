@@ -36,12 +36,12 @@ public:
 	virtual float GetInteractionDuration_Implementation(UPrimitiveComponent* InteractedComponent) const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
-	void PreInteract(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent);
-	virtual void PreInteract_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent);
+	void BeginInteraction(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController);
+	virtual void BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController);
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
-	void PostInteract(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent);
-	virtual void PostInteract_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent);
+	void EndInteraction(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController);
+	virtual void EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController);
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
 	void CancelInteraction();

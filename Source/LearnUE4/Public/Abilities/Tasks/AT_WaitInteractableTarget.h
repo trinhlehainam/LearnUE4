@@ -43,6 +43,12 @@ public:
 		FName TaskInstanceName = FName("WaitForInteractableTarget")
 	);
 
+	UFUNCTION(BlueprintCallable)
+	void PauseTrace();
+	
+	UFUNCTION(BlueprintCallable)
+	void ResumeTrace();
+	
 protected:
 	virtual void Activate() override;
 	virtual void OnDestroy(bool bInOwnerFinished) override;

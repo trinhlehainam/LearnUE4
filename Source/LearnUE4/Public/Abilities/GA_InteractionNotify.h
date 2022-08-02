@@ -7,6 +7,8 @@
 #include "Abilities/BaseGameplayAbility.h"
 #include "GA_InteractionNotify.generated.h"
 
+class UAT_WaitInteractableTarget;
+
 /**
  * 
  */
@@ -26,6 +28,12 @@ protected:
 	
 	UFUNCTION()
 	void OnTargetLost(const FGameplayAbilityTargetDataHandle& DataHandle);
+
+	UFUNCTION()
+	void OnInteractingTagAdded();
+
+	UFUNCTION()
+	void OnInteractingTagRemoved();
 	
 	void SentUpdateTargetDataGameplayEvent(const FGameplayAbilityTargetDataHandle& DataHandle);
 	
@@ -48,4 +56,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Interaction")
 	float FireRate;
+
+	TWeakObjectPtr<UAT_WaitInteractableTarget> TraceTask;
 };

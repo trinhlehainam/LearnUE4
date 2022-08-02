@@ -20,5 +20,5 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void PreInteract_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent) override;
+	virtual void BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController) override;
 };
