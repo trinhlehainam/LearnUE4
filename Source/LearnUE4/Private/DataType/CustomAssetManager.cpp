@@ -4,7 +4,6 @@
 #include "DataType/CustomAssetManager.h"
 
 #include "Abilities/CustomAbilitySystemGlobals.h"
-#include "Abilities/CustomGameplayTags.h"
 
 DEFINE_LOG_CATEGORY(LogCustomAssetManager)
 
@@ -35,5 +34,4 @@ void UCustomAssetManager::StartInitialLoading()
 	Super::StartInitialLoading();
 
 	UCustomAbilitySystemGlobals::Get().InitGlobalData();
-	FCustomGameplayTags::Get();
 }

@@ -68,11 +68,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindActionByInputTag(
-			InputConfig, FCustomGameplayTags::Get().InputTag_Move,
+			InputConfig, ECustomGameplayTags::InputTag_Move,
 			ETriggerEvent::Triggered, this, &APlayerCharacter::Input_Move);
 
 		EnhancedInputComponent->BindActionByInputTag(
-			InputConfig, FCustomGameplayTags::Get().InputTag_Look,
+			InputConfig, ECustomGameplayTags::InputTag_Look,
 			ETriggerEvent::Triggered, this, &APlayerCharacter::Input_Look);
 
 	}

@@ -12,5 +12,5 @@ UGE_AddInteractingTag::UGE_AddInteractingTag()
 void UGE_AddInteractingTag::InitProperties()
 {
 	DurationPolicy = EGameplayEffectDurationType::Infinite;
-	InheritableOwnedTagsContainer.Added.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Interacting")));
+	InheritableOwnedTagsContainer.Added.AddTag(ECustomGameplayTags::State_Interacting);
 }

@@ -34,12 +34,12 @@ void UGA_InteractionNotify::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	TraceTask->ReadyForActivation();
 
 	UAbilityTask_WaitGameplayTagAdded* WaitTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
-		this, FCustomGameplayTags::Get().State_Interacting);
+		this, ECustomGameplayTags::State_Interacting);
 	WaitTagAddedTask->Added.AddDynamic(this, &UGA_InteractionNotify::OnInteractingTagAdded);
 	WaitTagAddedTask->ReadyForActivation();	
 
 	UAbilityTask_WaitGameplayTagRemoved* WaitTagRemovedTask = UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(
-		this, FCustomGameplayTags::Get().State_Interacting);
+		this, ECustomGameplayTags::State_Interacting);
 	WaitTagRemovedTask->Removed.AddDynamic(this, &UGA_InteractionNotify::OnInteractingTagRemoved);
 	WaitTagRemovedTask->ReadyForActivation();
 }
@@ -101,5 +101,5 @@ void UGA_InteractionNotify::SentUpdateTargetDataGameplayEvent(const FGameplayAbi
 {
 	FGameplayEventData EventData;
 	EventData.TargetData = DataHandle;
-	SendGameplayEvent(FCustomGameplayTags::Get().GameplayEvent_UpdateInteractableTargetData, EventData);
+	SendGameplayEvent(ECustomGameplayTags::GameplayEvent_UpdateInteractableTargetData, EventData);
 }

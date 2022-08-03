@@ -5,29 +5,17 @@
 
 #include "GameplayTagsManager.h"
 
-FCustomGameplayTags::FCustomGameplayTags()
+namespace ECustomGameplayTags
 {
-}
+	UE_DEFINE_GAMEPLAY_TAG(GameplayEvent_UpdateInteractableTargetData, "GameplayEvent.UpdateInteractableTargetData")
+	UE_DEFINE_GAMEPLAY_TAG(Ability_InteractionHandle, "Ability.InteractionHandle")
+	UE_DEFINE_GAMEPLAY_TAG(Ability_InteractionNotify, "Ability.InteractionNotify")
+	UE_DEFINE_GAMEPLAY_TAG(State_Interacting, "State.Interacting")
 
-const FCustomGameplayTags& FCustomGameplayTags::Get()
-{
-	static FCustomGameplayTags Singleton;
-	return Singleton;
-}
-
-void FCustomGameplayTags::AddTags()
-{
-	UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
-	
-	GameplayEvent_UpdateInteractableTargetData = Manager.AddNativeGameplayTag(FName("GameplayEvent.UpdateInteractableTargetData"));
-	Ability_InteractionHandle = Manager.AddNativeGameplayTag(FName("Ability.InteractionHandle"));
-	Ability_InteractionNotify = Manager.AddNativeGameplayTag(FName("Ability.InteractionNotify"));
-	State_Interacting = Manager.AddNativeGameplayTag(FName("State.Interacting"));
-	
-	InputTag_TogglePauseMenu = Manager.AddNativeGameplayTag(FName("InputTag.TogglePauseMenu"));
-	InputTag_Move = Manager.AddNativeGameplayTag(FName("InputTag.Move"));
-	InputTag_Look = Manager.AddNativeGameplayTag(FName("InputTag.Look"));
-	InputTag_Jump = Manager.AddNativeGameplayTag(FName("InputTag.Jump"));
-	InputTag_LightAttack = Manager.AddNativeGameplayTag(FName("InputTag.LightAttack"));
-	InputTag_Interact = Manager.AddNativeGameplayTag(FName("InputTag.Interact"));
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_TogglePauseMenu, "InputTag.TogglePauseMenu")
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_Move, "InputTag.Move")
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_Jump, "InputTag.Jump")
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_Look, "InputTag.Look")
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_LightAttack, "InputTag.LightAttack")
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_Interact, "InputTag.Interact")
 }
