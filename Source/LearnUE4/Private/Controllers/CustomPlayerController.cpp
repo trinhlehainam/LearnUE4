@@ -121,3 +121,27 @@ void ACustomPlayerController::SetInteractWidgetVisibility(ESlateVisibility Visib
 
 	PlayerHUD->GetInteractWidget()->SetVisibility(Visibility);
 }
+
+void ACustomPlayerController::OnTargetLost_Implementation(AActor* InteractedActor,
+	UPrimitiveComponent* InteractedComponent)
+{
+	SetInteractWidgetVisibility(ESlateVisibility::Hidden);
+}
+
+void ACustomPlayerController::OnNewTargetFound_Implementation(AActor* InteractedActor,
+	UPrimitiveComponent* InteractedComponent)
+{
+	SetInteractWidgetVisibility(ESlateVisibility::Visible);
+}
+
+void ACustomPlayerController::OnBeginInteraction_Implementation(AActor* InteractedActor,
+	UPrimitiveComponent* InteractedComponent)
+{
+	
+}
+
+void ACustomPlayerController::OnEndInteraction_Implementation(AActor* InteractedActor,
+	UPrimitiveComponent* InteractedComponent)
+{
+	
+}

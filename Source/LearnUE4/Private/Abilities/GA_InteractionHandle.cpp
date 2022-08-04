@@ -26,7 +26,7 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 
 	// TODO: Hard coded to update Target Data from GA_InteractingNotify to ABaseCharacter
-	if (ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get())
+	if (ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
 	{
 		if (!IsValid(InteractingActor))
 			return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
@@ -47,7 +47,7 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if (!IsValid(InteractedActor) || !InteractedActor->Implements<UInteractable>())
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 
-	if (IsValid(PC) && PC->Implements<IInteractor>())
+	if (IsValid(PC) && PC->Implements<UInteractor>())
 		IInteractor::Execute_OnBeginInteraction(PC, InteractedActor, InteractedComponent);
 
 	InteractionDuration = IInteractable::Execute_GetInteractionDuration(InteractedActor, InteractedComponent);
@@ -80,7 +80,7 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	}
 	else
 	{
-		if (IsValid(PC) && PC->Implements<IInteractor>())
+		if (IsValid(PC) && PC->Implements<UInteractor>())
 			IInteractor::Execute_OnEndInteraction(PC, InteractedActor, InteractedComponent);
 
 		// Interactable Target may perform Destroy itself when execute BeginInteraction
@@ -141,7 +141,7 @@ void UGA_InteractionHandle::OnEndInteraction()
 	APlayerController* PC = CurrentActorInfo->PlayerController.Get();
 	AActor* InteractingActor = CurrentActorInfo->AvatarActor.Get();
 
-	if (IsValid(PC) && PC->Implements<IInteractor>())
+	if (IsValid(PC) && PC->Implements<UInteractor>())
 		IInteractor::Execute_OnEndInteraction(PC, InteractedActor, InteractedComponent);
 
 	// Interactable Target may perform Destroy itself when execute BeginInteraction

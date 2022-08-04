@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Interfaces/Interactor.h"
 #include "CustomPlayerController.generated.h"
 
 class UInputMappingContext;
@@ -15,7 +16,7 @@ class UPlayerHUDWidget;
  * 
  */
 UCLASS()
-class LEARNUE4_API ACustomPlayerController : public APlayerController
+class LEARNUE4_API ACustomPlayerController : public APlayerController, public IInteractor
 {
 	GENERATED_BODY()
 	
@@ -50,6 +51,14 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetInteractWidgetVisibility(ESlateVisibility Visibility);
+
+	// ~ Begin IInteractor Interface
+	virtual void OnTargetLost_Implementation(AActor* InteractedActor, UPrimitiveComponent* InteractedComponent) override;
+	virtual void OnNewTargetFound_Implementation(AActor* InteractedActor, UPrimitiveComponent* InteractedComponent) override;
+	virtual void OnBeginInteraction_Implementation(AActor* InteractedActor, UPrimitiveComponent* InteractedComponent) override;
+	virtual void OnEndInteraction_Implementation(AActor* InteractedActor, UPrimitiveComponent* InteractedComponent) override;
+	// ~ End IInteractor Interface
+	
 protected:
 	virtual void BeginPlay() override;
 

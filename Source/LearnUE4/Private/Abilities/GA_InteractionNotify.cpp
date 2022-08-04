@@ -10,8 +10,6 @@
 #include "Abilities/Tasks/AT_WaitInteractableTarget.h"
 #include "Interfaces/Interactable.h"
 #include "Characters/BaseCharacter.h"
-#include "Components/SlateWrapperTypes.h"
-#include "Controllers/CustomPlayerController.h"
 #include "Interfaces/Interactor.h"
 
 UGA_InteractionNotify::UGA_InteractionNotify()
@@ -54,7 +52,7 @@ void UGA_InteractionNotify::OnNewTargetFound(const FGameplayAbilityTargetDataHan
 	AActor* InteractedActor = HitResult->GetActor();
 
 	if (APlayerController* PC = CurrentActorInfo->PlayerController.Get())
-		if (IsValid(PC) && PC->Implements<IInteractor>())
+		if (IsValid(PC) && PC->Implements<UInteractor>())
 			IInteractor::Execute_OnNewTargetFound(PC, HitResult->GetActor(), HitResult->GetComponent());
 
 	if (IsValid(InteractedActor) && InteractedActor->Implements<UInteractable>())
@@ -74,7 +72,7 @@ void UGA_InteractionNotify::OnTargetLost(const FGameplayAbilityTargetDataHandle&
 	AActor* InteractedActor = HitResult->GetActor();
 
 	if (APlayerController* PC = CurrentActorInfo->PlayerController.Get())
-		if (IsValid(PC) && PC->Implements<IInteractor>())
+		if (IsValid(PC) && PC->Implements<UInteractor>())
 			IInteractor::Execute_OnTargetLost(PC, HitResult->GetActor(), HitResult->GetComponent());
 
 	if (IsValid(InteractedActor) && InteractedActor->Implements<UInteractable>())
