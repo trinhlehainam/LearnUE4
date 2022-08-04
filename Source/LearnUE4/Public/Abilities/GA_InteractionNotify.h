@@ -24,7 +24,7 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	UFUNCTION()
-	void OnFoundNewTarget(const FGameplayAbilityTargetDataHandle& DataHandle);
+	void OnNewTargetFound(const FGameplayAbilityTargetDataHandle& DataHandle);
 	
 	UFUNCTION()
 	void OnTargetLost(const FGameplayAbilityTargetDataHandle& DataHandle);

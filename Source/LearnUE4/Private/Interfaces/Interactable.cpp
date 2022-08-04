@@ -31,7 +31,7 @@ void IInteractable::CancelInteraction_Implementation()
 {
 }
 
-void IInteractable::OnFoundNewTarget_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent)
+void IInteractable::OnNewTargetFound_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent)
 {
 }
 

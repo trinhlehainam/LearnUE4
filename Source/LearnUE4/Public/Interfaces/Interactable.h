@@ -48,8 +48,8 @@ public:
 	virtual void CancelInteraction_Implementation();
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
-	void OnFoundNewTarget(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent);
-	virtual void OnFoundNewTarget_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent);
+	void OnNewTargetFound(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent);
+	virtual void OnNewTargetFound_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction")
 	void OnTargetLost(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent);

@@ -80,7 +80,7 @@ void UAT_WaitInteractableTarget::OnDestroy(bool bInOwnerFinished)
 {
 	GetWorld()->GetTimerManager().ClearTimer(TraceTimerHandle);
 	OnTargetLost.Clear();
-	OnFoundNewTarget.Clear();
+	OnNewTargetFound.Clear();
 
 	Super::OnDestroy(bInOwnerFinished);
 }
@@ -239,7 +239,7 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 		if (bNotifyFoundNewTarget)
 		{
 			TargetDataHandle = MakeTargetData(HitResult);
-			OnFoundNewTarget.Broadcast(TargetDataHandle);
+			OnNewTargetFound.Broadcast(TargetDataHandle);
 		}
 	}
 	else

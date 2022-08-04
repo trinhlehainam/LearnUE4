@@ -10,6 +10,7 @@
 
 #include "Interfaces/Interactable.h"
 #include "Characters/BaseCharacter.h"
+#include "Interfaces/Interactor.h"
 
 UGA_InteractionHandle::UGA_InteractionHandle()
 {
@@ -24,12 +25,14 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 {
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 
-	ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get());
+	// TODO: Hard coded to update Target Data from GA_InteractingNotify to ABaseCharacter
+	if (ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get())
+	{
+		if (!IsValid(InteractingActor))
+			return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 
-	if (!IsValid(InteractingActor))
-		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
-
-	TargetDataHandle = InteractingActor->GetInteractableTargetDataHandle();
+		TargetDataHandle = InteractingActor->GetInteractableTargetDataHandle();
+	}
 
 	if (TargetDataHandle.Num() == 0)
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
@@ -37,15 +40,20 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	const FHitResult* HitResult = TargetDataHandle.Get(0)->GetHitResult();
 	AActor* InteractedActor = HitResult->GetActor();
 	UPrimitiveComponent* InteractedComponent = HitResult->GetComponent();
+	
+	APlayerController* PC = ActorInfo->PlayerController.Get();
+	AActor* InteractingActor = ActorInfo->AvatarActor.Get();
 
 	if (!IsValid(InteractedActor) || !InteractedActor->Implements<UInteractable>())
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 
+	if (IsValid(PC) && PC->Implements<IInteractor>())
+		IInteractor::Execute_OnBeginInteraction(PC, InteractedActor, InteractedComponent);
+
 	InteractionDuration = IInteractable::Execute_GetInteractionDuration(InteractedActor, InteractedComponent);
 
 	// For Interactable Target triggers actions at start of interaction (like start animation, etc)
-	IInteractable::Execute_BeginInteraction(InteractedActor, CurrentActorInfo->AvatarActor.Get(),
-	                                        HitResult->GetComponent(), CurrentActorInfo->PlayerController.Get());
+	IInteractable::Execute_BeginInteraction(InteractedActor, InteractingActor, InteractedComponent, PC);
 
 	if (InteractionDuration > 0.f)
 	{
@@ -72,14 +80,16 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	}
 	else
 	{
+		if (IsValid(PC) && PC->Implements<IInteractor>())
+			IInteractor::Execute_OnEndInteraction(PC, InteractedActor, InteractedComponent);
+
 		// Interactable Target may perform Destroy itself when execute BeginInteraction
 		if (!IsValid(InteractedActor))
 			return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 
-		IInteractable::Execute_EndInteraction(InteractedActor, CurrentActorInfo->AvatarActor.Get(),
-		                                      HitResult->GetComponent(), CurrentActorInfo->PlayerController.Get());
+		IInteractable::Execute_EndInteraction(InteractedActor, InteractingActor, InteractedComponent, PC);
 
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
 }
 
@@ -126,13 +136,19 @@ void UGA_InteractionHandle::OnEndInteraction()
 {
 	const FHitResult* HitResult = TargetDataHandle.Get(0)->GetHitResult();
 	AActor* InteractedActor = HitResult->GetActor();
+	UPrimitiveComponent* InteractedComponent = HitResult->GetComponent();
 
-	// Interacted Actor may perform Destroy itself when execute BeginInteraction
+	APlayerController* PC = CurrentActorInfo->PlayerController.Get();
+	AActor* InteractingActor = CurrentActorInfo->AvatarActor.Get();
+
+	if (IsValid(PC) && PC->Implements<IInteractor>())
+		IInteractor::Execute_OnEndInteraction(PC, InteractedActor, InteractedComponent);
+
+	// Interactable Target may perform Destroy itself when execute BeginInteraction
 	if (!IsValid(InteractedActor))
 		return CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 
-	IInteractable::Execute_EndInteraction(InteractedActor, CurrentActorInfo->AvatarActor.Get(),
-	                                      HitResult->GetComponent(), CurrentActorInfo->PlayerController.Get());
+	IInteractable::Execute_EndInteraction(InteractedActor, InteractingActor, InteractedComponent, PC);
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }

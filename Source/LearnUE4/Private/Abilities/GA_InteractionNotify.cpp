@@ -12,6 +12,7 @@
 #include "Characters/BaseCharacter.h"
 #include "Components/SlateWrapperTypes.h"
 #include "Controllers/CustomPlayerController.h"
+#include "Interfaces/Interactor.h"
 
 UGA_InteractionNotify::UGA_InteractionNotify()
 {
@@ -32,69 +33,58 @@ void UGA_InteractionNotify::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		this, TraceChannel, SourceTransformType, MeshSocketName, TraceRange, FireRate, bShowDebug,
 		bUsePlayerControllerView);
 	TraceTask->OnTargetLost.AddDynamic(this, &UGA_InteractionNotify::OnTargetLost);
-	TraceTask->OnFoundNewTarget.AddDynamic(this, &UGA_InteractionNotify::OnFoundNewTarget);
+	TraceTask->OnNewTargetFound.AddDynamic(this, &UGA_InteractionNotify::OnNewTargetFound);
 	TraceTask->ReadyForActivation();
 
 	UAbilityTask_WaitGameplayTagAdded* WaitTagAddedTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
 		this, ECustomGameplayTags::State_Interacting);
 	WaitTagAddedTask->Added.AddDynamic(this, &UGA_InteractionNotify::OnInteractingTagAdded);
-	WaitTagAddedTask->ReadyForActivation();	
+	WaitTagAddedTask->ReadyForActivation();
 
-	UAbilityTask_WaitGameplayTagRemoved* WaitTagRemovedTask = UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(
-		this, ECustomGameplayTags::State_Interacting);
+	UAbilityTask_WaitGameplayTagRemoved* WaitTagRemovedTask =
+		UAbilityTask_WaitGameplayTagRemoved::WaitGameplayTagRemove(
+			this, ECustomGameplayTags::State_Interacting);
 	WaitTagRemovedTask->Removed.AddDynamic(this, &UGA_InteractionNotify::OnInteractingTagRemoved);
 	WaitTagRemovedTask->ReadyForActivation();
 }
 
-void UGA_InteractionNotify::OnFoundNewTarget(const FGameplayAbilityTargetDataHandle& DataHandle)
+void UGA_InteractionNotify::OnNewTargetFound(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
-	// TODO: Hardcoded for ACustomPlayerController
-	if (ACustomPlayerController* PC = Cast<ACustomPlayerController>(CurrentActorInfo->PlayerController.Get()))
-	{
-		PC->SetInteractWidgetVisibility(ESlateVisibility::Visible);	
-	}
-	
 	const FHitResult* HitResult = DataHandle.Get(0)->GetHitResult();
 	AActor* InteractedActor = HitResult->GetActor();
 
+	if (APlayerController* PC = CurrentActorInfo->PlayerController.Get())
+		if (IsValid(PC) && PC->Implements<IInteractor>())
+			IInteractor::Execute_OnNewTargetFound(PC, HitResult->GetActor(), HitResult->GetComponent());
+
 	if (IsValid(InteractedActor) && InteractedActor->Implements<UInteractable>())
-	{
-		IInteractable::Execute_OnFoundNewTarget(InteractedActor, GetCurrentActorInfo()->AvatarActor.Get(),
+		IInteractable::Execute_OnNewTargetFound(InteractedActor, GetCurrentActorInfo()->AvatarActor.Get(),
 		                                        HitResult->GetComponent());
-	}
 
 	// TODO: Hard coded to update Target Data from GA_InteractingNotify to ABaseCharacter
 	if (ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(CurrentActorInfo->AvatarActor.Get()))
-	{
 		InteractingActor->SetInteractableTargetDataHandle(DataHandle);
-	}
 
 	SentUpdateTargetDataGameplayEvent(DataHandle);
 }
 
 void UGA_InteractionNotify::OnTargetLost(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
-	// TODO: Hardcoded for ACustomPlayerController
-	if (ACustomPlayerController* PC = Cast<ACustomPlayerController>(CurrentActorInfo->PlayerController.Get()))
-	{
-		PC->SetInteractWidgetVisibility(ESlateVisibility::Hidden);	
-	}
-	
 	const FHitResult* HitResult = DataHandle.Get(0)->GetHitResult();
 	AActor* InteractedActor = HitResult->GetActor();
 
+	if (APlayerController* PC = CurrentActorInfo->PlayerController.Get())
+		if (IsValid(PC) && PC->Implements<IInteractor>())
+			IInteractor::Execute_OnTargetLost(PC, HitResult->GetActor(), HitResult->GetComponent());
+
 	if (IsValid(InteractedActor) && InteractedActor->Implements<UInteractable>())
-	{
 		IInteractable::Execute_OnTargetLost(InteractedActor, GetCurrentActorInfo()->AvatarActor.Get(),
 		                                    HitResult->GetComponent());
-	}
 
 	// TODO: Implement better solution to handle UpdateTargetData when TargetLost
 	// Hard coded to update Target Data from GA_InteractingNotify to ABaseCharacter
 	if (ABaseCharacter* InteractingActor = Cast<ABaseCharacter>(CurrentActorInfo->AvatarActor.Get()))
-	{
 		InteractingActor->SetInteractableTargetDataHandle(FGameplayAbilityTargetDataHandle());
-	}
 
 	SentUpdateTargetDataGameplayEvent(FGameplayAbilityTargetDataHandle());
 }

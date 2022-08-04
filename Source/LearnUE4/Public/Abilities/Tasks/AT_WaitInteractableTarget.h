@@ -22,7 +22,7 @@ public:
 	UAT_WaitInteractableTarget();
 
 	UPROPERTY(BlueprintAssignable)
-	FWaitForInteractableTargetDelegate OnFoundNewTarget;
+	FWaitForInteractableTargetDelegate OnNewTargetFound;
 
 	// TODO: Explain better about this case
 	// Target Data Handle stores Target Data is lost at this trace 
