@@ -19,11 +19,11 @@ float IInteractable::GetInteractionDuration_Implementation(UPrimitiveComponent* 
 	return 0.f;
 }
 
-void IInteractable::BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController)
+void IInteractable::BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingPlayerController)
 {
 }
 
-void IInteractable::EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController)
+void IInteractable::EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingPlayerController)
 {
 }
 

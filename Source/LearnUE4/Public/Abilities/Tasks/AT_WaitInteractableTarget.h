@@ -45,10 +45,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PauseTrace();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void ResumeTrace();
-	
+
 protected:
 	virtual void Activate() override;
 	virtual void OnDestroy(bool bInOwnerFinished) override;
@@ -72,17 +72,19 @@ protected:
 	void LineTraceInteractableTarget(FHitResult& OutHitResult, const FVector& TraceStart, const FVector& TraceEnd);
 
 	void AdjustTraceEndDependOnViewTarget(FVector& OutTraceEnd, const FVector& ViewStart, const FVector& ViewDir,
-	                                      const FVector& TraceStart,
-	                                      const FVector& TraceDir);
+	                                      const FVector& TraceStart);
 
-	void UsePlayerControllerViewToTrace(FHitResult& OutHitResult, const FVector& TraceStart, const FVector& TraceDir);
+	void UsePlayerControllerViewToTrace(FHitResult& OutHitResult, const FVector& TraceStart);
 
-	using PerfromTraceFuncType = bool (UAT_WaitInteractableTarget::*)(FHitResult& HitResult, FVector& TraceStart, FVector& TraceEnd, FVector& TraceDirection);
+	using PerfromTraceFuncType = void (UAT_WaitInteractableTarget::*)(FHitResult& OutHitResult,
+	                                                                  const FVector& TraceStart,
+	                                                                  const FVector& TraceEnd);
 	PerfromTraceFuncType PerformLineTraceFunc;
-	
-	bool PerformLineTraceFromSource(FHitResult& HitResult, FVector& TraceStart, FVector& TraceEnd, FVector& TraceDirection);
-	
-	bool PerformLineTraceFromSourceAndView(FHitResult& HitResult, FVector& TraceStart, FVector& TraceEnd, FVector& TraceDirection);
+
+	void PerformLineTraceFromSource(FHitResult& OutHitResult, const FVector& TraceStart, const FVector& TraceEnd);
+
+	void PerformLineTraceFromSourceAndView(FHitResult& OutHitResult, const FVector& TraceStart,
+	                                       const FVector& TraceEnd);
 
 	void ScanInteraction();
 

@@ -58,7 +58,7 @@ void UGA_InteractionHandle::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		WaitInputReleaseTask->OnRelease.AddDynamic(this, &UGA_InteractionHandle::OnInputReleased);
 		WaitInputReleaseTask->ReadyForActivation();
 
-		// Grant State.Interacting Gameplay Tag to Interactor to tell GA_InteractionNotify that this Actor is in Interacting State
+		// Apply State.Interacting Tag to Interactor to tell GA_InteractionNotify that this Actor is in Interacting State
 		// GA_InteractionNotify is listening to Added and Removed of State.Interacting tag and will process accordingly
 		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
 		if (IsValid(ASC) && IsValid(AddInteractingTagEffectClass))

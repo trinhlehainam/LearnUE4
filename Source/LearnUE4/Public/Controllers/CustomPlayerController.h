@@ -9,6 +9,7 @@
 class UInputMappingContext;
 class UInputConfig;
 class UPauseMenuWidget;
+class UPlayerHUDWidget;
 
 /**
  * 
@@ -25,7 +26,7 @@ public:
 
 	// Pointer to widget instance after creating it
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widgets)
-	UUserWidget* HUDCharaterStats;
+	UPlayerHUDWidget* PlayerHUD;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Widgets)
 	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
@@ -46,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HandleSwitchUI(FKey Key);
+
+	UFUNCTION(BlueprintCallable)
+	void SetInteractWidgetVisibility(ESlateVisibility Visibility);
 protected:
 	virtual void BeginPlay() override;
 

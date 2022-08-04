@@ -5,15 +5,21 @@
 
 #include "Characters/PlayerCharacter.h"
 #include "Components/ProgressBar.h"
+#include "Components/WidgetSwitcher.h"
+
+void UPlayerHUDWidget::SwitchShowInteractUIText_Implementation(bool bIsGamepadKey)
+{
+	InteractUISwitcher->SetActiveWidgetIndex(!bIsGamepadKey ? 0 : 1);
+}
+
+UWidgetSwitcher* UPlayerHUDWidget::GetInteractWidget()
+{
+	return InteractUISwitcher;
+}
 
 void UPlayerHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-}
-
-void UPlayerHUDWidget::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
 
 	APlayerCharacter* PlayerPawn = GetOwningPlayerPawn<APlayerCharacter>();
 
@@ -24,9 +30,10 @@ void UPlayerHUDWidget::NativeOnInitialized()
 	MaxHealth = PlayerPawn->GetMaxHealth();
 
 	if (HealthBar)
-	{
 		HealthBar->SetPercent(Health / MaxHealth);
-	}
+
+	if (InteractUISwitcher)
+		InteractUISwitcher->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UPlayerHUDWidget::OnHealthAttributeChange(float NewValue)

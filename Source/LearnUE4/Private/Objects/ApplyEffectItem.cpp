@@ -19,9 +19,9 @@ void AApplyEffectItem::BeginPlay()
 	
 }
 
-void AApplyEffectItem::BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController)
+void AApplyEffectItem::EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent, APlayerController* InteractingController)
 {
-	Super::BeginInteraction_Implementation(InteractingActor, InteractedComponent, InteractingController);
+	Super::EndInteraction_Implementation(InteractingActor, InteractedComponent, InteractingController);
 
 	IAbilitySystemInterface* ASI = Cast<IAbilitySystemInterface>(InteractingActor);
 	if (!ASI) return;

@@ -5,9 +5,11 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Components/WidgetSwitcher.h"
 #include "Input/CustomEnhancedInputComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/PauseMenuWidget.h"
+#include "UI/PlayerHudWidget.h"
 
 void ACustomPlayerController::BeginPlay()
 {
@@ -35,9 +37,9 @@ void ACustomPlayerController::CreateHUD()
 {
 	if (PlayerHUDWidgetClass)
 	{
-		HUDCharaterStats = CreateWidget(this, PlayerHUDWidgetClass);
-		HUDCharaterStats->AddToViewport();
-		HUDCharaterStats->SetVisibility(ESlateVisibility::Visible);
+		PlayerHUD = CreateWidget<UPlayerHUDWidget>(this, PlayerHUDWidgetClass);
+		PlayerHUD->AddToViewport();
+		PlayerHUD->SetVisibility(ESlateVisibility::Visible);
 	}
 
 	bIsPauseMenuVisible = false;
@@ -96,8 +98,10 @@ void ACustomPlayerController::HidePauseMenu()
 
 void ACustomPlayerController::HandleSwitchUI(FKey Key)
 {
+	if (!IsValid(PlayerHUD) || !IsValid(PlayerHUD->GetInteractWidget())) return;
+	PlayerHUD->SwitchShowInteractUIText(Key.IsGamepadKey());
+	
 	if (!IsValid(PauseMenu) || PauseMenu->Visibility == ESlateVisibility::Hidden) return;
-
 	bShowMouseCursor = true;
 	if (Key.IsGamepadKey())
 	{
@@ -109,4 +113,11 @@ void ACustomPlayerController::HandleSwitchUI(FKey Key)
 			PauseMenu->ResumeButton->SetFocus();
 		}
 	}
+}
+
+void ACustomPlayerController::SetInteractWidgetVisibility(ESlateVisibility Visibility)
+{
+	if (!IsValid(PlayerHUD) || !IsValid(PlayerHUD->GetInteractWidget())) return;
+
+	PlayerHUD->GetInteractWidget()->SetVisibility(Visibility);
 }

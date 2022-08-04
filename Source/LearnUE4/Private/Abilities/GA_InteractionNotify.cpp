@@ -10,6 +10,8 @@
 #include "Abilities/Tasks/AT_WaitInteractableTarget.h"
 #include "Interfaces/Interactable.h"
 #include "Characters/BaseCharacter.h"
+#include "Components/SlateWrapperTypes.h"
+#include "Controllers/CustomPlayerController.h"
 
 UGA_InteractionNotify::UGA_InteractionNotify()
 {
@@ -46,6 +48,12 @@ void UGA_InteractionNotify::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 void UGA_InteractionNotify::OnFoundNewTarget(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
+	// TODO: Hardcoded for ACustomPlayerController
+	if (ACustomPlayerController* PC = Cast<ACustomPlayerController>(CurrentActorInfo->PlayerController.Get()))
+	{
+		PC->SetInteractWidgetVisibility(ESlateVisibility::Visible);	
+	}
+	
 	const FHitResult* HitResult = DataHandle.Get(0)->GetHitResult();
 	AActor* InteractedActor = HitResult->GetActor();
 
@@ -66,6 +74,12 @@ void UGA_InteractionNotify::OnFoundNewTarget(const FGameplayAbilityTargetDataHan
 
 void UGA_InteractionNotify::OnTargetLost(const FGameplayAbilityTargetDataHandle& DataHandle)
 {
+	// TODO: Hardcoded for ACustomPlayerController
+	if (ACustomPlayerController* PC = Cast<ACustomPlayerController>(CurrentActorInfo->PlayerController.Get()))
+	{
+		PC->SetInteractWidgetVisibility(ESlateVisibility::Hidden);	
+	}
+	
 	const FHitResult* HitResult = DataHandle.Get(0)->GetHitResult();
 	AActor* InteractedActor = HitResult->GetActor();
 
