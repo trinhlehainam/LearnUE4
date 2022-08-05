@@ -24,5 +24,12 @@ public:
 	bool bActivateOnGranted;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
-	bool bShowDebug;	
+	bool bShowDebug;
+
+protected:
+	UFUNCTION(BlueprintCallable, Category="Ability")
+	void AddLooseGameplayTagsToSelf(const FGameplayTagContainer GameplayTags);
+	
+	UFUNCTION(BlueprintCallable, Category="Ability")
+	void RemoveLooseGameplayTagsToSelf(const FGameplayTagContainer GameplayTags);
 };
