@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Animation/MyAnimInstance.h"
+#include "Animation/CustomAnimInstance.h"
 
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
-void UMyAnimInstance::NativeInitializeAnimation()
+void UCustomAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
@@ -18,7 +18,7 @@ void UMyAnimInstance::NativeInitializeAnimation()
 	}
 }
 
-void UMyAnimInstance::UpdateAnimationProperties(float DeltaTime)
+void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 {
 	if (!Owner) {
 		APawn* PawnOwner = TryGetPawnOwner();
@@ -33,19 +33,16 @@ void UMyAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0 ? true : false;
 
 		FRotator Rotation = Owner->GetActorRotation();
-		// FRotator DeltaRotation = Rotation - LastFrameRotation;	// DEBUG
 		FRotator NormalizedDeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(Rotation, LastFrameRotation);
-		float Target = NormalizedDeltaRotation.Yaw / DeltaTime;
-		float FInterp = FMath::FInterpTo(DetalYaw, Target, DeltaTime, 6.0f);
-		DetalYaw = FMath::Clamp(FInterp, -90.f, 90.f);
+		float TargetYaw = NormalizedDeltaRotation.Yaw / DeltaTime;
+		float LerpedYaw = FMath::FInterpTo(DetalYaw, TargetYaw, DeltaTime, 6.0f);
+		DetalYaw = FMath::Clamp(LerpedYaw, -90.f, 90.f);
+		
 		LastFrameRotation = Rotation;
-
-		// UE_LOG(LogTemp, Warning, TEXT("DeltaRotation.Yaw = %f; Target = %f"), DeltaRotation.Yaw, Target);
 	}
 }
 
-
-void UMyAnimInstance::NativeUpdateAnimation(float DeltaTime) {
+void UCustomAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	Super::NativeUpdateAnimation(DeltaTime);
 
 	UpdateAnimationProperties(DeltaTime);

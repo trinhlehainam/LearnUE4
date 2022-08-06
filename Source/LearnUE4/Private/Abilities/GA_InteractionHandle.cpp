@@ -126,9 +126,9 @@ void UGA_InteractionHandle::OnUpdatedTargetData(FGameplayEventData Payload)
 		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 }
 
-void UGA_InteractionHandle::OnInputReleased(float TimeHold)
+void UGA_InteractionHandle::OnInputReleased(float HeldTime)
 {
-	if (TimeHold < InteractionDuration)
+	if (HeldTime < InteractionDuration)
 		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 }
 

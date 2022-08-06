@@ -26,6 +26,8 @@ public:
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxHealth);
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Mana);
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxMana);
+	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Stamina);
+	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxStamina);
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, AttackPower);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -53,6 +55,12 @@ private:
 	void OnRep_MaxMana(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
+	void OnRep_Stamina(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	void OnRep_MaxStamina(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
 	void OnRep_AttackPower(const FGameplayAttributeData& OldValue);
 
 	UPROPERTY(ReplicatedUsing=OnRep_Health)
@@ -66,6 +74,12 @@ private:
 	
 	UPROPERTY(ReplicatedUsing=OnRep_MaxMana)
 	FGameplayAttributeData MaxMana;
+	
+	UPROPERTY(ReplicatedUsing=OnRep_Stamina)
+	FGameplayAttributeData Stamina;
+	
+	UPROPERTY(ReplicatedUsing=OnRep_MaxStamina)
+	FGameplayAttributeData MaxStamina;
 	
 	UPROPERTY(ReplicatedUsing=OnRep_AttackPower)
 	FGameplayAttributeData AttackPower;

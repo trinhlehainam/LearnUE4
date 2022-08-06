@@ -14,6 +14,7 @@ enum class EAbilityInputID : uint8
 	Confirm			UMETA(DisplayName="Comfirm, Input ID 1"),
 	Cancel			UMETA(DisplayName="Cancel, Input ID 2"),			
 	Jump			UMETA(DisplayName="Jump, Input ID 3"),
-	Attack			UMETA(DisplayName="Attack, Input ID 4"),
-	Interact		UMETA(DisplayName="Interact, Input ID 5")
+	Sprint			UMETA(DisplayName="Sprint, Input ID 4"),
+	Attack			UMETA(DisplayName="Attack, Input ID 5"),
+	Interact		UMETA(DisplayName="Interact, Input ID 6")
 };

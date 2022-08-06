@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "MyAnimInstance.generated.h"
+#include "CustomAnimInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LEARNUE4_API UMyAnimInstance : public UAnimInstance
+class LEARNUE4_API UCustomAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
@@ -21,6 +21,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = AnimationProperties)
 	void UpdateAnimationProperties(float DeltaTime);
 
+	// Result to adjust leaning degree while running
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
 	float DetalYaw;
 

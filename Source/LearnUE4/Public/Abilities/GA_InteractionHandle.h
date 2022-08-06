@@ -16,21 +16,29 @@ class LEARNUE4_API UGA_InteractionHandle : public UBaseGameplayAbility
 
 public:
 	UGA_InteractionHandle();
-	
-protected:
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
+protected:
+	// ~ Begin UGameplayAbility Interface
+	
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	                             const FGameplayAbilityActivationInfo ActivationInfo,
+	                             const FGameplayEventData* TriggerEventData) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	                        const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility,
+	                        bool bWasCancelled) override;
+	
+	// ~ End UGameplayAbility Interface
+	
 	// TODO: Listen UpdateDataEvent Gameplay Event sent from GA_InteractionNotify
 	// Handle case when New Target Found or Target Lost while interacting
 	UFUNCTION()
 	void OnUpdatedTargetData(FGameplayEventData Payload);
 
 	UFUNCTION()
-	void OnInputReleased(float TimeHold);
+	void OnEndInteraction();
 
 	UFUNCTION()
-	void OnEndInteraction();
+	void OnInputReleased(float HeldTime);
 
 	FGameplayAbilityTargetDataHandle TargetDataHandle;
 	float InteractionDuration;
