@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "UI/PlayerHUDWidget.h"
 
-#include "UI/PlayerHudWidget.h"
+#include "Characters/BaseCharacter.h"
 
-#include "Characters/PlayerCharacter.h"
 #include "Components/ProgressBar.h"
 #include "Components/WidgetSwitcher.h"
 
@@ -21,16 +21,32 @@ void UPlayerHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	APlayerCharacter* PlayerPawn = GetOwningPlayerPawn<APlayerCharacter>();
+	ABaseCharacter* Character = GetOwningPlayerPawn<ABaseCharacter>();
 
-	check(PlayerPawn);
+	check(Character);
 
-	PlayerPawn->OnHealthChange.AddDynamic(this, &UPlayerHUDWidget::OnHealthAttributeChange);
-	Health = PlayerPawn->GetHealth();
-	MaxHealth = PlayerPawn->GetMaxHealth();
+	Character->OnHealthChange.AddDynamic(this, &UPlayerHUDWidget::OnHealthAttributeChange);
+	Character->OnMaxHealthChange.AddDynamic(this, &UPlayerHUDWidget::OnMaxHealthAttributeChange);
+	Character->OnManaChange.AddDynamic(this, &UPlayerHUDWidget::OnManaAttributeChange);
+	Character->OnMaxManaChange.AddDynamic(this, &UPlayerHUDWidget::OnMaxManaAttributeChange);
+	Character->OnStaminaChange.AddDynamic(this, &UPlayerHUDWidget::OnStaminaAttributeChange);
+	Character->OnMaxStaminaChange.AddDynamic(this, &UPlayerHUDWidget::OnMaxStaminaAttributeChange);
+	
+	Health = Character->GetHealth();
+	MaxHealth = Character->GetMaxHealth();
+	Mana = Character->GetMana();
+	MaxMana = Character->GetMaxMana();
+	Stamina = Character->GetStamina();
+	MaxStamina = Character->GetMaxStamina();
 
 	if (HealthBar)
 		HealthBar->SetPercent(Health / MaxHealth);
+
+	if (ManaBar)
+		ManaBar->SetPercent(Mana / MaxMana);
+	
+	if (StaminaBar)
+		StaminaBar->SetPercent(Stamina / MaxStamina);
 
 	if (InteractUISwitcher)
 		InteractUISwitcher->SetVisibility(ESlateVisibility::Hidden);
@@ -46,4 +62,28 @@ void UPlayerHUDWidget::OnMaxHealthAttributeChange(float NewValue)
 {
 	MaxHealth = NewValue;
 	HealthBar->SetPercent(Health / MaxHealth);
+}
+
+void UPlayerHUDWidget::OnManaAttributeChange(float NewValue)
+{
+	Mana = NewValue;
+	ManaBar->SetPercent(Mana / MaxMana);
+}
+
+void UPlayerHUDWidget::OnMaxManaAttributeChange(float NewValue)
+{
+	MaxMana = NewValue;
+	ManaBar->SetPercent(Mana / MaxMana);
+}
+
+void UPlayerHUDWidget::OnStaminaAttributeChange(float NewValue)
+{
+	Stamina = NewValue;
+	StaminaBar->SetPercent(Stamina / MaxStamina);
+}
+
+void UPlayerHUDWidget::OnMaxStaminaAttributeChange(float NewValue)
+{
+	MaxStamina = NewValue;
+	StaminaBar->SetPercent(Stamina / MaxStamina);
 }

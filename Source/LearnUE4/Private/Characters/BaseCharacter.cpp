@@ -7,6 +7,7 @@
 #include "Abilities/BaseAttributeSet.h"
 #include "Abilities/BaseGameplayAbility.h"
 #include "Characters/BaseCharacterState.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -22,6 +23,8 @@ ABaseCharacter::ABaseCharacter()
 		MeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 		MeshComp->SetGenerateOverlapEvents(false);
 	}
+
+	bIsSprinting = false;
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -57,6 +60,27 @@ float ABaseCharacter::GetMaxMana() const
 	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetMaxManaAttribute());
 }
 
+float ABaseCharacter::GetStamina() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetStaminaAttribute());
+}
+
+float ABaseCharacter::GetMaxStamina() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetMaxStaminaAttribute());
+}
+
+float ABaseCharacter::GetWalkSpeed() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetWalkSpeedAttribute());
+}
+
 void ABaseCharacter::SetInteractableTargetDataHandle(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	InteractableTargetDataHandle = TargetDataHandle;
@@ -67,10 +91,58 @@ FGameplayAbilityTargetDataHandle ABaseCharacter::GetInteractableTargetDataHandle
 	return InteractableTargetDataHandle;
 }
 
+bool ABaseCharacter::IsSprinting() const
+{
+	return bIsSprinting;
+}
+
+bool ABaseCharacter::CanSprint() const
+{
+	return !bIsSprinting && GetCharacterMovement() && GetCharacterMovement()->IsMovingOnGround();	
+}
+
+void ABaseCharacter::Sprint()
+{
+	bIsSprinting = true;
+}
+
+void ABaseCharacter::StopSprinting()
+{
+	bIsSprinting = false;
+}
+
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// No binding by default because this base class for both Player and AICharacter
+}
+
+void ABaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!ASC.IsValid()) return;
+
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetHealthAttribute()).AddUObject(
+		this, &ABaseCharacter::OnHealthAttributeValueChange);
+	
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxHealthAttribute()).AddUObject(
+		this, &ABaseCharacter::OnMaxHealthAttributeValueChange);
+	
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetManaAttribute()).AddUObject(
+		this, &ABaseCharacter::OnManaAttributeValueChange);
+	
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxManaAttribute()).AddUObject(
+		this, &ABaseCharacter::OnMaxManaAttributeValueChange);
+	
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetStaminaAttribute()).AddUObject(
+		this, &ABaseCharacter::OnStaminaAttributeValueChange);
+	
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxStaminaAttribute()).AddUObject(
+		this, &ABaseCharacter::OnMaxStaminaAttributeValueChange);
+	
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetWalkSpeedAttribute()).AddUObject(
+		this, &ABaseCharacter::OnWalkSpeedAttributeValueChange);
 }
 
 void ABaseCharacter::PossessedBy(AController* NewController)
@@ -125,7 +197,7 @@ void ABaseCharacter::GiveDefaultAbilities()
 			FGameplayAbilitySpecHandle AbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(DefaultAbility, 1.0f,
 				static_cast<int32>(DefaultAbility.GetDefaultObject()->AbilityInputID),
 				this));
-			
+
 			if (DefaultAbility.GetDefaultObject()->bActivateOnGranted)
 				ASC->TryActivateAbility(AbilityHandle);
 		}
@@ -154,4 +226,59 @@ void ABaseCharacter::SetMaxMana(float Value)
 {
 	if (ASC.IsValid())
 		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetMaxManaAttribute(), Value);
+}
+
+void ABaseCharacter::SetStamina(float Value)
+{
+	if (ASC.IsValid())
+		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetStaminaAttribute(), Value);
+}
+
+void ABaseCharacter::SetMaxStamina(float Value)
+{
+	if (ASC.IsValid())
+		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetMaxStaminaAttribute(), Value);
+}
+
+void ABaseCharacter::SetWalkSpeed(float Value)
+{
+	if (ASC.IsValid())
+		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetWalkSpeedAttribute(), Value);
+}
+
+void ABaseCharacter::OnHealthAttributeValueChange(const FOnAttributeChangeData& Data)
+{
+	OnHealthChange.Broadcast(Data.NewValue);
+}
+
+void ABaseCharacter::OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& Data)
+{
+	OnMaxHealthChange.Broadcast(Data.NewValue);
+}
+
+void ABaseCharacter::OnMaxManaAttributeValueChange(const FOnAttributeChangeData& Data)
+{
+	OnMaxManaChange.Broadcast(Data.NewValue);
+}
+
+void ABaseCharacter::OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& Data)
+{
+	OnMaxStaminaChange.Broadcast(Data.NewValue);
+}
+
+void ABaseCharacter::OnManaAttributeValueChange(const FOnAttributeChangeData& Data)
+{
+	OnManaChange.Broadcast(Data.NewValue);
+}
+
+void ABaseCharacter::OnStaminaAttributeValueChange(const FOnAttributeChangeData& Data)
+{
+	OnStaminaChange.Broadcast(Data.NewValue);
+}
+
+void ABaseCharacter::OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& Data)
+{
+	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+
+	OnWalkSpeedChange.Broadcast(Data.NewValue);
 }

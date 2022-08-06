@@ -29,6 +29,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Stamina);
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, MaxStamina);
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, AttackPower);
+	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, WalkSpeed);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -62,6 +63,9 @@ private:
 	
 	UFUNCTION()
 	void OnRep_AttackPower(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	void OnRep_WalkSpeed(const FGameplayAttributeData& OldValue);
 
 	UPROPERTY(ReplicatedUsing=OnRep_Health)
 	FGameplayAttributeData Health;
@@ -83,4 +87,7 @@ private:
 	
 	UPROPERTY(ReplicatedUsing=OnRep_AttackPower)
 	FGameplayAttributeData AttackPower;
+
+	UPROPERTY(ReplicatedUsing=OnRep_WalkSpeed)
+	FGameplayAttributeData WalkSpeed;
 };

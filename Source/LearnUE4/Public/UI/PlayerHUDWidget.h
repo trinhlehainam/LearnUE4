@@ -21,7 +21,7 @@ public:
 	void SwitchShowInteractUIText(bool bIsGamepadKey);
 
 	UWidgetSwitcher* GetInteractWidget();
-	
+
 protected:
 	virtual void NativeConstruct() override;
 
@@ -29,14 +29,36 @@ protected:
 	UProgressBar* HealthBar;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* ManaBar;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UProgressBar* StaminaBar;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UWidgetSwitcher* InteractUISwitcher;
-	
+
 	UFUNCTION()
 	void OnHealthAttributeChange(float NewValue);
+	
+	UFUNCTION()
 	void OnMaxHealthAttributeChange(float NewValue);
+	
+	UFUNCTION()
+	void OnManaAttributeChange(float NewValue);
+	
+	UFUNCTION()
+	void OnMaxManaAttributeChange(float NewValue);
+	
+	UFUNCTION()
+	void OnStaminaAttributeChange(float NewValue);
+	
+	UFUNCTION()
+	void OnMaxStaminaAttributeChange(float NewValue);
 
 	float Health;
 	float MaxHealth;
 	float Mana;
 	float MaxMana;
+	float Stamina;
+	float MaxStamina;
 };

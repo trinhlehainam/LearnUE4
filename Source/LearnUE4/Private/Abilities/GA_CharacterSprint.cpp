@@ -3,14 +3,11 @@
 
 #include "Abilities/GA_CharacterSprint.h"
 
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "AbilitySystemComponent.h"
+#include "Characters/BaseCharacter.h"
 
 UGA_CharacterSprint::UGA_CharacterSprint()
 {
-	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
-	WalkSpeedMultiplier = 1.f;
-	CrouchSpeedMultiplier = 1.f;
 }
 
 bool UGA_CharacterSprint::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -22,13 +19,9 @@ bool UGA_CharacterSprint::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
 		return false;
 
-	ACharacter* Character = CastChecked<ACharacter>(ActorInfo->AvatarActor.Get());
-	UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement();
+	ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get());
 
-	if (!IsValid(Character) || !IsValid(CharacterMovement))
-		return false;
-	
-	return CharacterMovement->IsMovingOnGround();
+	return IsValid(Character) && Character->CanSprint();
 }
 
 void UGA_CharacterSprint::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -36,21 +29,18 @@ void UGA_CharacterSprint::ActivateAbility(const FGameplayAbilitySpecHandle Handl
                                           const FGameplayAbilityActivationInfo ActivationInfo,
                                           const FGameplayEventData* TriggerEventData)
 {
-	if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+		return;
+
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
+		Character->Sprint();
+
+	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+	if (IsValid(ASC) && SprintGameplayEffectClass)
 	{
-		if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-		{
-			return;
-		}
-
-		ACharacter* Character = CastChecked<ACharacter>(ActorInfo->AvatarActor.Get());
-		UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement();
-
-		InitialMaxWalkSpeed = CharacterMovement->MaxWalkSpeed;
-		InitialMaxCrouchSpeed = CharacterMovement->MaxWalkSpeedCrouched;
-		
-		CharacterMovement->MaxWalkSpeed = CharacterMovement->MaxWalkSpeed * WalkSpeedMultiplier;
-		CharacterMovement->MaxWalkSpeedCrouched = CharacterMovement->MaxCustomMovementSpeed * CrouchSpeedMultiplier;
+		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(SprintGameplayEffectClass, 1.f);
+		// Cache this to remove at EndAbility. Prevent to this effect cost forever
+		SprintEffectHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, EffectSpecHandle);
 	}
 }
 
@@ -59,13 +49,31 @@ void UGA_CharacterSprint::EndAbility(const FGameplayAbilitySpecHandle Handle,
                                      const FGameplayAbilityActivationInfo ActivationInfo,
                                      bool bReplicateEndAbility, bool bWasCancelled)
 {
-	ACharacter* Character = CastChecked<ACharacter>(ActorInfo->AvatarActor.Get());
-	UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement();
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
+		Character->StopSprinting();
 
-	CharacterMovement->MaxWalkSpeed = InitialMaxWalkSpeed;
-	CharacterMovement->MaxWalkSpeedCrouched = InitialMaxCrouchSpeed;
+	if (UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get())
+	{
+		ASC->RemoveActiveGameplayEffect(CostEffectHandle);
+		ASC->RemoveActiveGameplayEffect(SprintEffectHandle);
+	}
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UGA_CharacterSprint::CommitExecute(const FGameplayAbilitySpecHandle Handle,
+                                        const FGameplayAbilityActorInfo* ActorInfo,
+                                        const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+
+	UGameplayEffect* CostGE = GetCostGameplayEffect();
+	if (CostGE)
+	{
+		// Cache this to remove at EndAbility. Prevent to this effect cost forever
+		CostEffectHandle = ApplyGameplayEffectToOwner(Handle, ActorInfo, ActivationInfo, CostGE,
+		                                              GetAbilityLevel(Handle, ActorInfo));
+	}
 }
 
 void UGA_CharacterSprint::InputReleased(const FGameplayAbilitySpecHandle Handle,

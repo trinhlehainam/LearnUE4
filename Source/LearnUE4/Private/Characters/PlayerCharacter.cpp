@@ -40,20 +40,6 @@ APlayerCharacter::APlayerCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 }
 
-void APlayerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (!ASC.IsValid()) return;
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetHealthAttribute()).AddUObject(
-		this, &APlayerCharacter::OnHealthAttributeValueChange);
-}
-
-void APlayerCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-}
-
 void APlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
@@ -153,11 +139,6 @@ void APlayerCharacter::MoveRight(float Scale)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Scale);
 	}
-}
-
-void APlayerCharacter::OnHealthAttributeValueChange(const FOnAttributeChangeData& Data)
-{
-	OnHealthChange.Broadcast(Data.NewValue);
 }
 
 void APlayerCharacter::PawnClientRestart()

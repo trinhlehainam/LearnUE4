@@ -12,10 +12,10 @@ UCLASS()
 class LEARNUE4_API UGA_CharacterSprint : public UBaseGameplayAbility
 {
 	GENERATED_BODY()
-	
+
 public:
 	UGA_CharacterSprint();
-	
+
 protected:
 	// ~ Begin UGameplayAbility Interface
 
@@ -28,17 +28,17 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                        const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility,
 	                        bool bWasCancelled) override;
+	virtual void CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	                           const FGameplayAbilityActivationInfo ActivationInfo) override;
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                           const FGameplayAbilityActivationInfo ActivationInfo) override;
 
 	// ~ End UGameplayAbility Interface
 
-	float InitialMaxWalkSpeed;
-	float InitialMaxCrouchSpeed;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement")
-	float WalkSpeedMultiplier;
+	// Effect class used to modify Character Movement Speed during sprinting
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
+	TSubclassOf<UGameplayEffect> SprintGameplayEffectClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Movement")
-	float CrouchSpeedMultiplier;
+	FActiveGameplayEffectHandle CostEffectHandle;
+	FActiveGameplayEffectHandle SprintEffectHandle;
 };
