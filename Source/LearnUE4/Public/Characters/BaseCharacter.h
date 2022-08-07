@@ -2,13 +2,14 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Abilities/GameplayAbilityTargetTypes.h"
-#include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeValueChange, float, Data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeValueChange, float, NewValue);
+
+class UBaseGameplayAbility;
 
 /**
  * @brief Base class use both for Player and NPCS. \n
@@ -26,27 +27,34 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category="Atrribute")
 	FOnAttributeValueChange OnHealthChange;
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category="Atrribute")
 	FOnAttributeValueChange OnMaxHealthChange;
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category="Atrribute")
 	FOnAttributeValueChange OnManaChange;
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category="Atrribute")
 	FOnAttributeValueChange OnMaxManaChange;
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category="Atrribute")
 	FOnAttributeValueChange OnStaminaChange;
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category="Atrribute")
 	FOnAttributeValueChange OnMaxStaminaChange;
-	UPROPERTY(BlueprintAssignable)
-	FOnAttributeValueChange OnWalkSpeedChange;	
+	UPROPERTY(BlueprintAssignable, Category="Atrribute")
+	FOnAttributeValueChange OnWalkSpeedChange;
 
+	UFUNCTION(BlueprintCallable, Category="Attribute")
 	float GetHealth() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
 	float GetMaxHealth() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
 	float GetMana() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
 	float GetMaxMana() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
 	float GetStamina() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
 	float GetMaxStamina() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
 	float GetWalkSpeed() const;
 
 	// TODO: This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
@@ -56,8 +64,8 @@ public:
 
 	bool IsSprinting() const;
 	bool CanSprint() const;
-	void Sprint();
-	void StopSprinting();
+	virtual void Sprint();
+	virtual void StopSprinting();
 protected:
 	//~ Begin ACharacter Interface.
 
@@ -69,7 +77,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	
+
 	//~ End ACharacter Interface
 
 	void InitializeAttributes();
@@ -83,21 +91,21 @@ protected:
 	void SetMaxStamina(float Value);
 	void SetWalkSpeed(float Value);
 
-	void OnHealthAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnManaAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnMaxManaAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnStaminaAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& Data);
-	
+	void OnHealthAttributeValueChange(const FOnAttributeChangeData& NewValue);
+	void OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& NewValue);
+	void OnManaAttributeValueChange(const FOnAttributeChangeData& NewValue);
+	void OnMaxManaAttributeValueChange(const FOnAttributeChangeData& NewValue);
+	void OnStaminaAttributeValueChange(const FOnAttributeChangeData& NewValue);
+	void OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& NewValue);
+	void OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& NewValue);
+
 	TWeakObjectPtr<UAbilitySystemComponent> ASC;
 
 	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
-	TArray<TSubclassOf<class UGameplayEffect>> DefaultGameplayEffects;
+	TArray<TSubclassOf<UGameplayEffect>> DefaultGameplayEffects;
 
 	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
-	TArray<TSubclassOf<class UBaseGameplayAbility>> DefaultAbilities;
+	TArray<TSubclassOf<UBaseGameplayAbility>> DefaultAbilities;
 
 	// TODO: Find a wait to not depend on Character
 	// This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
@@ -105,5 +113,3 @@ protected:
 
 	int8 bIsSprinting:1;
 };
-
-

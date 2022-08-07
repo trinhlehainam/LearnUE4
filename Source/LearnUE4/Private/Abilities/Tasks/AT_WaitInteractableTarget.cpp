@@ -207,7 +207,8 @@ void UAT_WaitInteractableTarget::PerformLineTraceFromSourceAndView(FHitResult& O
 
 void UAT_WaitInteractableTarget::ScanInteraction()
 {
-	if (!Ability) return;
+	if (!ShouldBroadcastAbilityTaskDelegates())
+		return EndTask();
 
 	// Transform of Source Object (can be an Actor, or UMeshComponent) used to trace
 	FTransform SourceTransform = StartLocationInfo.GetTargetingTransform();
@@ -218,7 +219,7 @@ void UAT_WaitInteractableTarget::ScanInteraction()
 	FHitResult HitResult;
 	(this->*PerformLineTraceFunc)(HitResult, TraceStart, TraceEnd);
 	TraceEnd = HitResult.TraceEnd;
-
+	
 	if (HitResult.bBlockingHit)
 	{
 		TraceEnd = HitResult.Location;
