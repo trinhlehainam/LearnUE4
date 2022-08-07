@@ -3,10 +3,11 @@
 
 #include "Animation/CustomAnimInstance.h"
 
-#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+
+#include "Characters/BaseCharacter.h"
 
 void UCustomAnimInstance::NativeInitializeAnimation()
 {
@@ -14,7 +15,7 @@ void UCustomAnimInstance::NativeInitializeAnimation()
 
 	if (Owner == nullptr) {
 		APawn* PawnOwner = TryGetPawnOwner();
-		Owner = Cast<ACharacter>(PawnOwner);
+		Owner = Cast<ABaseCharacter>(PawnOwner);
 	}
 }
 
@@ -22,15 +23,16 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 {
 	if (!Owner) {
 		APawn* PawnOwner = TryGetPawnOwner();
-		Owner = Cast<ACharacter>(PawnOwner);
+		Owner = Cast<ABaseCharacter>(PawnOwner);
 	}
 
 	if (Owner) {
 		FVector Velocity = Owner->GetVelocity();
-		MovementSpeed = FVector(Velocity.X, Velocity.Y, 0.f).Size();
+		CurrentWalkSpeed = FVector(Velocity.X, Velocity.Y, 0.f).Size();
 
 		bIsInAir = Owner->GetMovementComponent()->IsFalling();
-		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0 ? true : false;
+		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
+		bIsSprinting = Owner->IsSprinting();
 
 		FRotator Rotation = Owner->GetActorRotation();
 		FRotator NormalizedDeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(Rotation, LastFrameRotation);

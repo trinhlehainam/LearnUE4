@@ -41,4 +41,7 @@ protected:
 
 	FActiveGameplayEffectHandle CostEffectHandle;
 	FActiveGameplayEffectHandle SprintEffectHandle;
+
+	UFUNCTION()
+	void OnStaminaAttributeValueChange(float NewValue);
 };

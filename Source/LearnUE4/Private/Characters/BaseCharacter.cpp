@@ -246,39 +246,39 @@ void ABaseCharacter::SetWalkSpeed(float Value)
 		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetWalkSpeedAttribute(), Value);
 }
 
-void ABaseCharacter::OnHealthAttributeValueChange(const FOnAttributeChangeData& Data)
+void ABaseCharacter::OnHealthAttributeValueChange(const FOnAttributeChangeData& NewValue)
 {
-	OnHealthChange.Broadcast(Data.NewValue);
+	OnHealthChange.Broadcast(NewValue.NewValue);
 }
 
-void ABaseCharacter::OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& Data)
+void ABaseCharacter::OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& NewValue)
 {
-	OnMaxHealthChange.Broadcast(Data.NewValue);
+	OnMaxHealthChange.Broadcast(NewValue.NewValue);
 }
 
-void ABaseCharacter::OnMaxManaAttributeValueChange(const FOnAttributeChangeData& Data)
+void ABaseCharacter::OnMaxManaAttributeValueChange(const FOnAttributeChangeData& NewValue)
 {
-	OnMaxManaChange.Broadcast(Data.NewValue);
+	OnMaxManaChange.Broadcast(NewValue.NewValue);
 }
 
-void ABaseCharacter::OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& Data)
+void ABaseCharacter::OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& NewValue)
 {
-	OnMaxStaminaChange.Broadcast(Data.NewValue);
+	OnMaxStaminaChange.Broadcast(NewValue.NewValue);
 }
 
-void ABaseCharacter::OnManaAttributeValueChange(const FOnAttributeChangeData& Data)
+void ABaseCharacter::OnManaAttributeValueChange(const FOnAttributeChangeData& NewValue)
 {
-	OnManaChange.Broadcast(Data.NewValue);
+	OnManaChange.Broadcast(NewValue.NewValue);
 }
 
-void ABaseCharacter::OnStaminaAttributeValueChange(const FOnAttributeChangeData& Data)
+void ABaseCharacter::OnStaminaAttributeValueChange(const FOnAttributeChangeData& NewValue)
 {
-	OnStaminaChange.Broadcast(Data.NewValue);
+	OnStaminaChange.Broadcast(NewValue.NewValue);
 }
 
-void ABaseCharacter::OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& Data)
+void ABaseCharacter::OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& NewValue)
 {
-	GetCharacterMovement()->MaxWalkSpeed = Data.NewValue;
+	GetCharacterMovement()->MaxWalkSpeed = NewValue.NewValue;
 
-	OnWalkSpeedChange.Broadcast(Data.NewValue);
+	OnWalkSpeedChange.Broadcast(NewValue.NewValue);
 }

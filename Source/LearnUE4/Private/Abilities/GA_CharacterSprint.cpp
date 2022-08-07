@@ -3,7 +3,9 @@
 
 #include "Abilities/GA_CharacterSprint.h"
 
+#include "Abilities/Tasks/AbilityTask_WaitAttributeChange.h"
 #include "AbilitySystemComponent.h"
+
 #include "Characters/BaseCharacter.h"
 
 UGA_CharacterSprint::UGA_CharacterSprint()
@@ -29,14 +31,15 @@ void UGA_CharacterSprint::ActivateAbility(const FGameplayAbilitySpecHandle Handl
                                           const FGameplayAbilityActivationInfo ActivationInfo,
                                           const FGameplayEventData* TriggerEventData)
 {
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-		return;
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 
 	if (ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
+	{
 		Character->Sprint();
+		Character->OnStaminaChange.AddDynamic(this, &UGA_CharacterSprint::OnStaminaAttributeValueChange);
+	}
 
-	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
-	if (IsValid(ASC) && SprintGameplayEffectClass)
+	if (SprintGameplayEffectClass)
 	{
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(SprintGameplayEffectClass, 1.f);
 		// Cache this to remove at EndAbility. Prevent to this effect cost forever
@@ -49,13 +52,16 @@ void UGA_CharacterSprint::EndAbility(const FGameplayAbilitySpecHandle Handle,
                                      const FGameplayAbilityActivationInfo ActivationInfo,
                                      bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if (ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
-		Character->StopSprinting();
-
 	if (UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get())
 	{
 		ASC->RemoveActiveGameplayEffect(CostEffectHandle);
 		ASC->RemoveActiveGameplayEffect(SprintEffectHandle);
+	}
+
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
+	{
+		Character->StopSprinting();
+		Character->OnStaminaChange.RemoveDynamic(this, &UGA_CharacterSprint::OnStaminaAttributeValueChange);
 	}
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -81,4 +87,10 @@ void UGA_CharacterSprint::InputReleased(const FGameplayAbilitySpecHandle Handle,
                                         const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+}
+
+void UGA_CharacterSprint::OnStaminaAttributeValueChange(float NewValue)
+{
+	if (NewValue <= 0.f)
+		CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 }

@@ -6,6 +6,8 @@
 #include "Animation/AnimInstance.h"
 #include "CustomAnimInstance.generated.h"
 
+class ABaseCharacter;
+
 /**
  * 
  */
@@ -22,21 +24,24 @@ public:
 	void UpdateAnimationProperties(float DeltaTime);
 
 	// Result to adjust leaning degree while running
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float DetalYaw;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	FRotator LastFrameRotation;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
-	float MovementSpeed;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
+	float CurrentWalkSpeed;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	bool bIsInAir;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	bool bIsAccelerating;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement)
-	ACharacter* Owner;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
+	bool bIsSprinting;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
+	ABaseCharacter* Owner;
 };
