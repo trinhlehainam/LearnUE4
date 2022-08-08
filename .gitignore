@@ -82,6 +82,7 @@ Content/*
 !Content/Developers
 !Content/Abilities
 !Content/Inputs
+!Content/Assets
 
 # Ignore all files in .idea/
 # .idea/*
