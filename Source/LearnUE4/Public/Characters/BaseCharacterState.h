@@ -7,6 +7,8 @@
 #include "GameFramework/PlayerState.h"
 #include "BaseCharacterState.generated.h"
 
+class UCustomAbilitySystemComponent;
+
 /**
  * 
  */
@@ -25,6 +27,7 @@ public:
 	
 private:
 	virtual void PostInitializeComponents() override;
+	
 	UPROPERTY()
-	UAbilitySystemComponent* ASC;
+	UCustomAbilitySystemComponent* ASC;
 };

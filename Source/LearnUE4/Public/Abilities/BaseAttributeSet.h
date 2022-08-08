@@ -31,18 +31,23 @@ public:
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, AttackPower);
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, WalkSpeed);
 
+protected:
+	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	// ~ Begin UAttributeSet Interface
+	
 	// Clamp calculated value before actually applying to Attribute
-	// ExecutionCalc and MMC modifiers can still modify NewVale later
+	// ExecCalc and MMC modifiers can still modify NewVale later
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 
 	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 
 	// Clamping attribute value again after modified
-	// virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
-private:
+	// ~ End UAttributeSet Interface
+	
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldValue);
 	
@@ -87,6 +92,11 @@ private:
 	
 	UPROPERTY(ReplicatedUsing=OnRep_AttackPower)
 	FGameplayAttributeData AttackPower;
+
+	// This is self damage (damage applied to this attribute's owner) calculated by Custom Gameplay Effect Execution Calculation
+	// We want to catch modified value when an Gameplay Effect applied to this owner in PostGameplayEffectExecute to calculate final damage
+	UPROPERTY(ReplicatedUsing=OnRep_AttackPower)
+	FGameplayAttributeData Damage;
 
 	UPROPERTY(ReplicatedUsing=OnRep_WalkSpeed)
 	FGameplayAttributeData WalkSpeed;

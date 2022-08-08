@@ -52,16 +52,16 @@ void UGA_CharacterSprint::EndAbility(const FGameplayAbilitySpecHandle Handle,
                                      const FGameplayAbilityActivationInfo ActivationInfo,
                                      bool bReplicateEndAbility, bool bWasCancelled)
 {
-	if (UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get())
-	{
-		ASC->RemoveActiveGameplayEffect(CostEffectHandle);
-		ASC->RemoveActiveGameplayEffect(SprintEffectHandle);
-	}
-
 	if (ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
 	{
 		Character->StopSprinting();
 		Character->OnStaminaChange.RemoveDynamic(this, &UGA_CharacterSprint::OnStaminaAttributeValueChange);
+	}
+	
+	if (UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get())
+	{
+		ASC->RemoveActiveGameplayEffect(CostEffectHandle);
+		ASC->RemoveActiveGameplayEffect(SprintEffectHandle);
 	}
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);

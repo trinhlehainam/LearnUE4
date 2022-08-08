@@ -10,6 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeValueChange, float, NewValue);
 
 class UBaseGameplayAbility;
+class UCustomAbilitySystemComponent;
 
 /**
  * @brief Base class use both for Player and NPCS. \n
@@ -99,7 +100,7 @@ protected:
 	void OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& NewValue);
 	void OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& NewValue);
 
-	TWeakObjectPtr<UAbilitySystemComponent> ASC;
+	TWeakObjectPtr<UCustomAbilitySystemComponent> ASC;
 
 	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
 	TArray<TSubclassOf<UGameplayEffect>> DefaultGameplayEffects;

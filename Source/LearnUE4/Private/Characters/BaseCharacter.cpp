@@ -3,12 +3,13 @@
 
 #include "Characters/BaseCharacter.h"
 
-#include "AbilitySystemComponent.h"
-#include "Abilities/BaseAttributeSet.h"
-#include "Abilities/BaseGameplayAbility.h"
-#include "Characters/BaseCharacterState.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "Abilities/BaseAttributeSet.h"
+#include "Abilities/BaseGameplayAbility.h"
+#include "Abilities/CustomAbilitySystemComponent.h"
+#include "Characters/BaseCharacterState.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -151,9 +152,10 @@ void ABaseCharacter::PossessedBy(AController* NewController)
 
 	ABaseCharacterState* PS = GetPlayerState<ABaseCharacterState>();
 	if (!PS) return;
-	ASC = PS->GetAbilitySystemComponent();
-
+	
+	ASC = Cast<UCustomAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 	if (!ASC.IsValid()) return;
+	
 	ASC->InitAbilityActorInfo(PS, this);
 	InitializeAttributes();
 	GiveDefaultAbilities();
@@ -165,9 +167,10 @@ void ABaseCharacter::OnRep_PlayerState()
 
 	ABaseCharacterState* PS = GetPlayerState<ABaseCharacterState>();
 	if (!PS) return;
-	ASC = PS->GetAbilitySystemComponent();
-
+	
+	ASC = Cast<UCustomAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 	if (!ASC.IsValid()) return;
+	
 	ASC->InitAbilityActorInfo(PS, this);
 	InitializeAttributes();
 }

@@ -27,9 +27,18 @@ public:
 	bool bShowDebug;
 
 protected:
-	UFUNCTION(BlueprintCallable, Category="Ability")
-	void AddLooseGameplayTagsToSelf(const FGameplayTagContainer GameplayTags);
+	UFUNCTION(BlueprintCallable, Category="GameplayTag", meta=(AutoCreateRefTerm="GameplayTags"))
+	void AddLooseGameplayTagsToSelf(const FGameplayTagContainer& GameplayTags);
 	
-	UFUNCTION(BlueprintCallable, Category="Ability")
-	void RemoveLooseGameplayTagsToSelf(const FGameplayTagContainer GameplayTags);
+	UFUNCTION(BlueprintCallable, Category="GameplayTag", meta=(AutoCreateRefTerm="GameplayTags"))
+	void RemoveLooseGameplayTagsToSelf(const FGameplayTagContainer& GameplayTags);
+	
+	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
+	void ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+
+	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
+	void AddGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+
+	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
+	void RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);	
 };

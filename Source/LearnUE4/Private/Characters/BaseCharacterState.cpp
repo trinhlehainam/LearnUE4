@@ -3,13 +3,13 @@
 
 #include "Characters/BaseCharacterState.h"
 
-#include "AbilitySystemComponent.h"
 #include "Abilities/BaseAttributeSet.h"
+#include "Abilities/CustomAbilitySystemComponent.h"
 
 
 ABaseCharacterState::ABaseCharacterState()
 {
-	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(FName("ASC"));
+	ASC = CreateDefaultSubobject<UCustomAbilitySystemComponent>(FName("ASC"));
 }
 
 UAbilitySystemComponent* ABaseCharacterState::GetAbilitySystemComponent() const
