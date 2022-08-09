@@ -28,23 +28,23 @@ namespace
 		}
 	};
 
+	const FAttributeCaptures& AttributeCaptures()
+	{
+		// TODO: Write document
+		// - We declare FAttributeCaptures as static variable in function-level because
+		// we want this variable is initialized when this function is invoked
+		// - If we declare this as global variable, when global variable is initialized, maybe UBaseAttributeSet::StaticClass
+		// is not defined yet
+		static FAttributeCaptures Singleton;
+		return Singleton;
+	}
 }
 
-const FAttributeCaptures& AttributeCaptures()
-{
-	// TODO: Write document
-	// - We declare FAttributeCaptures as static variable in function-level because
-	// we want this variable is initialized when this function is invoked
-	// - If we declare this as global variable, when global variable is initialized, maybe UBaseAttributeSet::StaticClass
-	// is not defined yet
-	static FAttributeCaptures Singleton;
-	return Singleton;
-}
 
 UGEExecCalc_Damage::UGEExecCalc_Damage()
 {
 	RelevantAttributesToCapture.Add(AttributeCaptures().HealthDef);
-	RelevantAttributesToCapture.Add(AttributeCaptures().AttackPowerDef);	
+	RelevantAttributesToCapture.Add(AttributeCaptures().AttackPowerDef);
 }
 
 void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -78,6 +78,6 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 	{
 		// Set the Target's damage meta attribute
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
-				AttributeCaptures().AttackPowerProperty, EGameplayModOp::Additive, AttackPower));
+			AttributeCaptures().AttackPowerProperty, EGameplayModOp::Additive, AttackPower));
 	}
 }
