@@ -34,6 +34,8 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 		bIsSprinting = Owner->IsSprinting();
 
+		SprintPower = Owner->GetCurrentWalkSpeed() / Owner->GetBaseWalkSpeed();
+
 		FRotator Rotation = Owner->GetActorRotation();
 		FRotator NormalizedDeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(Rotation, LastFrameRotation);
 		float TargetYaw = NormalizedDeltaRotation.Yaw / DeltaTime;

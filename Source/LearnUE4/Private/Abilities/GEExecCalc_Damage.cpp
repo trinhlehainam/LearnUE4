@@ -8,9 +8,9 @@
 // TODO: Put this to global file for every source can use this
 // When we put our properties in *private* or *protected* of Attribute class, GET_MEMBER_NAME_CHECKED macro in
 // DEFINE_ATTRIBUTE_CAPTUREDEF can't access these properties. So we need to write our own macro.
-#define DEFINE_ATTRIBUTE_CAPTUREDEF_CUSTOM(AttributeClassName, P, T, B) \
+#define DEFINE_ATTRIBUTE_CAPTUREDEF_CUSTOM(S, P, T, B) \
 { \
-	P##Property = AttributeClassName::Get##P##Attribute().GetUProperty(); \
+	P##Property = S::Get##P##Attribute().GetUProperty(); \
 	P##Def = FGameplayEffectAttributeCaptureDefinition(P##Property, EGameplayEffectAttributeCaptureSource::T, B); \
 }
 
@@ -28,14 +28,23 @@ namespace
 		}
 	};
 
-	const FAttributeCaptures AttributeCaptures{};
 }
 
+const FAttributeCaptures& AttributeCaptures()
+{
+	// TODO: Write document
+	// - We declare FAttributeCaptures as static variable in function-level because
+	// we want this variable is initialized when this function is invoked
+	// - If we declare this as global variable, when global variable is initialized, maybe UBaseAttributeSet::StaticClass
+	// is not defined yet
+	static FAttributeCaptures Singleton;
+	return Singleton;
+}
 
 UGEExecCalc_Damage::UGEExecCalc_Damage()
 {
-	RelevantAttributesToCapture.Add(AttributeCaptures.HealthDef);
-	RelevantAttributesToCapture.Add(AttributeCaptures.AttackPowerDef);	
+	RelevantAttributesToCapture.Add(AttributeCaptures().HealthDef);
+	RelevantAttributesToCapture.Add(AttributeCaptures().AttackPowerDef);	
 }
 
 void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -59,16 +68,16 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 
 	float AttackPower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
-		AttributeCaptures.AttackPowerDef, EvaluationParameters, AttackPower);
+		AttributeCaptures().AttackPowerDef, EvaluationParameters, AttackPower);
 
 	float Health = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
-		AttributeCaptures.HealthDef, EvaluationParameters, Health);
+		AttributeCaptures().HealthDef, EvaluationParameters, Health);
 
 	if (AttackPower > 0.f)
 	{
 		// Set the Target's damage meta attribute
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
-				AttributeCaptures.AttackPowerProperty, EGameplayModOp::Additive, AttackPower));
+				AttributeCaptures().AttackPowerProperty, EGameplayModOp::Additive, AttackPower));
 	}
 }

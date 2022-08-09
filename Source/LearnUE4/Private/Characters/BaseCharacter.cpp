@@ -33,53 +33,102 @@ UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 	return ASC.Get();
 }
 
-float ABaseCharacter::GetHealth() const
+float ABaseCharacter::GetCurrentHealth() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetHealthAttribute());
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetHealthAttribute());
 }
 
-float ABaseCharacter::GetMaxHealth() const
+float ABaseCharacter::GetBaseHealth() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetMaxHealthAttribute());
+	return ASC->GetNumericAttributeBase(UBaseAttributeSet::GetHealthAttribute());
 }
 
-float ABaseCharacter::GetMana() const
+float ABaseCharacter::GetBaseMaxHealth() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetManaAttribute());
+	return ASC->GetNumericAttributeBase(UBaseAttributeSet::GetMaxHealthAttribute());
 }
 
-float ABaseCharacter::GetMaxMana() const
+float ABaseCharacter::GetBaseMana() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetMaxManaAttribute());
+	return ASC->GetNumericAttributeBase(UBaseAttributeSet::GetManaAttribute());
 }
 
-float ABaseCharacter::GetStamina() const
+float ABaseCharacter::GetBaseMaxMana() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetStaminaAttribute());
+	return ASC->GetNumericAttributeBase(UBaseAttributeSet::GetMaxManaAttribute());
 }
 
-float ABaseCharacter::GetMaxStamina() const
+float ABaseCharacter::GetBaseStamina() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetMaxStaminaAttribute());
+	return ASC->GetNumericAttributeBase(UBaseAttributeSet::GetStaminaAttribute());
 }
 
-float ABaseCharacter::GetWalkSpeed() const
+float ABaseCharacter::GetBaseMaxStamina() const
 {
 	if (!ASC.IsValid())
 		return 0.f;
-	return ASC.Get()->GetNumericAttribute(UBaseAttributeSet::GetWalkSpeedAttribute());
+	return ASC->GetNumericAttributeBase(UBaseAttributeSet::GetMaxStaminaAttribute());
+}
+
+float ABaseCharacter::GetBaseWalkSpeed() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC->GetNumericAttributeBase(UBaseAttributeSet::GetWalkSpeedAttribute());
+}
+
+float ABaseCharacter::GetCurrentMaxHealth() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetMaxHealthAttribute());
+}
+
+float ABaseCharacter::GetCurrentMana() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetManaAttribute());
+}
+
+float ABaseCharacter::GetCurrentMaxMana() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetMaxManaAttribute());
+}
+
+float ABaseCharacter::GetCurrentStamina() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetStaminaAttribute());
+}
+
+float ABaseCharacter::GetCurrentMaxStamina() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetMaxStaminaAttribute());
+}
+
+float ABaseCharacter::GetCurrentWalkSpeed() const
+{
+	if (!ASC.IsValid())
+		return 0.f;
+	return ASC->GetNumericAttribute(UBaseAttributeSet::GetWalkSpeedAttribute());
 }
 
 void ABaseCharacter::SetInteractableTargetDataHandle(const FGameplayAbilityTargetDataHandle& TargetDataHandle)

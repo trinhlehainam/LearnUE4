@@ -32,12 +32,12 @@ void UPlayerHUDWidget::NativeConstruct()
 	Character->OnStaminaChange.AddDynamic(this, &UPlayerHUDWidget::OnStaminaAttributeChange);
 	Character->OnMaxStaminaChange.AddDynamic(this, &UPlayerHUDWidget::OnMaxStaminaAttributeChange);
 	
-	Health = Character->GetHealth();
-	MaxHealth = Character->GetMaxHealth();
-	Mana = Character->GetMana();
-	MaxMana = Character->GetMaxMana();
-	Stamina = Character->GetStamina();
-	MaxStamina = Character->GetMaxStamina();
+	Health = Character->GetCurrentHealth();
+	MaxHealth = Character->GetCurrentMaxHealth();
+	Mana = Character->GetCurrentMana();
+	MaxMana = Character->GetCurrentMaxMana();
+	Stamina = Character->GetCurrentStamina();
+	MaxStamina = Character->GetCurrentMaxStamina();
 
 	if (HealthBar)
 		HealthBar->SetPercent(Health / MaxHealth);

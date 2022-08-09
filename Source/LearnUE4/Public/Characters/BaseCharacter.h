@@ -44,19 +44,33 @@ public:
 	FOnAttributeValueChange OnWalkSpeedChange;
 
 	UFUNCTION(BlueprintCallable, Category="Attribute")
-	float GetHealth() const;
+	float GetCurrentHealth() const;
 	UFUNCTION(BlueprintCallable, Category="Attribute")
-	float GetMaxHealth() const;
+	float GetBaseHealth() const;
 	UFUNCTION(BlueprintCallable, Category="Attribute")
-	float GetMana() const;
+	float GetCurrentMaxHealth() const;
 	UFUNCTION(BlueprintCallable, Category="Attribute")
-	float GetMaxMana() const;
+	float GetBaseMaxHealth() const;
 	UFUNCTION(BlueprintCallable, Category="Attribute")
-	float GetStamina() const;
+	float GetCurrentMana() const;
 	UFUNCTION(BlueprintCallable, Category="Attribute")
-	float GetMaxStamina() const;
+	float GetBaseMana() const;
 	UFUNCTION(BlueprintCallable, Category="Attribute")
-	float GetWalkSpeed() const;
+	float GetCurrentMaxMana() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
+	float GetBaseMaxMana() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
+	float GetCurrentStamina() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
+	float GetBaseStamina() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
+	float GetCurrentMaxStamina() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
+	float GetBaseMaxStamina() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
+	float GetCurrentWalkSpeed() const;
+	UFUNCTION(BlueprintCallable, Category="Attribute")
+	float GetBaseWalkSpeed() const;
 
 	// TODO: This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
 	void SetInteractableTargetDataHandle(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
@@ -108,7 +122,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Custom | Gameplay Ability")
 	TArray<TSubclassOf<UBaseGameplayAbility>> DefaultAbilities;
 
-	// TODO: Find a wait to not depend on Character
+	// TODO: Find a way to not depend on Character
 	// This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
 	FGameplayAbilityTargetDataHandle InteractableTargetDataHandle;
 

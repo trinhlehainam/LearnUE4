@@ -43,5 +43,8 @@ public:
 	bool bIsSprinting;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
+	float SprintPower;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	ABaseCharacter* Owner;
 };
