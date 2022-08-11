@@ -21,12 +21,12 @@ void UCustomAnimInstance::NativeInitializeAnimation()
 
 void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 {
-	if (!Owner) {
+	if (Owner == nullptr) {
 		APawn* PawnOwner = TryGetPawnOwner();
 		Owner = Cast<ABaseCharacter>(PawnOwner);
 	}
 
-	if (Owner) {
+	if (IsValid(Owner)) {
 		FVector Velocity = Owner->GetVelocity();
 		CurrentWalkSpeed = FVector(Velocity.X, Velocity.Y, 0.f).Size();
 

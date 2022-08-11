@@ -68,15 +68,11 @@ void UBaseAttributeSet::OnRep_WalkSpeed(const FGameplayAttributeData& OldValue)
 
 void UBaseAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
-	Super::PreAttributeChange(Attribute, NewValue);
-
 	NewValue = FMath::Max(NewValue, 0.f);
 }
 
 void UBaseAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const
 {
-	Super::PreAttributeBaseChange(Attribute, NewValue);
-
 	if (Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp<float>(NewValue, 0.f, GetMaxHealth());
@@ -93,5 +89,5 @@ void UBaseAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribu
 
 void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
-	Super::PostGameplayEffectExecute(Data);
+	
 }

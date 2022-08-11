@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 
 #include "Characters/BaseCharacter.h"
+#include "Characters/BaseCharacterState.h"
 
 UGA_CharacterSprint::UGA_CharacterSprint()
 {
@@ -34,10 +35,10 @@ void UGA_CharacterSprint::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 
 	if (ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
-	{
 		Character->Sprint();
-		Character->OnStaminaChange.AddDynamic(this, &UGA_CharacterSprint::OnStaminaAttributeValueChange);
-	}
+
+	if (ABaseCharacterState* CharacterState = Cast<ABaseCharacterState>(ActorInfo->OwnerActor.Get()))
+		CharacterState->OnStaminaChange.AddDynamic(this, &UGA_CharacterSprint::OnStaminaAttributeValueChange);
 
 	if (SprintGameplayEffectClass)
 	{
@@ -53,10 +54,10 @@ void UGA_CharacterSprint::EndAbility(const FGameplayAbilitySpecHandle Handle,
                                      bool bReplicateEndAbility, bool bWasCancelled)
 {
 	if (ABaseCharacter* Character = Cast<ABaseCharacter>(ActorInfo->AvatarActor.Get()))
-	{
 		Character->StopSprinting();
-		Character->OnStaminaChange.RemoveDynamic(this, &UGA_CharacterSprint::OnStaminaAttributeValueChange);
-	}
+	
+	if (ABaseCharacterState* CharacterState = Cast<ABaseCharacterState>(ActorInfo->OwnerActor.Get()))
+		CharacterState->OnStaminaChange.RemoveDynamic(this, &UGA_CharacterSprint::OnStaminaAttributeValueChange);
 	
 	if (UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get())
 	{

@@ -7,14 +7,12 @@
 #include "Abilities/GameplayAbilityTargetTypes.h"
 #include "BaseCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeValueChange, float, NewValue);
-
 class UBaseGameplayAbility;
 class UCustomAbilitySystemComponent;
 
 /**
  * @brief Base class use both for Player and NPCS. \n
- * This class requires PlayerState to be instanced, and PlayerStateClass is child of ABaseCharacterState class
+ * This class requires PlayerState to be instanced, and PlayerStateClass is child of ABaseCharacterState class.
  *
  */
 UCLASS()
@@ -27,21 +25,6 @@ public:
 	ABaseCharacter();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	UPROPERTY(BlueprintAssignable, Category="Atrribute")
-	FOnAttributeValueChange OnHealthChange;
-	UPROPERTY(BlueprintAssignable, Category="Atrribute")
-	FOnAttributeValueChange OnMaxHealthChange;
-	UPROPERTY(BlueprintAssignable, Category="Atrribute")
-	FOnAttributeValueChange OnManaChange;
-	UPROPERTY(BlueprintAssignable, Category="Atrribute")
-	FOnAttributeValueChange OnMaxManaChange;
-	UPROPERTY(BlueprintAssignable, Category="Atrribute")
-	FOnAttributeValueChange OnStaminaChange;
-	UPROPERTY(BlueprintAssignable, Category="Atrribute")
-	FOnAttributeValueChange OnMaxStaminaChange;
-	UPROPERTY(BlueprintAssignable, Category="Atrribute")
-	FOnAttributeValueChange OnWalkSpeedChange;
 
 	UFUNCTION(BlueprintCallable, Category="Attribute")
 	float GetCurrentHealth() const;
@@ -77,10 +60,17 @@ public:
 	FGameplayAbilityTargetDataHandle GetInteractableTargetDataHandle() const;
 	//
 
+	UFUNCTION(BlueprintCallable, Category="BaseCharacter|Movement")
 	bool IsSprinting() const;
+	UFUNCTION(BlueprintCallable, Category="BaseCharacter|Movement")
 	bool CanSprint() const;
+	UFUNCTION(BlueprintCallable, Category=Character)
 	virtual void Sprint();
+	UFUNCTION(BlueprintCallable, Category=Character)
 	virtual void StopSprinting();
+	
+	UFUNCTION(BlueprintCallable, Category="BaseCharacter|Movement")
+	bool IsAlive() const;
 protected:
 	//~ Begin ACharacter Interface.
 
@@ -90,6 +80,7 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
@@ -106,13 +97,13 @@ protected:
 	void SetMaxStamina(float Value);
 	void SetWalkSpeed(float Value);
 
-	void OnHealthAttributeValueChange(const FOnAttributeChangeData& NewValue);
-	void OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& NewValue);
-	void OnManaAttributeValueChange(const FOnAttributeChangeData& NewValue);
-	void OnMaxManaAttributeValueChange(const FOnAttributeChangeData& NewValue);
-	void OnStaminaAttributeValueChange(const FOnAttributeChangeData& NewValue);
-	void OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& NewValue);
-	void OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& NewValue);
+	void OnHealthAttributeValueChange(const FOnAttributeChangeData& Data);
+	void OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& Data);
+	void OnManaAttributeValueChange(const FOnAttributeChangeData& Data);
+	void OnMaxManaAttributeValueChange(const FOnAttributeChangeData& Data);
+	void OnStaminaAttributeValueChange(const FOnAttributeChangeData& Data);
+	void OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& Data);
+	void OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& Data);
 
 	TWeakObjectPtr<UCustomAbilitySystemComponent> ASC;
 
@@ -127,4 +118,5 @@ protected:
 	FGameplayAbilityTargetDataHandle InteractableTargetDataHandle;
 
 	int8 bIsSprinting:1;
+	int8 bIsAlive:1;
 };

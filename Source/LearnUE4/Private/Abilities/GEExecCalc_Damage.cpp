@@ -19,12 +19,17 @@ namespace
 	struct FAttributeCaptures
 	{
 		DECLARE_ATTRIBUTE_CAPTUREDEF(AttackPower);
-		DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
+		DECLARE_ATTRIBUTE_CAPTUREDEF(Damage);
 
 		FAttributeCaptures()
 		{
-			DEFINE_ATTRIBUTE_CAPTUREDEF_CUSTOM(UBaseAttributeSet, Health, Target, false);
+			// 4th argument in DEFINE_ATTRIBUTE_CAPTUREDEF_CUSTOM is bSnapShot
+			// bSnapShot is true : capture Attribute value when GE (FGameplayEffectSpec) is created
+			// bSnapShot is false : capture Attribute value when GE (FGameplayEffectSpec) is APPLIED to an Actor
+			
 			DEFINE_ATTRIBUTE_CAPTUREDEF_CUSTOM(UBaseAttributeSet, AttackPower, Source, true);
+
+			DEFINE_ATTRIBUTE_CAPTUREDEF_CUSTOM(UBaseAttributeSet, Damage, Target, true);
 		}
 	};
 
@@ -43,7 +48,7 @@ namespace
 
 UGEExecCalc_Damage::UGEExecCalc_Damage()
 {
-	RelevantAttributesToCapture.Add(AttributeCaptures().HealthDef);
+	RelevantAttributesToCapture.Add(AttributeCaptures().DamageDef);
 	RelevantAttributesToCapture.Add(AttributeCaptures().AttackPowerDef);
 }
 
@@ -70,14 +75,16 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		AttributeCaptures().AttackPowerDef, EvaluationParameters, AttackPower);
 
-	float Health = 0.f;
+	float Damage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
-		AttributeCaptures().HealthDef, EvaluationParameters, Health);
+		AttributeCaptures().DamageDef, EvaluationParameters, Damage);
 
-	if (AttackPower > 0.f)
+	float DamageDone = Damage * AttackPower;
+	
+	if (DamageDone > 0.f)
 	{
 		// Set the Target's damage meta attribute
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
-			AttributeCaptures().AttackPowerProperty, EGameplayModOp::Additive, AttackPower));
+			AttributeCaptures().AttackPowerProperty, EGameplayModOp::Additive, DamageDone));
 	}
 }
