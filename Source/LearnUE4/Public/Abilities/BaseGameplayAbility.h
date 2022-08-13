@@ -23,10 +23,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
 	bool bActivateOnGranted;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
-	bool bShowDebug;
 
 protected:
+	UFUNCTION(BlueprintCallable, Category="Movement")
+	void DisableMovement();
+	
+	UFUNCTION(BlueprintCallable, Category="Movement")
+	void EnableMovement();
+	
 	UFUNCTION(BlueprintCallable, Category="GameplayTag", meta=(AutoCreateRefTerm="GameplayTags"))
 	void AddLooseGameplayTagsToSelf(const FGameplayTagContainer& GameplayTags);
 	
@@ -40,5 +44,10 @@ protected:
 	void AddGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
-	void RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);	
+	void RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
+	bool bShowDebug;
+
+	EMovementMode LastMovementMode;
 };

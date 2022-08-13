@@ -39,6 +39,8 @@ APlayerCharacter::APlayerCharacter()
 
 	CameraBoom->SetupAttachment(RootComponent);
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+
+	bIsHoldingWeapon = false;
 }
 
 void APlayerCharacter::OnRep_PlayerState()
@@ -154,6 +156,21 @@ void APlayerCharacter::CollectWeapon(AWeaponActor* WeaponActor)
 AWeaponActor* APlayerCharacter::GetCurrentWeapon() const
 {
 	return Weapon;
+}
+
+bool APlayerCharacter::IsHoldingWeapon() const
+{
+	if (!IsValid(Weapon)) return false;
+
+	FName AttachingSocket = Weapon->GetAttachParentSocketName();
+
+	if (AttachingSocket == FName("UnequipWeaponSocket"))
+		return false;
+	
+	if (AttachingSocket == FName("AxeSocket"))
+		return true;
+
+	return false;
 }
 
 void APlayerCharacter::PawnClientRestart()

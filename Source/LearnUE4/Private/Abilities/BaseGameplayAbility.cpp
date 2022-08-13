@@ -3,15 +3,40 @@
 
 #include "Abilities/BaseGameplayAbility.h"
 
+#include "Abilities/CustomAbilitySystemGlobals.h"
+
 #include "AbilitySystemComponent.h"
 #include "GameplayCueManager.h"
-#include "Abilities/CustomAbilitySystemGlobals.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UBaseGameplayAbility::UBaseGameplayAbility()
 {
 	AbilityInputID = EAbilityInputID::None;
 	bActivateOnGranted = false;
 	bShowDebug = false;
+
+	LastMovementMode = MOVE_None;
+}
+
+void UBaseGameplayAbility::DisableMovement()
+{
+	if (UCharacterMovementComponent* MoveComp = Cast<UCharacterMovementComponent>(
+		CurrentActorInfo->MovementComponent.Get()))
+	{
+		LastMovementMode = MoveComp->MovementMode;
+		MoveComp->DisableMovement();
+	}
+}
+
+void UBaseGameplayAbility::EnableMovement()
+{
+	if (LastMovementMode == MOVE_None) return;
+	
+	if (UCharacterMovementComponent* MoveComp = Cast<UCharacterMovementComponent>(
+		CurrentActorInfo->MovementComponent.Get()))
+	{
+		MoveComp->SetMovementMode(LastMovementMode);
+	}
 }
 
 void UBaseGameplayAbility::AddLooseGameplayTagsToSelf(const FGameplayTagContainer& GameplayTags)
@@ -27,14 +52,14 @@ void UBaseGameplayAbility::RemoveLooseGameplayTagsToSelf(const FGameplayTagConta
 }
 
 void UBaseGameplayAbility::ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag,
-	const FGameplayCueParameters& GameplayCueParameters)
+                                                   const FGameplayCueParameters& GameplayCueParameters)
 {
 	UCustomAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(
 		GetOwningActorFromActorInfo(), GameplayCueTag, EGameplayCueEvent::Type::Executed, GameplayCueParameters);
 }
 
 void UBaseGameplayAbility::AddGameplayCueLocal(const FGameplayTag GameplayCueTag,
-	const FGameplayCueParameters& GameplayCueParameters)
+                                               const FGameplayCueParameters& GameplayCueParameters)
 {
 	UCustomAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(
 		GetOwningActorFromActorInfo(), GameplayCueTag, EGameplayCueEvent::Type::OnActive, GameplayCueParameters);
@@ -43,7 +68,7 @@ void UBaseGameplayAbility::AddGameplayCueLocal(const FGameplayTag GameplayCueTag
 }
 
 void UBaseGameplayAbility::RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag,
-	const FGameplayCueParameters& GameplayCueParameters)
+                                                  const FGameplayCueParameters& GameplayCueParameters)
 {
 	UCustomAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(
 		GetOwningActorFromActorInfo(), GameplayCueTag, EGameplayCueEvent::Type::Removed, GameplayCueParameters);

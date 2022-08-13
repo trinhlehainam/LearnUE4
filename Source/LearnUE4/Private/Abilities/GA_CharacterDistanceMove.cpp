@@ -2,7 +2,7 @@
 
 #include "Abilities/Tasks/AT_Timeline.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/MovementComponent.h"
 
 UGA_CharacterDistanceMove::UGA_CharacterDistanceMove()
 {
@@ -73,16 +73,12 @@ void UGA_CharacterDistanceMove::ActivateAbility(const FGameplayAbilitySpecHandle
 
 void UGA_CharacterDistanceMove::OnTimelineFloatTrackUpdate(float LengthMultipler)
 {
-	ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo());
-	UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement();
-
-	if (!IsValid(CharacterMovement))
-		return CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
-
-	FVector CurrentVelocity = BaseVelocityLength * LengthMultipler * ForwardVector;
-
-	CharacterMovement->Velocity.X = CurrentVelocity.X;
-	CharacterMovement->Velocity.Y = CurrentVelocity.Y;
+	if (UMovementComponent* MoveComp = CurrentActorInfo->MovementComponent.Get())
+	{
+		FVector CurrentVelocity = BaseVelocityLength * LengthMultipler * ForwardVector;
+		MoveComp->Velocity.X = CurrentVelocity.X;
+		MoveComp->Velocity.Y = CurrentVelocity.Y;
+	}
 }
 
 void UGA_CharacterDistanceMove::OnTimelineFinished()

@@ -35,6 +35,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AWeaponActor* GetCurrentWeapon() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool IsHoldingWeapon() const;	
 protected:
 	virtual void OnRep_PlayerState() override;
 
@@ -48,6 +51,8 @@ protected:
 	virtual void PawnClientRestart() override;
 	
 	int8 bIsAbilitiesBoundToInput:1;
+	// TODO: Maybe put this to ABaseCharacter
+	int8 bIsHoldingWeapon:1;
 
 	// TODO: Maybe put this to ABaseCharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Weapon")
