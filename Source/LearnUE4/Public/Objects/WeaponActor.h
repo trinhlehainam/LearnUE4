@@ -34,4 +34,7 @@ protected:
 	USkeletalMeshComponent* WeaponMesh;
 
 	int8 bCanInteract:1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 };

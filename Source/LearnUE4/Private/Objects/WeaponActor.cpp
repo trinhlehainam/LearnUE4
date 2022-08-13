@@ -3,6 +3,7 @@
 
 #include "Objects/WeaponActor.h"
 
+#include "AbilitySystemComponent.h"
 #include "Characters/PlayerCharacter.h"
 
 
@@ -26,6 +27,15 @@ void AWeaponActor::SetEnableWeaponOverlapCollison(bool bEnable)
 void AWeaponActor::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!DamageEffectClass) return;
+	
+	ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor);
+	if (!IsValid(Character) || !Character->IsAlive()) return;
+
+	UAbilitySystemComponent* ASC = Character->GetAbilitySystemComponent();
+	FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(DamageEffectClass, 1.f, ContextHandle);
+	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 }
 
 bool AWeaponActor::IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent)

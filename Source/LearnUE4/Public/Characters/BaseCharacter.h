@@ -84,6 +84,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="BaseCharacter|Movement")
 	bool IsAlive() const;
+	
 protected:
 	//~ Begin ACharacter Interface.
 
@@ -135,9 +136,10 @@ protected:
 	int8 bIsDashing:1;
 	int8 bIsSprinting:1;
 	int8 bIsAlive:1;
-	int8 bIsHoldingWeapon:1;
 
 	// TODO: Implement Inventory System
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Weapon")
 	AWeaponActor* Weapon;
+	
+	int8 bIsHoldingWeapon:1;
 };

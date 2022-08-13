@@ -30,6 +30,12 @@ protected:
 	
 	UFUNCTION(BlueprintCallable, Category="Movement")
 	void EnableMovement();
+
+	UFUNCTION(BlueprintCallable, Category="Combat")
+	void EnableAttackCollision();
+	
+	UFUNCTION(BlueprintCallable, Category="Combat")
+	void DisableAttackCollision();
 	
 	UFUNCTION(BlueprintCallable, Category="GameplayTag", meta=(AutoCreateRefTerm="GameplayTags"))
 	void AddLooseGameplayTagsToSelf(const FGameplayTagContainer& GameplayTags);

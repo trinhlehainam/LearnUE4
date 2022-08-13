@@ -348,7 +348,7 @@ void ABaseCharacter::SetWalkSpeed(float Value)
 
 void ABaseCharacter::OnHealthAttributeValueChange(const FOnAttributeChangeData& Data)
 {
-	bIsAlive = Data.NewValue <= 0.f ? false : true;
+	bIsAlive = Data.NewValue > 0.f;
 }
 
 void ABaseCharacter::OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& Data)

@@ -7,7 +7,9 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayCueManager.h"
+#include "Characters/BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Objects/WeaponActor.h"
 
 UBaseGameplayAbility::UBaseGameplayAbility()
 {
@@ -36,6 +38,24 @@ void UBaseGameplayAbility::EnableMovement()
 		CurrentActorInfo->MovementComponent.Get()))
 	{
 		MoveComp->SetMovementMode(LastMovementMode);
+	}
+}
+
+void UBaseGameplayAbility::EnableAttackCollision()
+{
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(GetAvatarActorFromActorInfo()))
+	{
+		AWeaponActor* Weapon = Character->GetCurrentWeapon();
+		Weapon->SetEnableWeaponOverlapCollison(true);
+	}
+}
+
+void UBaseGameplayAbility::DisableAttackCollision()
+{
+	if (ABaseCharacter* Character = Cast<ABaseCharacter>(GetAvatarActorFromActorInfo()))
+	{
+		AWeaponActor* Weapon = Character->GetCurrentWeapon();
+		Weapon->SetEnableWeaponOverlapCollison(false);
 	}
 }
 
