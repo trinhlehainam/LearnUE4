@@ -177,28 +177,6 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!ASC.IsValid()) return;
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetHealthAttribute()).AddUObject(
-		this, &ABaseCharacter::OnHealthAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxHealthAttribute()).AddUObject(
-		this, &ABaseCharacter::OnMaxHealthAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetManaAttribute()).AddUObject(
-		this, &ABaseCharacter::OnManaAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxManaAttribute()).AddUObject(
-		this, &ABaseCharacter::OnMaxManaAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetStaminaAttribute()).AddUObject(
-		this, &ABaseCharacter::OnStaminaAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxStaminaAttribute()).AddUObject(
-		this, &ABaseCharacter::OnMaxStaminaAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetWalkSpeedAttribute()).AddUObject(
-		this, &ABaseCharacter::OnWalkSpeedAttributeValueChange);
 }
 
 void ABaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -220,6 +198,10 @@ void ABaseCharacter::PossessedBy(AController* NewController)
 	if (!ASC.IsValid()) return;
 
 	ASC->InitAbilityActorInfo(PS, this);
+
+	// TODO: Consider where to this to get replicated
+	// Bind Attribute Value Change Delegates before Init Attributes to catch init value and assign these value to ACharacter
+	BindAttributeValueChangeDelegates();
 	InitializeAttributes();
 	GiveDefaultAbilities();
 }
@@ -268,6 +250,32 @@ void ABaseCharacter::GiveDefaultAbilities()
 				ASC->TryActivateAbility(AbilityHandle);
 		}
 	}
+}
+
+void ABaseCharacter::BindAttributeValueChangeDelegates()
+{
+	if (!ASC.IsValid()) return;
+	
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetHealthAttribute()).AddUObject(
+		this, &ABaseCharacter::OnHealthAttributeValueChange);
+
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxHealthAttribute()).AddUObject(
+		this, &ABaseCharacter::OnMaxHealthAttributeValueChange);
+
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetManaAttribute()).AddUObject(
+		this, &ABaseCharacter::OnManaAttributeValueChange);
+
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxManaAttribute()).AddUObject(
+		this, &ABaseCharacter::OnMaxManaAttributeValueChange);
+
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetStaminaAttribute()).AddUObject(
+		this, &ABaseCharacter::OnStaminaAttributeValueChange);
+
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxStaminaAttribute()).AddUObject(
+		this, &ABaseCharacter::OnMaxStaminaAttributeValueChange);
+
+	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetWalkSpeedAttribute()).AddUObject(
+		this, &ABaseCharacter::OnWalkSpeedAttributeValueChange);
 }
 
 void ABaseCharacter::SetHealth(float Value)

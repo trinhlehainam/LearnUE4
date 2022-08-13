@@ -16,7 +16,7 @@ class LEARNUE4_API UCustomAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
-public:
+protected:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 
@@ -45,6 +45,5 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float SprintPower;
 	
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
-	ABaseCharacter* Owner;
+	TWeakObjectPtr<ABaseCharacter> Owner;
 };

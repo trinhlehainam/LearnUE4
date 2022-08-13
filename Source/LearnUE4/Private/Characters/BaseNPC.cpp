@@ -12,7 +12,7 @@ ABaseNPC::ABaseNPC()
 	CurrentPatrolInfoIndex = 0;
 	PatrolDirection = 1;
 
-	// Set up Smooth Character Rotation when moving
+	// Set up Smooth Character Rotation when moved by AI
 	if (UCharacterMovementComponent* MoveComp = GetCharacterMovement())
 	{
 		MoveComp->RotationRate.Yaw = 180.f;

@@ -29,7 +29,7 @@ protected:
 	// ~ End UGameplayAbility Interface
 
 	UFUNCTION()
-	void OnTimelineFloatTrackUpdate(float DistanceMultiplier);
+	void OnTimelineFloatTrackUpdate(float LengthMultipler);
 	
 	UFUNCTION()
 	void OnTimelineFinished();
@@ -41,16 +41,21 @@ protected:
 	FName SectionName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
-	UCurveFloat* DistanceCurveFloat;
+	UCurveFloat* DistanceMultiplerCurveFloat;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
-	float MoveDistance;
+	float BaseVelocityLength;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
 	bool bIgnoreMoveInput;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
 	bool bIgnoreLookInput;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability")
+	bool bUseMovementInputVectorDirection;
+
+	FVector ForwardVector;
 	
 	TWeakObjectPtr<UAT_Timeline> TimelineTask;	
 };

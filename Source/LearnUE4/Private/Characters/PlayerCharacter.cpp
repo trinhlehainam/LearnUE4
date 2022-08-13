@@ -11,9 +11,10 @@
 
 #include "Input/CustomEnhancedInputComponent.h"
 #include "Abilities/AbilityInputID.h"
-#include "Abilities/BaseAttributeSet.h"
+#include "Abilities/CustomAbilitySystemComponent.h"
 #include "Abilities/CustomGameplayTags.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Objects/WeaponActor.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -25,7 +26,7 @@ APlayerCharacter::APlayerCharacter()
 	bIsAbilitiesBoundToInput = false;
 
 	AIControllerClass = nullptr;
-	
+
 	// Let Character Movement Component rotate Character toward movement direction
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
@@ -51,7 +52,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	check(PlayerInputComponent);
 
-	if (UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(PlayerInputComponent))
+	if (UCustomEnhancedInputComponent* EnhancedInputComponent = Cast<UCustomEnhancedInputComponent>(
+		PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindActionByInputTag(
 			InputConfig, ECustomGameplayTags::InputTag_Move,
@@ -60,7 +62,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindActionByInputTag(
 			InputConfig, ECustomGameplayTags::InputTag_Look,
 			ETriggerEvent::Triggered, this, &APlayerCharacter::Input_Look);
-
 	}
 
 	BindGameplayAbilitiesToInputComponent(PlayerInputComponent);
@@ -87,7 +88,8 @@ void APlayerCharacter::BindGameplayAbilitiesToInputComponent(UInputComponent* Pl
 			== EAbilityInputID::Cancel)
 			continue;
 
-		EnhancedInputComponent->BindGameplayAbilityInput(ASC.Get(), static_cast<int32>(AbilityInputID), Input.InputAction);
+		EnhancedInputComponent->BindGameplayAbilityInput(ASC.Get(), static_cast<int32>(AbilityInputID),
+		                                                 Input.InputAction);
 	}
 
 	bIsAbilitiesBoundToInput = true;
@@ -139,6 +141,19 @@ void APlayerCharacter::MoveRight(float Scale)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Scale);
 	}
+}
+
+void APlayerCharacter::CollectWeapon(AWeaponActor* WeaponActor)
+{
+	WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+	                  FName("UnequipWeaponSocket"));
+	
+	Weapon = WeaponActor;
+}
+
+AWeaponActor* APlayerCharacter::GetCurrentWeapon() const
+{
+	return Weapon;
 }
 
 void APlayerCharacter::PawnClientRestart()

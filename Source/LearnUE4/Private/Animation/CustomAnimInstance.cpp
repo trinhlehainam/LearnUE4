@@ -26,7 +26,7 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		Owner = Cast<ABaseCharacter>(PawnOwner);
 	}
 
-	if (IsValid(Owner)) {
+	if (Owner.IsValid()) {
 		FVector Velocity = Owner->GetVelocity();
 		CurrentWalkSpeed = FVector(Velocity.X, Velocity.Y, 0.f).Size();
 

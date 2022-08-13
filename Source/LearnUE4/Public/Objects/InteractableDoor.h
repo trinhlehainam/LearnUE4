@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractableItem.h"
+#include "InteractableActorBase.h"
 #include "InteractableDoor.generated.h"
 
 UCLASS()
-class LEARNUE4_API AInteractableDoor : public AInteractableItem
+class LEARNUE4_API AInteractableDoor : public AInteractableActorBase
 {
 	GENERATED_BODY()
 	

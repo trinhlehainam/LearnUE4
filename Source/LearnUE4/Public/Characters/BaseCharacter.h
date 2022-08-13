@@ -88,6 +88,7 @@ protected:
 
 	void InitializeAttributes();
 	void GiveDefaultAbilities();
+	void BindAttributeValueChangeDelegates();
 
 	void SetHealth(float Value);
 	void SetMaxHealth(float Value);

@@ -2,13 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "InteractableItem.h"
-#include "GameFramework/Actor.h"
+#include "InteractableActorBase.h"
 #include "ApplyEffectItem.generated.h"
 
 UCLASS(Abstract)
-class LEARNUE4_API AApplyEffectItem : public AInteractableItem
+class LEARNUE4_API AApplyEffectItem : public AInteractableActorBase
 {
 	GENERATED_BODY()
 

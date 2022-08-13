@@ -14,6 +14,7 @@ class UCameraComponent;
 class UInputMappingContext;
 struct FInputActionValue;
 class UInputConfig;
+class AWeaponActor;
 
 /**
  * 
@@ -28,6 +29,12 @@ public:
 	void MoveFoward(float Scale);
 
 	void MoveRight(float Scale);
+
+	UFUNCTION(BlueprintCallable)
+	void CollectWeapon(AWeaponActor* WeaponActor);
+
+	UFUNCTION(BlueprintCallable)
+	AWeaponActor* GetCurrentWeapon() const;
 protected:
 	virtual void OnRep_PlayerState() override;
 
@@ -39,8 +46,12 @@ protected:
 	void Input_Look(const FInputActionValue& InputActionValue);
 
 	virtual void PawnClientRestart() override;
-private:
-	bool bIsAbilitiesBoundToInput;
+	
+	int8 bIsAbilitiesBoundToInput:1;
+
+	// TODO: Maybe put this to ABaseCharacter
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Weapon")
+	AWeaponActor* Weapon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom | Camera", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;

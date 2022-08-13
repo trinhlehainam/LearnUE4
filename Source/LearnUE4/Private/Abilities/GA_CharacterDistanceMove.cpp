@@ -7,20 +7,33 @@
 UGA_CharacterDistanceMove::UGA_CharacterDistanceMove()
 {
 	SectionName = FName("Default");
-	
+
 	bIgnoreMoveInput = true;
 	bIgnoreLookInput = false;
 }
 
 void UGA_CharacterDistanceMove::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                         const FGameplayAbilityActorInfo* ActorInfo,
-                                         const FGameplayAbilityActivationInfo ActivationInfo,
-                                         const FGameplayEventData* TriggerEventData)
+                                                const FGameplayAbilityActorInfo* ActorInfo,
+                                                const FGameplayAbilityActivationInfo ActivationInfo,
+                                                const FGameplayEventData* TriggerEventData)
 {
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo)) return;
 
-	if (!IsValid(DistanceCurveFloat) || !IsValid(AnimMontage))
+	if (!IsValid(DistanceMultiplerCurveFloat) || !IsValid(AnimMontage))
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+
+	if (ACharacter* Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get()))
+	{
+		ForwardVector = bUseMovementInputVectorDirection
+			                ? Character->GetLastMovementInputVector().GetSafeNormal()
+			                : Character->GetActorForwardVector();
+
+		// TODO:
+		// We can't control Character's direction with Velocity while Character's performing Root Motion
+		// So we change Character's direction before apply Root Motion (Play Montage)
+		if (bUseMovementInputVectorDirection)
+			Character->SetActorRotation(ForwardVector.Rotation());
+	}
 
 	UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
 	TimelineTask = UAT_Timeline::CreateTimelineTask(this);
@@ -29,12 +42,12 @@ void UGA_CharacterDistanceMove::ActivateAbility(const FGameplayAbilitySpecHandle
 	if (Duration == 0.f)
 		return CancelAbility(Handle, ActorInfo, ActivationInfo, true);
 
-	if (APlayerController* PC = CurrentActorInfo->PlayerController.Get())
+	if (APlayerController* PC = ActorInfo->PlayerController.Get())
 	{
 		if (bIgnoreMoveInput) PC->SetIgnoreMoveInput(true);
 		if (bIgnoreLookInput) PC->SetIgnoreLookInput(true);
 	}
-	
+
 	if (SectionName != NAME_None)
 	{
 		AnimInstance->Montage_JumpToSection(SectionName, AnimMontage);
@@ -47,7 +60,7 @@ void UGA_CharacterDistanceMove::ActivateAbility(const FGameplayAbilitySpecHandle
 	OnTimelineFloatUpdate.BindDynamic(this, &UGA_CharacterDistanceMove::OnTimelineFloatTrackUpdate);
 	OnTimelineFinished.BindDynamic(this, &UGA_CharacterDistanceMove::OnTimelineFinished);
 
-	TimelineTask->AddInterpFloat(DistanceCurveFloat, OnTimelineFloatUpdate);
+	TimelineTask->AddInterpFloat(DistanceMultiplerCurveFloat, OnTimelineFloatUpdate);
 	TimelineTask->SetTimelineFinishedFunc(OnTimelineFinished);
 
 	TimelineTask->PlayFromStart();
@@ -58,7 +71,7 @@ void UGA_CharacterDistanceMove::ActivateAbility(const FGameplayAbilitySpecHandle
 	TimelineTask->ReadyForActivation();
 }
 
-void UGA_CharacterDistanceMove::OnTimelineFloatTrackUpdate(float DistanceMultiplier)
+void UGA_CharacterDistanceMove::OnTimelineFloatTrackUpdate(float LengthMultipler)
 {
 	ACharacter* Character = Cast<ACharacter>(GetAvatarActorFromActorInfo());
 	UCharacterMovementComponent* CharacterMovement = Character->GetCharacterMovement();
@@ -66,11 +79,10 @@ void UGA_CharacterDistanceMove::OnTimelineFloatTrackUpdate(float DistanceMultipl
 	if (!IsValid(CharacterMovement))
 		return CancelAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true);
 
-	FVector ForwardVector = Character->GetActorForwardVector();
-	FVector CurrentDistance = (MoveDistance * DistanceMultiplier) * ForwardVector;
+	FVector CurrentVelocity = BaseVelocityLength * LengthMultipler * ForwardVector;
 
-	CharacterMovement->Velocity.X = CurrentDistance.X;
-	CharacterMovement->Velocity.Y = CurrentDistance.Y;
+	CharacterMovement->Velocity.X = CurrentVelocity.X;
+	CharacterMovement->Velocity.Y = CurrentVelocity.Y;
 }
 
 void UGA_CharacterDistanceMove::OnTimelineFinished()
