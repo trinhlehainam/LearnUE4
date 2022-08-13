@@ -18,10 +18,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetEnableWeaponOverlapCollison(bool bEnable);
+
+	UFUNCTION()
+	void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+	                          AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	                          const FHitResult& SweepResult);
 protected:
+	virtual void BeginPlay() override;
 
 	virtual void EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
-	                                             APlayerController* InteractingPlayerController) override;
+	                                           APlayerController* InteractingPlayerController) override;
 	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -29,4 +35,3 @@ protected:
 
 	int8 bCanInteract:1;
 };
-

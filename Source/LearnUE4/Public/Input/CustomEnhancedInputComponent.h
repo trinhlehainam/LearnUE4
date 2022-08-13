@@ -6,7 +6,6 @@
 #include "AbilitySystemComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputTypes.h"
-#include "Abilities/AbilityInputID.h"
 #include "CustomEnhancedInputComponent.generated.h"
 
 struct FGameplayTag;

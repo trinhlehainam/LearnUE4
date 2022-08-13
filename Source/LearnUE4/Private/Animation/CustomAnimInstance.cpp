@@ -33,6 +33,7 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		bIsInAir = Owner->GetMovementComponent()->IsFalling();
 		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 		bIsSprinting = Owner->IsSprinting();
+		bIsHoldingWeapon = Owner->IsHoldingWeapon();
 
 		SprintPower = Owner->GetCurrentWalkSpeed() / Owner->GetBaseWalkSpeed();
 

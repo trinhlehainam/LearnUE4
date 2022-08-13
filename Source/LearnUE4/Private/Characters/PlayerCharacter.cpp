@@ -13,8 +13,6 @@
 #include "Abilities/AbilityInputID.h"
 #include "Abilities/CustomAbilitySystemComponent.h"
 #include "Abilities/CustomGameplayTags.h"
-#include "Abilities/GameplayAbilityTypes.h"
-#include "Objects/WeaponActor.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -143,34 +141,6 @@ void APlayerCharacter::MoveRight(float Scale)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Scale);
 	}
-}
-
-void APlayerCharacter::CollectWeapon(AWeaponActor* WeaponActor)
-{
-	WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-	                  FName("UnequipWeaponSocket"));
-	
-	Weapon = WeaponActor;
-}
-
-AWeaponActor* APlayerCharacter::GetCurrentWeapon() const
-{
-	return Weapon;
-}
-
-bool APlayerCharacter::IsHoldingWeapon() const
-{
-	if (!IsValid(Weapon)) return false;
-
-	FName AttachingSocket = Weapon->GetAttachParentSocketName();
-
-	if (AttachingSocket == FName("UnequipWeaponSocket"))
-		return false;
-	
-	if (AttachingSocket == FName("AxeSocket"))
-		return true;
-
-	return false;
 }
 
 void APlayerCharacter::PawnClientRestart()

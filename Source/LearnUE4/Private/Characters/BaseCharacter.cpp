@@ -10,6 +10,7 @@
 #include "Abilities/BaseGameplayAbility.h"
 #include "Abilities/CustomAbilitySystemComponent.h"
 #include "Characters/BaseCharacterState.h"
+#include "Objects/WeaponActor.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -160,6 +161,31 @@ void ABaseCharacter::Sprint()
 void ABaseCharacter::StopSprinting()
 {
 	bIsSprinting = false;
+}
+
+void ABaseCharacter::CollectWeapon(AWeaponActor* WeaponActor)
+{
+	WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+	                  FName("UnequipWeaponSocket"));
+	
+	Weapon = WeaponActor;
+}
+
+AWeaponActor* ABaseCharacter::GetCurrentWeapon() const
+{
+	return Weapon;
+}
+
+bool ABaseCharacter::IsHoldingWeapon() const
+{
+	if (!IsValid(Weapon)) return false;
+
+	FName AttachingSocket = Weapon->GetAttachParentSocketName();
+	
+	if (AttachingSocket == FName("AxeSocket"))
+		return true;
+
+	return false;
 }
 
 bool ABaseCharacter::IsAlive() const

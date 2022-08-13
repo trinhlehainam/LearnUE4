@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
 #include "Characters/BaseCharacter.h"
-#include "Input/CustomEnhancedInputComponent.h"
 #include "PlayerCharacter.generated.h"
 
 struct FOnAttributeChangeData;
@@ -14,7 +13,6 @@ class UCameraComponent;
 class UInputMappingContext;
 struct FInputActionValue;
 class UInputConfig;
-class AWeaponActor;
 
 /**
  * 
@@ -30,14 +28,6 @@ public:
 
 	void MoveRight(float Scale);
 
-	UFUNCTION(BlueprintCallable)
-	void CollectWeapon(AWeaponActor* WeaponActor);
-
-	UFUNCTION(BlueprintCallable)
-	AWeaponActor* GetCurrentWeapon() const;
-
-	UFUNCTION(BlueprintCallable)
-	bool IsHoldingWeapon() const;	
 protected:
 	virtual void OnRep_PlayerState() override;
 
@@ -51,12 +41,6 @@ protected:
 	virtual void PawnClientRestart() override;
 	
 	int8 bIsAbilitiesBoundToInput:1;
-	// TODO: Maybe put this to ABaseCharacter
-	int8 bIsHoldingWeapon:1;
-
-	// TODO: Maybe put this to ABaseCharacter
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Weapon")
-	AWeaponActor* Weapon;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom | Camera", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;

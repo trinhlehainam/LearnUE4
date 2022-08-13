@@ -44,6 +44,9 @@ protected:
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float SprintPower;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)
+	bool bIsHoldingWeapon;
 	
 	TWeakObjectPtr<ABaseCharacter> Owner;
 };

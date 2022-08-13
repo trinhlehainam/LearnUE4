@@ -9,6 +9,7 @@
 
 class UBaseGameplayAbility;
 class UCustomAbilitySystemComponent;
+class AWeaponActor;
 
 /**
  * @brief Base class use both for Player and NPCS. \n
@@ -60,14 +61,26 @@ public:
 	FGameplayAbilityTargetDataHandle GetInteractableTargetDataHandle() const;
 	//
 
-	UFUNCTION(BlueprintCallable, Category="BaseCharacter|Movement")
+	UFUNCTION(BlueprintCallable, Category=Character)
 	bool IsSprinting() const;
-	UFUNCTION(BlueprintCallable, Category="BaseCharacter|Movement")
+	
+	UFUNCTION(BlueprintCallable, Category=Character)
 	bool CanSprint() const;
+	
 	UFUNCTION(BlueprintCallable, Category=Character)
 	virtual void Sprint();
+	
 	UFUNCTION(BlueprintCallable, Category=Character)
 	virtual void StopSprinting();
+	
+	UFUNCTION(BlueprintCallable)
+	void CollectWeapon(AWeaponActor* WeaponActor);
+
+	UFUNCTION(BlueprintCallable)
+	AWeaponActor* GetCurrentWeapon() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool IsHoldingWeapon() const;	
 	
 	UFUNCTION(BlueprintCallable, Category="BaseCharacter|Movement")
 	bool IsAlive() const;
@@ -118,6 +131,13 @@ protected:
 	// This is hardcoded to able to updated Interactable Target Data from GA_InteractionNotify and GA_InteractionHandle get updated TargetData
 	FGameplayAbilityTargetDataHandle InteractableTargetDataHandle;
 
+	int8 bIsRolling:1;
+	int8 bIsDashing:1;
 	int8 bIsSprinting:1;
 	int8 bIsAlive:1;
+	int8 bIsHoldingWeapon:1;
+
+	// TODO: Implement Inventory System
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Weapon")
+	AWeaponActor* Weapon;
 };
