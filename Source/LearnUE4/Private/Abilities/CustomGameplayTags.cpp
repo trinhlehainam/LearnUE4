@@ -11,6 +11,7 @@ namespace ECustomGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Ability_InteractionHandle, "Ability.InteractionHandle")
 	UE_DEFINE_GAMEPLAY_TAG(Ability_InteractionNotify, "Ability.InteractionNotify")
 	UE_DEFINE_GAMEPLAY_TAG(State_Interacting, "State.Interacting")
+	UE_DEFINE_GAMEPLAY_TAG(State_Invincible, "State.Invincible")
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_TogglePauseMenu, "InputTag.TogglePauseMenu")
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Move, "InputTag.Move")

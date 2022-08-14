@@ -20,8 +20,9 @@ ABaseCharacter::ABaseCharacter()
 
 	if (USkeletalMeshComponent* MeshComp = GetMesh())
 	{
+		MeshComp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 		MeshComp->SetCollisionObjectType(ECC_Pawn);
-		MeshComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		MeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 		MeshComp->SetGenerateOverlapEvents(false);
 	}
@@ -190,7 +191,7 @@ bool ABaseCharacter::IsHoldingWeapon() const
 
 bool ABaseCharacter::IsAlive() const
 {
-	return bIsAlive;
+	return GetBaseHealth() > 0.f;
 }
 
 // Called to bind functionality to input
@@ -282,24 +283,6 @@ void ABaseCharacter::BindAttributeValueChangeDelegates()
 {
 	if (!ASC.IsValid()) return;
 	
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetHealthAttribute()).AddUObject(
-		this, &ABaseCharacter::OnHealthAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxHealthAttribute()).AddUObject(
-		this, &ABaseCharacter::OnMaxHealthAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetManaAttribute()).AddUObject(
-		this, &ABaseCharacter::OnManaAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxManaAttribute()).AddUObject(
-		this, &ABaseCharacter::OnMaxManaAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetStaminaAttribute()).AddUObject(
-		this, &ABaseCharacter::OnStaminaAttributeValueChange);
-
-	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetMaxStaminaAttribute()).AddUObject(
-		this, &ABaseCharacter::OnMaxStaminaAttributeValueChange);
-
 	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetWalkSpeedAttribute()).AddUObject(
 		this, &ABaseCharacter::OnWalkSpeedAttributeValueChange);
 }
@@ -344,36 +327,6 @@ void ABaseCharacter::SetWalkSpeed(float Value)
 {
 	if (ASC.IsValid())
 		ASC->SetNumericAttributeBase(UBaseAttributeSet::GetWalkSpeedAttribute(), Value);
-}
-
-void ABaseCharacter::OnHealthAttributeValueChange(const FOnAttributeChangeData& Data)
-{
-	bIsAlive = Data.NewValue > 0.f;
-}
-
-void ABaseCharacter::OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& Data)
-{
-	
-}
-
-void ABaseCharacter::OnMaxManaAttributeValueChange(const FOnAttributeChangeData& Data)
-{
-	
-}
-
-void ABaseCharacter::OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& Data)
-{
-	
-}
-
-void ABaseCharacter::OnManaAttributeValueChange(const FOnAttributeChangeData& Data)
-{
-	
-}
-
-void ABaseCharacter::OnStaminaAttributeValueChange(const FOnAttributeChangeData& Data)
-{
-	
 }
 
 void ABaseCharacter::OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& Data)

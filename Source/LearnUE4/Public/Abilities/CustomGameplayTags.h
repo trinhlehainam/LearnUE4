@@ -11,6 +11,7 @@ namespace ECustomGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_InteractionHandle)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_InteractionNotify)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Interacting)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(State_Invincible)
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_TogglePauseMenu)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Move)

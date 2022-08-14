@@ -6,6 +6,13 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Characters/BaseNPC.h"
 
+ANPCController::ANPCController()
+{
+	// TODO:
+	// Need PlayerState to apply GAS to AI Actor
+	bWantsPlayerState = true;
+}
+
 void ANPCController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);

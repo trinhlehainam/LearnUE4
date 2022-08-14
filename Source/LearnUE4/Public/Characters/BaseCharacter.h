@@ -112,12 +112,6 @@ protected:
 	void SetMaxStamina(float Value);
 	void SetWalkSpeed(float Value);
 
-	void OnHealthAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnMaxHealthAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnManaAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnMaxManaAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnStaminaAttributeValueChange(const FOnAttributeChangeData& Data);
-	void OnMaxStaminaAttributeValueChange(const FOnAttributeChangeData& Data);
 	void OnWalkSpeedAttributeValueChange(const FOnAttributeChangeData& Data);
 
 	TWeakObjectPtr<UCustomAbilitySystemComponent> ASC;
@@ -135,6 +129,7 @@ protected:
 	int8 bIsRolling:1;
 	int8 bIsDashing:1;
 	int8 bIsSprinting:1;
+	// TODO: Do we need this ?
 	int8 bIsAlive:1;
 
 	// TODO: Implement Inventory System

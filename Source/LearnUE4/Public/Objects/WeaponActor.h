@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "InteractableActorBase.h"
-#include "GameFramework/Actor.h"
 #include "WeaponActor.generated.h"
 
 UCLASS()
@@ -33,8 +32,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USkeletalMeshComponent* WeaponMesh;
 
-	int8 bCanInteract:1;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
+	FGameplayTag DamageEventTag;
+	
+	int8 bCanInteract:1;
 };

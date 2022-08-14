@@ -4,6 +4,7 @@
 #include "Abilities/GEExecCalc_Damage.h"
 
 #include "Abilities/BaseAttributeSet.h"
+#include "Abilities/CustomGameplayTags.h"
 
 // TODO: Put this to global file for every source can use this
 // When we put our properties in *private* or *protected* of Attribute class, GET_MEMBER_NAME_CHECKED macro in
@@ -71,6 +72,9 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
+	if (TargetTags->HasTagExact(ECustomGameplayTags::State_Invincible))
+		return;
+
 	float AttackPower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		AttributeCaptures().AttackPowerDef, EvaluationParameters, AttackPower);
@@ -85,6 +89,6 @@ void UGEExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecu
 	{
 		// Set the Target's damage meta attribute
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(
-			AttributeCaptures().AttackPowerProperty, EGameplayModOp::Additive, DamageDone));
+			AttributeCaptures().DamageProperty, EGameplayModOp::Additive, DamageDone));
 	}
 }
