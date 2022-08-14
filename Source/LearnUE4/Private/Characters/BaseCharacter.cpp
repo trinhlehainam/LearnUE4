@@ -10,6 +10,7 @@
 #include "Abilities/BaseGameplayAbility.h"
 #include "Abilities/CustomAbilitySystemComponent.h"
 #include "Characters/BaseCharacterState.h"
+#include "Components/CapsuleComponent.h"
 #include "Objects/WeaponActor.h"
 
 // Sets default values
@@ -167,8 +168,8 @@ void ABaseCharacter::StopSprinting()
 void ABaseCharacter::CollectWeapon(AWeaponActor* WeaponActor)
 {
 	WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-	                  FName("UnequipWeaponSocket"));
-	
+	                               FName("UnequipWeaponSocket"));
+
 	Weapon = WeaponActor;
 }
 
@@ -182,7 +183,7 @@ bool ABaseCharacter::IsHoldingWeapon() const
 	if (!IsValid(Weapon)) return false;
 
 	FName AttachingSocket = Weapon->GetAttachParentSocketName();
-	
+
 	if (AttachingSocket == FName("AxeSocket"))
 		return true;
 
@@ -194,6 +195,41 @@ bool ABaseCharacter::IsAlive() const
 	return GetBaseHealth() > 0.f;
 }
 
+void ABaseCharacter::Die(float LifeSpan, bool bEnableRagdoll)
+{
+	if (!IsAlive())
+	{
+		DetachFromControllerPendingDestroy();
+
+		/* Disable all collision on capsule */
+		UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+		SetActorEnableCollision(true);
+
+		if (bEnableRagdoll)
+		{
+			// Ragdoll
+			GetMesh()->SetAllBodiesSimulatePhysics(true);
+			GetMesh()->SetSimulatePhysics(true);
+			GetMesh()->WakeAllRigidBodies();
+			GetMesh()->bBlendPhysics = true;
+
+			UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent());
+			if (CharacterComp)
+			{
+				CharacterComp->StopMovementImmediately();
+				CharacterComp->DisableMovement();
+				CharacterComp->SetComponentTickEnabled(false);
+			}
+		}
+
+		SetLifeSpan(LifeSpan);
+	}
+}
+
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -203,7 +239,6 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void ABaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -282,7 +317,7 @@ void ABaseCharacter::GiveDefaultAbilities()
 void ABaseCharacter::BindAttributeValueChangeDelegates()
 {
 	if (!ASC.IsValid()) return;
-	
+
 	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetWalkSpeedAttribute()).AddUObject(
 		this, &ABaseCharacter::OnWalkSpeedAttributeValueChange);
 }

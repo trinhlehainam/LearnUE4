@@ -63,16 +63,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category=Character)
 	bool IsSprinting() const;
-	
+
 	UFUNCTION(BlueprintCallable, Category=Character)
 	bool CanSprint() const;
-	
+
 	UFUNCTION(BlueprintCallable, Category=Character)
 	virtual void Sprint();
-	
+
 	UFUNCTION(BlueprintCallable, Category=Character)
 	virtual void StopSprinting();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void CollectWeapon(AWeaponActor* WeaponActor);
 
@@ -80,11 +80,13 @@ public:
 	AWeaponActor* GetCurrentWeapon() const;
 
 	UFUNCTION(BlueprintCallable)
-	bool IsHoldingWeapon() const;	
-	
-	UFUNCTION(BlueprintCallable, Category="BaseCharacter|Movement")
+	bool IsHoldingWeapon() const;
+
+	UFUNCTION(BlueprintCallable, Category=Character)
 	bool IsAlive() const;
-	
+
+	UFUNCTION(BlueprintCallable, Category=Character)
+	void Die(float LifeSpan, bool bEnableRagdoll);
 protected:
 	//~ Begin ACharacter Interface.
 
@@ -135,6 +137,6 @@ protected:
 	// TODO: Implement Inventory System
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category= "Weapon")
 	AWeaponActor* Weapon;
-	
+
 	int8 bIsHoldingWeapon:1;
 };
