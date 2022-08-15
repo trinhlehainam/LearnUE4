@@ -22,7 +22,7 @@ ABaseCharacter::ABaseCharacter()
 	if (USkeletalMeshComponent* MeshComp = GetMesh())
 	{
 		MeshComp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-		MeshComp->SetCollisionObjectType(ECC_Pawn);
+		MeshComp->SetCollisionObjectType(ECC_PhysicsBody);
 		MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		MeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 		MeshComp->SetGenerateOverlapEvents(false);
@@ -206,19 +206,22 @@ void ABaseCharacter::Die(float LifeSpan, bool bEnableRagdoll)
 		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 
-		GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 		SetActorEnableCollision(true);
 
 		if (bEnableRagdoll)
 		{
 			// Ragdoll
-			GetMesh()->SetAllBodiesSimulatePhysics(true);
-			GetMesh()->SetSimulatePhysics(true);
-			GetMesh()->WakeAllRigidBodies();
-			GetMesh()->bBlendPhysics = true;
+			if (USkeletalMeshComponent* MeshComp = GetMesh())
+			{
+				MeshComp->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+				MeshComp->SetCollisionResponseToAllChannels(ECR_Block);
 
-			UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent());
-			if (CharacterComp)
+				MeshComp->SetAllBodiesSimulatePhysics(true);
+				MeshComp->SetSimulatePhysics(true);
+				MeshComp->WakeAllRigidBodies();
+			}
+
+			if (UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent()))
 			{
 				CharacterComp->StopMovementImmediately();
 				CharacterComp->DisableMovement();

@@ -18,5 +18,6 @@ enum class EAbilityInputID : uint8
 	Roll			UMETA(DisplayName="Roll, Input ID 5"),
 	Dash			UMETA(DisplayName="Dash, Input ID 6"),
 	Attack			UMETA(DisplayName="Attack, Input ID 7"),
-	Interact		UMETA(DisplayName="Interact, Input ID 8")
+	ToggleEquip		UMETA(DisplayName="Toggle Equip, Input ID 8"),
+	Interact		UMETA(DisplayName="Interact, Input ID 9")
 };

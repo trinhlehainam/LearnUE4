@@ -34,6 +34,7 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 		bIsSprinting = Owner->IsSprinting();
 		bIsHoldingWeapon = Owner->IsHoldingWeapon();
+		bIsAlive = Owner->IsAlive();
 
 		SprintPower = Owner->GetCurrentWalkSpeed() / Owner->GetBaseWalkSpeed();
 
