@@ -29,7 +29,7 @@ protected:
 	                                           APlayerController* InteractingPlayerController) override;
 	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* WeaponMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

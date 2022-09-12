@@ -25,7 +25,7 @@ public class LearnUE4 : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
 		// Shader Modules
-		PublicDependencyModuleNames.AddRange(new string[] { "RHI", "RenderCore" });
+		// PublicDependencyModuleNames.AddRange(new string[] { "RHI", "RenderCore" });
 		
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
