@@ -8,12 +8,12 @@
 
 
 // Sets default values
-AWeaponActor::AWeaponActor()
+AWeaponActor::AWeaponActor():
+	bCanInteract(true),
+	MaterialIndex(0)
 {
-	bCanInteract = true;
-
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(FName("Weapon Mesh"));
-	
+
 	WeaponMesh->SetCollisionProfileName(UCollisionProfile::CustomCollisionProfileName);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	WeaponMesh->SetCollisionResponseToAllChannels(ECR_Block);
@@ -51,11 +51,65 @@ bool AWeaponActor::IsAvailableForInteraction_Implementation(UPrimitiveComponent*
 	return bCanInteract;
 }
 
+void AWeaponActor::BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
+                                                   APlayerController* InteractingPlayerController)
+{
+	SetEnableCustomDepth(true);
+	EnableGlowMaterial();
+}
+
+void AWeaponActor::CancelInteraction_Implementation()
+{
+	SetEnableCustomDepth(false);
+	DisableGlowMaterial();
+}
+
+void AWeaponActor::OnNewTargetFound_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent)
+{
+	if (InteractedComponent == WeaponMesh)
+	{
+		SetEnableCustomDepth(true);
+		EnableGlowMaterial();
+	}
+}
+
+void AWeaponActor::OnTargetLost_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent)
+{
+	SetEnableCustomDepth(false);
+	DisableGlowMaterial();
+}
+
 void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
 
 	WeaponMesh->OnComponentBeginOverlap.AddDynamic(this, &AWeaponActor::OnAttackBeginOverlap);
+}
+
+void AWeaponActor::OnConstruction(const FTransform& Transform)
+{
+	if (GlowMaterialInstance)
+	{
+		GlowDynamicMaterialInstance = UMaterialInstanceDynamic::Create(GlowMaterialInstance, this);
+		WeaponMesh->SetMaterial(MaterialIndex, GlowDynamicMaterialInstance);
+	}
+}
+
+void AWeaponActor::SetEnableCustomDepth(bool bEnable)
+{
+	WeaponMesh->SetRenderCustomDepth(bEnable);
+}
+
+void AWeaponActor::EnableGlowMaterial()
+{
+	if (GlowDynamicMaterialInstance)
+		GlowDynamicMaterialInstance->SetScalarParameterValue(TEXT("GlowBlendAlph"), 0.f);
+}
+
+void AWeaponActor::DisableGlowMaterial()
+{
+	if (GlowDynamicMaterialInstance)
+		GlowDynamicMaterialInstance->SetScalarParameterValue(TEXT("GlowBlendAlph"), 1.f);
 }
 
 void AWeaponActor::EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
@@ -75,4 +129,7 @@ void AWeaponActor::EndInteraction_Implementation(AActor* InteractingActor, UPrim
 
 		Player->CollectWeapon(this);
 	}
+
+	SetEnableCustomDepth(false);
+	DisableGlowMaterial();
 }

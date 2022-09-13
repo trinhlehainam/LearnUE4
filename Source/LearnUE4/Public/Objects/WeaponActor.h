@@ -25,15 +25,37 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void OnConstruction(const FTransform& Transform) override;
+
+	void SetEnableCustomDepth(bool bEnable);
+	
+	void EnableGlowMaterial();
+	void DisableGlowMaterial();
+
+	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent) override;
+	virtual void BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
+	                                             APlayerController* InteractingPlayerController) override;
 	virtual void EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
 	                                           APlayerController* InteractingPlayerController) override;
-	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent) override;
+	virtual void CancelInteraction_Implementation() override;
+	virtual void OnNewTargetFound_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent) override;
+	virtual void OnTargetLost_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USkeletalMeshComponent* WeaponMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag DamageEventTag;
-	
+
 	int8 bCanInteract:1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Properties")
+	int32 MaterialIndex;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Properties")
+	UMaterialInstanceDynamic* GlowDynamicMaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Properties")
+	UMaterialInstance* GlowMaterialInstance;
 };
+

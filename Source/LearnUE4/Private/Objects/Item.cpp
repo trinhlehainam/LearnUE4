@@ -32,9 +32,31 @@ void AItem::BeginPlay()
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnBeginOverlap);
 }
 
+void AItem::SetEnableCustomDepth(bool bEnable)
+{
+	Mesh->SetRenderCustomDepth(bEnable);
+}
+
 bool AItem::IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractingComponent)
 {
 	return true;
+}
+
+void AItem::BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
+	APlayerController* InteractingPlayerController)
+{
+	SetEnableCustomDepth(true);
+}
+
+void AItem::EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
+	APlayerController* InteractingPlayerController)
+{
+	SetEnableCustomDepth(false);
+}
+
+void AItem::CancelInteraction_Implementation()
+{
+	SetEnableCustomDepth(false);
 }
 
 // Called every frame
