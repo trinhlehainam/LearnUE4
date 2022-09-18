@@ -6,6 +6,8 @@
 #include "InteractableActorBase.h"
 #include "WeaponActor.generated.h"
 
+class UCurveVector;
+
 UCLASS()
 class LEARNUE4_API AWeaponActor : public AInteractableActorBase
 {
@@ -24,6 +26,7 @@ public:
 	                          const FHitResult& SweepResult);
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
@@ -31,6 +34,8 @@ protected:
 	
 	void EnableGlowMaterial();
 	void DisableGlowMaterial();
+
+	void UpdatePulseEffect();
 
 	virtual bool IsAvailableForInteraction_Implementation(UPrimitiveComponent* InteractedComponent) override;
 	virtual void BeginInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
@@ -57,5 +62,22 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Properties")
 	UMaterialInstance* GlowMaterialInstance;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Properties")
+	UCurveVector* PulseCurve;
+
+	FTimerHandle PulseTimer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Properties")
+	float PulseRate;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Properties")
+	float GlowPowerBase;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Properties")
+	float FresnelExponentBase;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Properties")
+	float FresnelReflectFractionBase;
 };
 

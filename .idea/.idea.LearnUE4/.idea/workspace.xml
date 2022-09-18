@@ -11,14 +11,10 @@
     <list default="true" id="e47ac7c1-4aa1-4c4a-9f21-9958ae7708fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Leviathon/Material/MAT_Axe.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Leviathon/Material/MAT_Axe.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/PP_Outline.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/PP_Outline.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe_Inst.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe_Inst.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapon/BP_LeviathonAxe.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapon/BP_LeviathonAxe.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Maps/LV_Game.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/LV_Game.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/Item.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/Item.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/WeaponActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/WeaponActor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/WeaponActor.cpp~" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/Item.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/Item.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/WeaponActor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/WeaponActor.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -275,6 +271,11 @@
       <workItem from="1662962338405" duration="1611000" />
       <workItem from="1663039201619" duration="318000" />
       <workItem from="1663040206364" duration="2735000" />
+      <workItem from="1663379098665" duration="3308000" />
+      <workItem from="1663382545170" duration="1209000" />
+      <workItem from="1663383878638" duration="588000" />
+      <workItem from="1663384551705" duration="609000" />
+      <workItem from="1663478000879" duration="4019000" />
     </task>
     <servers />
   </component>

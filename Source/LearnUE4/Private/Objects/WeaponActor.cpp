@@ -5,13 +5,28 @@
 
 #include "AbilitySystemComponent.h"
 #include "Characters/PlayerCharacter.h"
+#include "Curves/CurveVector.h"
 
+namespace
+{
+	const FName GLOW_BLEND_ALPHA_PARAM = TEXT("GlowBlendAlpha");
+	const FName GLOW_POWER_PARAM = TEXT("GlowPower");
+	const FName FRESNEL_EXPONENT_PARAM = TEXT("FresnelExponent");
+	const FName FRESNEL_REFLECT_FRACTION_PARAM = TEXT("FresnelReflectFraction");
+}
 
 // Sets default values
 AWeaponActor::AWeaponActor():
 	bCanInteract(true),
-	MaterialIndex(0)
+	// Dynamic Material Instance
+	MaterialIndex(0),
+	PulseRate(5.f),
+	GlowPowerBase(120.f),
+	FresnelExponentBase(3.f),
+	FresnelReflectFractionBase(4.f)
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(FName("Weapon Mesh"));
 
 	WeaponMesh->SetCollisionProfileName(UCollisionProfile::CustomCollisionProfileName);
@@ -61,7 +76,6 @@ void AWeaponActor::BeginInteraction_Implementation(AActor* InteractingActor, UPr
 void AWeaponActor::CancelInteraction_Implementation()
 {
 	SetEnableCustomDepth(false);
-	DisableGlowMaterial();
 }
 
 void AWeaponActor::OnNewTargetFound_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent)
@@ -69,19 +83,19 @@ void AWeaponActor::OnNewTargetFound_Implementation(AActor* InteratingActor, UPri
 	if (InteractedComponent == WeaponMesh)
 	{
 		SetEnableCustomDepth(true);
-		EnableGlowMaterial();
 	}
 }
 
 void AWeaponActor::OnTargetLost_Implementation(AActor* InteratingActor, UPrimitiveComponent* InteractedComponent)
 {
 	SetEnableCustomDepth(false);
-	DisableGlowMaterial();
 }
 
 void AWeaponActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	EnableGlowMaterial();
 
 	WeaponMesh->OnComponentBeginOverlap.AddDynamic(this, &AWeaponActor::OnAttackBeginOverlap);
 }
@@ -95,6 +109,13 @@ void AWeaponActor::OnConstruction(const FTransform& Transform)
 	}
 }
 
+void AWeaponActor::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	UpdatePulseEffect();
+}
+
 void AWeaponActor::SetEnableCustomDepth(bool bEnable)
 {
 	WeaponMesh->SetRenderCustomDepth(bEnable);
@@ -103,13 +124,33 @@ void AWeaponActor::SetEnableCustomDepth(bool bEnable)
 void AWeaponActor::EnableGlowMaterial()
 {
 	if (GlowDynamicMaterialInstance)
-		GlowDynamicMaterialInstance->SetScalarParameterValue(TEXT("GlowBlendAlph"), 0.f);
+		GlowDynamicMaterialInstance->SetScalarParameterValue(GLOW_BLEND_ALPHA_PARAM, 0.f);
+
+	if (!PulseTimer.IsValid())
+		GetWorldTimerManager().SetTimer(PulseTimer, PulseRate, true);
 }
 
 void AWeaponActor::DisableGlowMaterial()
 {
 	if (GlowDynamicMaterialInstance)
-		GlowDynamicMaterialInstance->SetScalarParameterValue(TEXT("GlowBlendAlph"), 1.f);
+		GlowDynamicMaterialInstance->SetScalarParameterValue(GLOW_BLEND_ALPHA_PARAM, 1.f);
+
+	GetWorldTimerManager().ClearTimer(PulseTimer);
+}
+
+void AWeaponActor::UpdatePulseEffect()
+{
+	if (PulseTimer.IsValid() && PulseCurve && GlowDynamicMaterialInstance)
+	{
+		const float ElapsedTime = GetWorldTimerManager().GetTimerElapsed(PulseTimer);
+		const FVector CurveValue{PulseCurve->GetVectorValue(ElapsedTime)};
+
+		GlowDynamicMaterialInstance->SetScalarParameterValue(GLOW_POWER_PARAM, GlowPowerBase * CurveValue.X);
+		GlowDynamicMaterialInstance->SetScalarParameterValue(FRESNEL_EXPONENT_PARAM,
+		                                                     FresnelExponentBase * CurveValue.Y);
+		GlowDynamicMaterialInstance->SetScalarParameterValue(FRESNEL_REFLECT_FRACTION_PARAM,
+		                                                     FresnelReflectFractionBase * CurveValue.Z);
+	}
 }
 
 void AWeaponActor::EndInteraction_Implementation(AActor* InteractingActor, UPrimitiveComponent* InteractedComponent,
