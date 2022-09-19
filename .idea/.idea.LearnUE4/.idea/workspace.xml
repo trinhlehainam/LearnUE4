@@ -9,11 +9,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e47ac7c1-4aa1-4c4a-9f21-9958ae7708fe" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/ItemType.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/ItemType.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/F_Glow_Axe_Mat.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/F_Glow_Axe_Mat.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe_Inst.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe_Inst.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/PP_Outline.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/PP_Outline.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapon/BP_LeviathonAxe.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapon/BP_LeviathonAxe.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Maps/LV_Game.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/LV_Game.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/LV_MainMenu.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/LV_MainMenu.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/WeaponActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/WeaponActor.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/WeaponActor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/WeaponActor.h" afterDir="false" />
     </list>
@@ -276,6 +281,7 @@
       <workItem from="1663383878638" duration="588000" />
       <workItem from="1663384551705" duration="609000" />
       <workItem from="1663478000879" duration="4019000" />
+      <workItem from="1663553503082" duration="4303000" />
     </task>
     <servers />
   </component>

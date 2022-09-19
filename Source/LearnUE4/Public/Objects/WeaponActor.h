@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "InteractableActorBase.h"
+#include "ItemType.h"
 #include "WeaponActor.generated.h"
 
 class UCurveVector;
+class UDataTable;
 
 UCLASS()
 class LEARNUE4_API AWeaponActor : public AInteractableActorBase
@@ -25,10 +27,9 @@ public:
 	                          AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	                          const FHitResult& SweepResult);
 protected:
+	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-
-	virtual void OnConstruction(const FTransform& Transform) override;
 
 	void SetEnableCustomDepth(bool bEnable);
 	
@@ -79,5 +80,17 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Properties")
 	float FresnelReflectFractionBase;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Properties")
+	EItemRarity ItemRarity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Properties")
+	EItemType ItemType;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Properties")
+	UDataTable* ItemDataTable;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Properties")
+	FLinearColor GlowColor;
 };
 

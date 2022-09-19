@@ -9,10 +9,11 @@
 
 namespace
 {
-	const FName GLOW_BLEND_ALPHA_PARAM = TEXT("GlowBlendAlpha");
-	const FName GLOW_POWER_PARAM = TEXT("GlowPower");
-	const FName FRESNEL_EXPONENT_PARAM = TEXT("FresnelExponent");
-	const FName FRESNEL_REFLECT_FRACTION_PARAM = TEXT("FresnelReflectFraction");
+	const FName GLOW_BLEND_ALPHA_PARAM{"GlowBlendAlpha"};
+	const FName GLOW_POWER_PARAM{"GlowPower"};
+	const FName FRESNEL_EXPONENT_PARAM{"FresnelExponent"};
+	const FName FRESNEL_REFLECT_FRACTION_PARAM{"FresnelReflectFraction"};
+	const FName GLOW_COLOR_PARAM{"GlowColor"};
 }
 
 // Sets default values
@@ -102,10 +103,32 @@ void AWeaponActor::BeginPlay()
 
 void AWeaponActor::OnConstruction(const FTransform& Transform)
 {
+	// Load item data table
+	if (!ItemDataTable) return;
+
+	FItemTableRow* ItemData = nullptr;
+	if (ItemRarity == EItemRarity::Uncommon)
+		ItemData = ItemDataTable->FindRow<FItemTableRow>(FName("Uncommon"), TEXT(""));
+	else if (ItemRarity == EItemRarity::Common)
+		ItemData = ItemDataTable->FindRow<FItemTableRow>(FName("Common"), TEXT(""));
+	else if (ItemRarity == EItemRarity::Rare)
+		ItemData = ItemDataTable->FindRow<FItemTableRow>(FName("Rare"), TEXT(""));
+	else if (ItemRarity == EItemRarity::Legendary)
+		ItemData = ItemDataTable->FindRow<FItemTableRow>(FName("Legendary"), TEXT(""));
+
+	if (ItemData)
+	{
+		GlowColor = ItemData->GlowColor;
+		WeaponMesh->SetCustomDepthStencilValue(ItemData->StencilValue);
+	}
+
 	if (GlowMaterialInstance)
 	{
 		GlowDynamicMaterialInstance = UMaterialInstanceDynamic::Create(GlowMaterialInstance, this);
+		GlowDynamicMaterialInstance->SetVectorParameterValue(GLOW_COLOR_PARAM, GlowColor);
 		WeaponMesh->SetMaterial(MaterialIndex, GlowDynamicMaterialInstance);
+		
+		EnableGlowMaterial();
 	}
 }
 
