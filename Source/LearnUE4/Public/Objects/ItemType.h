@@ -12,6 +12,7 @@ enum class EItemRarity: uint8
 	Uncommon,
 	Common,
 	Rare,
+	Epic,
 	Legendary
 };
 

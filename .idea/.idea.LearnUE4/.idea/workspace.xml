@@ -9,23 +9,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e47ac7c1-4aa1-4c4a-9f21-9958ae7708fe" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/ItemType.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/ItemType.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/F_Glow_Axe_Mat.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/F_Glow_Axe_Mat.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/DataTable/ItemDataTable.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/DataTable/ItemDataTable.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe_Inst.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/M_Glow_Axe_Inst.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/PP_Outline.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Materials/PostProcessing/PP_Outline.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Weapon/BP_LeviathonAxe.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Weapon/BP_LeviathonAxe.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Maps/LV_Game.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/LV_Game.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Maps/LV_MainMenu.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/LV_MainMenu.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/WeaponActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Objects/WeaponActor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/WeaponActor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/WeaponActor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/ItemType.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Objects/ItemType.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://C:/Program Files/Epic Games/UE_4.27/Engine/Source/Runtime/Engine/Private/Materials/MaterialExpressions.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -44,7 +42,7 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;UnrealLinkOptionsId&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -281,7 +279,10 @@
       <workItem from="1663383878638" duration="588000" />
       <workItem from="1663384551705" duration="609000" />
       <workItem from="1663478000879" duration="4019000" />
-      <workItem from="1663553503082" duration="4303000" />
+      <workItem from="1663553503082" duration="4486000" />
+      <workItem from="1663562001337" duration="1533000" />
+      <workItem from="1663638841929" duration="702000" />
+      <workItem from="1663639649224" duration="483000" />
     </task>
     <servers />
   </component>

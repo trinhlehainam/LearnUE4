@@ -113,6 +113,8 @@ void AWeaponActor::OnConstruction(const FTransform& Transform)
 		ItemData = ItemDataTable->FindRow<FItemTableRow>(FName("Common"), TEXT(""));
 	else if (ItemRarity == EItemRarity::Rare)
 		ItemData = ItemDataTable->FindRow<FItemTableRow>(FName("Rare"), TEXT(""));
+	else if (ItemRarity == EItemRarity::Epic)
+		ItemData = ItemDataTable->FindRow<FItemTableRow>(FName("Epic"), TEXT(""));
 	else if (ItemRarity == EItemRarity::Legendary)
 		ItemData = ItemDataTable->FindRow<FItemTableRow>(FName("Legendary"), TEXT(""));
 
