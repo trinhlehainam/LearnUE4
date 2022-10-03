@@ -13,8 +13,10 @@
 #include "Abilities/AbilityInputID.h"
 #include "Abilities/CustomAbilitySystemComponent.h"
 #include "Abilities/CustomGameplayTags.h"
+#include "Characters/CustomMovementComponent.h"
 
-APlayerCharacter::APlayerCharacter()
+APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer):
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UCustomMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Don't let Controller rotating Character
 	bUseControllerRotationPitch = false;
@@ -25,9 +27,13 @@ APlayerCharacter::APlayerCharacter()
 
 	AIControllerClass = nullptr;
 
+	MoveComp = Cast<UCustomMovementComponent>(GetCharacterMovement());
 	// Let Character Movement Component rotate Character toward movement direction
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
+	if (MoveComp)
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
+	}
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Follow Camera"));

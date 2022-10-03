@@ -6,10 +6,12 @@
 #include "Abilities/BaseAttributeSet.h"
 #include "Abilities/CustomAbilitySystemComponent.h"
 
+const FName ABaseCharacterState::AbilitySystemComponentName = TEXT("AbilitySystemComponent");
 
-ABaseCharacterState::ABaseCharacterState()
+ABaseCharacterState::ABaseCharacterState(const FObjectInitializer& ObjectInitializer):
+	Super(ObjectInitializer)
 {
-	ASC = CreateDefaultSubobject<UCustomAbilitySystemComponent>(FName("ASC"));
+	ASC = CreateDefaultSubobject<UCustomAbilitySystemComponent>(ABaseCharacterState::AbilitySystemComponentName);
 }
 
 UAbilitySystemComponent* ABaseCharacterState::GetAbilitySystemComponent() const
@@ -120,7 +122,7 @@ void ABaseCharacterState::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	if (!IsValid(ASC)) return;
-	
+
 	ASC->AddSet<UBaseAttributeSet>();
 
 	ASC->GetGameplayAttributeValueChangeDelegate(UBaseAttributeSet::GetHealthAttribute()).AddUObject(

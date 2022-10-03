@@ -6,7 +6,8 @@
 #include "Controllers/NPCController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-ABaseNPC::ABaseNPC()
+ABaseNPC::ABaseNPC(const FObjectInitializer& ObjectInitializer):
+	Super(ObjectInitializer)
 {
 	AIControllerClass = ANPCController::StaticClass();
 	CurrentPatrolInfoIndex = 0;

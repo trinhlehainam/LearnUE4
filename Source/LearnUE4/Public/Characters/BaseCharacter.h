@@ -23,7 +23,7 @@ class LEARNUE4_API ABaseCharacter : public ACharacter, public IAbilitySystemInte
 
 public:
 	// Sets default values for this character's properties
-	ABaseCharacter();
+	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 

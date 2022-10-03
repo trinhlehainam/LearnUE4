@@ -18,7 +18,7 @@ class LEARNUE4_API ABaseNPC : public ABaseCharacter
 	GENERATED_BODY()
 
 public:
-	ABaseNPC();
+	ABaseNPC(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable, Category="AI")
 	UBehaviorTree* GetBehaviorTree() const;

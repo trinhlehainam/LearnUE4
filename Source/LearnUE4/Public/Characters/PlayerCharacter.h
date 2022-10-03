@@ -13,6 +13,7 @@ class UCameraComponent;
 class UInputMappingContext;
 struct FInputActionValue;
 class UInputConfig;
+class UCustomMovementComponent;
 
 /**
  * 
@@ -22,7 +23,7 @@ class LEARNUE4_API APlayerCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 public:
-	APlayerCharacter();
+	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 	void MoveFoward(float Scale);
 
@@ -56,4 +57,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom | Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* GamepadInputMappingContext;
+
+	UPROPERTY()
+	UCustomMovementComponent* MoveComp;
 };
