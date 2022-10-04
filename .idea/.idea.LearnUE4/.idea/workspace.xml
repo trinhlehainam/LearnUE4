@@ -11,11 +11,11 @@
     <list default="true" id="e47ac7c1-4aa1-4c4a-9f21-9958ae7708fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Mannequin/Character/Mesh/UE4_Mannequin_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Mannequin/Character/Mesh/UE4_Mannequin_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/ABP_ManequinLocomotion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/ABP_ManequinLocomotion.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/WalkBlendspace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/WalkBlendspace.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Animation/CustomAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Animation/CustomAnimInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Characters/CustomMovementComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Characters/CustomMovementComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Animation/CustomAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Animation/CustomAnimInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Characters/BaseCharacterState.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Characters/BaseCharacterState.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Characters/CustomMovementComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Characters/CustomMovementComponent.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -288,6 +288,7 @@
       <workItem from="1664769342303" duration="5670000" />
       <workItem from="1664843442758" duration="7302000" />
       <workItem from="1664854189561" duration="1437000" />
+      <workItem from="1664858021675" duration="2093000" />
     </task>
     <servers />
   </component>

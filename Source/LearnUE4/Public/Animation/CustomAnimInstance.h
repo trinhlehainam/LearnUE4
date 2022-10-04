@@ -35,7 +35,7 @@ protected:
 
 	// Result to adjust strafing animation
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
-	float StrafingOffsetYaw;	
+	float MovementOffsetYaw;	
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float CurrentWalkSpeed;

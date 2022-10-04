@@ -49,7 +49,7 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 	const float LerpedDeltaYaw = FMath::FInterpTo(ActorRotationDeltaYaw, TargetDeltaYaw, DeltaTime, 6.0f);
 	ActorRotationDeltaYaw = FMath::Clamp(LerpedDeltaYaw, -90.f, 90.f);
 
-	StrafingOffsetYaw = FMath::Clamp(
+	MovementOffsetYaw = FMath::Clamp(
 		UKismetMathLibrary::NormalizedDeltaRotator(AccelerateDirection.Rotation(), ActorRotation).Yaw,
 		-180.f, 180.f);
 
