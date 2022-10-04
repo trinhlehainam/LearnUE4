@@ -25,10 +25,17 @@ protected:
 
 	// Result to adjust leaning degree while running
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
-	float DetalYaw;
+	float ActorRotationDeltaYaw;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
-	FRotator LastFrameRotation;
+	FRotator LastFrameActorRotation;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
+	FVector AccelerateDirection;
+
+	// Result to adjust strafing animation
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
+	float StrafingOffsetYaw;	
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float CurrentWalkSpeed;

@@ -19,6 +19,8 @@ class LEARNUE4_API ABaseCharacterState : public APlayerState, public IAbilitySys
 {
 	GENERATED_BODY()
 public:
+	ABaseCharacterState(const FObjectInitializer& ObjectInitializer);
+
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	/** Name of the AbilitySystemComponent component. Use this name if you want to use a different class (with ObjectInitializer.SetDefaultSubobjectClass). */

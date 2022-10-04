@@ -13,7 +13,8 @@ void UCustomAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	if (Owner == nullptr) {
+	if (Owner == nullptr)
+	{
 		APawn* PawnOwner = TryGetPawnOwner();
 		Owner = Cast<ABaseCharacter>(PawnOwner);
 	}
@@ -21,34 +22,42 @@ void UCustomAnimInstance::NativeInitializeAnimation()
 
 void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 {
-	if (Owner == nullptr) {
+	if (Owner == nullptr)
+	{
 		APawn* PawnOwner = TryGetPawnOwner();
 		Owner = Cast<ABaseCharacter>(PawnOwner);
 	}
 
-	if (Owner.IsValid()) {
-		FVector Velocity = Owner->GetVelocity();
-		CurrentWalkSpeed = FVector(Velocity.X, Velocity.Y, 0.f).Size();
+	if (!Owner.IsValid()) return;
 
-		bIsInAir = Owner->GetMovementComponent()->IsFalling();
-		bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
-		bIsSprinting = Owner->IsSprinting();
-		bIsHoldingWeapon = Owner->IsHoldingWeapon();
-		bIsAlive = Owner->IsAlive();
+	const FVector Velocity = Owner->GetVelocity();
+	CurrentWalkSpeed = FVector(Velocity.X, Velocity.Y, 0.f).Size();
 
-		SprintPower = Owner->GetCurrentWalkSpeed() / Owner->GetBaseWalkSpeed();
+	bIsInAir = Owner->GetMovementComponent()->IsFalling();
+	bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
+	bIsSprinting = Owner->IsSprinting();
+	bIsHoldingWeapon = Owner->IsHoldingWeapon();
+	bIsAlive = Owner->IsAlive();
 
-		FRotator Rotation = Owner->GetActorRotation();
-		FRotator NormalizedDeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(Rotation, LastFrameRotation);
-		float TargetYaw = NormalizedDeltaRotation.Yaw / DeltaTime;
-		float LerpedYaw = FMath::FInterpTo(DetalYaw, TargetYaw, DeltaTime, 6.0f);
-		DetalYaw = FMath::Clamp(LerpedYaw, -90.f, 90.f);
-		
-		LastFrameRotation = Rotation;
-	}
+	AccelerateDirection = Owner->GetCharacterMovement()->GetCurrentAcceleration().GetSafeNormal();
+
+	SprintPower = Owner->GetCurrentWalkSpeed() / Owner->GetBaseWalkSpeed();
+
+	const FRotator ActorRotation = Owner->GetActorRotation();
+	const float TargetDeltaYaw = UKismetMathLibrary::NormalizedDeltaRotator(ActorRotation, LastFrameActorRotation).Yaw
+		/ DeltaTime;
+	const float LerpedDeltaYaw = FMath::FInterpTo(ActorRotationDeltaYaw, TargetDeltaYaw, DeltaTime, 6.0f);
+	ActorRotationDeltaYaw = FMath::Clamp(LerpedDeltaYaw, -90.f, 90.f);
+
+	StrafingOffsetYaw = FMath::Clamp(
+		UKismetMathLibrary::NormalizedDeltaRotator(AccelerateDirection.Rotation(), ActorRotation).Yaw,
+		-180.f, 180.f);
+
+	LastFrameActorRotation = ActorRotation;
 }
 
-void UCustomAnimInstance::NativeUpdateAnimation(float DeltaTime) {
+void UCustomAnimInstance::NativeUpdateAnimation(float DeltaTime)
+{
 	Super::NativeUpdateAnimation(DeltaTime);
 
 	UpdateAnimationProperties(DeltaTime);

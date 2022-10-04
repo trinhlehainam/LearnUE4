@@ -13,5 +13,7 @@ UCLASS()
 class LEARNUE4_API UCustomMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual FRotator ComputeOrientToMovementRotation(const FRotator& CurrentRotation, float DeltaTime, FRotator& DeltaRotation) const override;
 };
