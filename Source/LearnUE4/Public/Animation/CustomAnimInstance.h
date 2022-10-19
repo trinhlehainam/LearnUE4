@@ -37,6 +37,10 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float MovementOffsetYaw;	
 
+	// Capture last frame Movement Offset Yaw for Stop Movement Animation
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
+	float LastFrameMovementOffsetYaw;	
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float CurrentWalkSpeed;
 	

@@ -53,6 +53,8 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 		UKismetMathLibrary::NormalizedDeltaRotator(AccelerateDirection.Rotation(), ActorRotation).Yaw,
 		-180.f, 180.f);
 
+	LastFrameMovementOffsetYaw = CurrentWalkSpeed > 0.f ? MovementOffsetYaw : LastFrameMovementOffsetYaw;
+
 	LastFrameActorRotation = ActorRotation;
 }
 
