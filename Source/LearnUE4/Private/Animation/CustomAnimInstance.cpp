@@ -49,12 +49,12 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 	const float LerpedDeltaYaw = FMath::FInterpTo(ActorRotationDeltaYaw, TargetDeltaYaw, DeltaTime, 6.0f);
 	ActorRotationDeltaYaw = FMath::Clamp(LerpedDeltaYaw, -90.f, 90.f);
 
-	MovementOffsetYaw = FMath::Clamp(
-		UKismetMathLibrary::NormalizedDeltaRotator(AccelerateDirection.Rotation(), ActorRotation).Yaw,
-		-180.f, 180.f);
+	const FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
+	MovementOffsetYaw = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, ActorRotation).Yaw;
 
-	LastFrameMovementOffsetYaw = CurrentWalkSpeed > 0.f ? MovementOffsetYaw : LastFrameMovementOffsetYaw;
-
+	// Only capture MovementOffsetYaw when Character is moving
+	LastMovementOffsetYaw = CurrentWalkSpeed > 0.f ? MovementOffsetYaw : LastMovementOffsetYaw;
+	
 	LastFrameActorRotation = ActorRotation;
 }
 

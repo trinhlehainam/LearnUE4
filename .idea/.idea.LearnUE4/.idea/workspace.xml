@@ -10,8 +10,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e47ac7c1-4aa1-4c4a-9f21-9958ae7708fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Jog_Bwd_Stop.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Animations/Jog_Bwd_Stop.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mannequin/Character/Mesh/UE4_Mannequin_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Mannequin/Character/Mesh/UE4_Mannequin_Skeleton.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/ABP_ManequinLocomotion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/ABP_ManequinLocomotion.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JobStartBlendspace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JobStartBlendspace.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JobStopBlendspace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JobStopBlendspace.uasset" afterDir="false" />
@@ -291,6 +290,7 @@
       <workItem from="1664854189561" duration="1437000" />
       <workItem from="1664858021675" duration="2476000" />
       <workItem from="1666144238869" duration="1351000" />
+      <workItem from="1666315555120" duration="3429000" />
     </task>
     <servers />
   </component>
