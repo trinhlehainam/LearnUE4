@@ -33,7 +33,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	FVector AccelerateDirection;
 
-	// Result to adjust strafing animation
+	// Offset Yaw from Movement Direction and Controller Forward Direction
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float MovementOffsetYaw;	
 

@@ -21,8 +21,8 @@ FRotator UCustomMovementComponent::ComputeOrientToMovementRotation(const FRotato
 	}
 
 	const FRotator ControlRotation = CharacterOwner->Controller->GetControlRotation();
-	const FRotator YawRotation = FRotator(0.f, ControlRotation.Yaw, 0.f);
-	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	const FRotator ControlYawRotation = FRotator(0.f, ControlRotation.Yaw, 0.f);
+	// const FVector ForwardDirection = FRotationMatrix(ControlYawRotation).GetUnitAxis(EAxis::X);
 
-	return ForwardDirection.Rotation();
+	return ControlYawRotation;
 }
