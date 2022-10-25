@@ -10,56 +10,14 @@
   <component name="ChangeListManager">
     <list default="true" id="e47ac7c1-4aa1-4c4a-9f21-9958ae7708fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/FallingToRoll4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/GreatSwordCasting4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingDisarmOverShoulder4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingDodgeBackward4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingDodgeForward4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingDodgeLeft4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingDodgeRight4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingIdleLookingVer_24UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingJumpAnticipateUE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingJumpBaseUE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingJumpLandUE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingJumpUE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingMeleeAttack360High4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingMeleeAttack360Low4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingMeleeAttackBackhand4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingMeleeComboAttackVer_14UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingMeleeComboAttackVer_34UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingMeleeRunJumpAttack4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingReactLargeFromLeft4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingReactLargeFromRight4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingRunBack4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingRunForward4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingTauntBattlecry4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingWalkBack4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingWalkForward4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingWalkLeft4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/StandingWalkRight4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/SwordAndShieldBlock4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/SwordAndShieldBlockIdle4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/SwordAndShieldBlockReturn4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/SwordAndShieldImpact4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/SwordAndShieldImpactLarge4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/TwoCycleSprint4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/UnarmedEquipOverShoulder4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/UnarmedIdle4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/UnarmedIdleLookingVer_24UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/UnarmedRunBack4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/UnarmedRunForward4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Mixamo/UnarmedWalkForward4UE4.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/ABP_ManequinLocomotion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/ABP_ManequinLocomotion.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_AxeAttack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_AxeAttack.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_Jump.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_Jump.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_Rage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_Rage.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_RollForward.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_RollForward.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_ToggleEquipAxe.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/AM_ToggleEquipAxe.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/ArmedWalkRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/ArmedWalkRun.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JoggingBlendspace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JoggingBlendspace.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/UnarmedWalkRun.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/UnarmedWalkRun.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Characters/CustomMovementComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Characters/CustomMovementComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Bwd_Start.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Left_Start.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Right_Start.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JogStartBlendspace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JogStartBlendspace.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Animation/CustomAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Animation/CustomAnimInstance.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Characters/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Characters/BaseCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Animation/CustomAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Animation/CustomAnimInstance.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Characters/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Characters/BaseCharacter.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -336,6 +294,8 @@
       <workItem from="1666144238869" duration="1351000" />
       <workItem from="1666315555120" duration="4586000" />
       <workItem from="1666575258488" duration="1399000" />
+      <workItem from="1666661235352" duration="1586000" />
+      <workItem from="1666668849884" duration="2620000" />
     </task>
     <servers />
   </component>

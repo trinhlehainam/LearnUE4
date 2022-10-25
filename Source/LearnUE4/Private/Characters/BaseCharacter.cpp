@@ -15,7 +15,10 @@
 
 // Sets default values
 ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer):
-	Super(ObjectInitializer)
+	Super(ObjectInitializer),
+	bIsSprinting(false),
+	bIsJumping(false),
+	bIsAlive(false)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,9 +31,6 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer):
 		MeshComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 		MeshComp->SetGenerateOverlapEvents(false);
 	}
-
-	bIsSprinting = false;
-	bIsAlive = false;
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -164,6 +164,23 @@ void ABaseCharacter::Sprint()
 void ABaseCharacter::StopSprinting()
 {
 	bIsSprinting = false;
+}
+
+bool ABaseCharacter::IsJumping() const
+{
+	return bIsJumping;
+}
+
+void ABaseCharacter::Jump()
+{
+	Super::Jump();
+	bIsJumping = true;
+}
+
+void ABaseCharacter::StopJumping()
+{
+	Super::StopJumping();
+	bIsJumping = false;
 }
 
 void ABaseCharacter::CollectWeapon(AWeaponActor* WeaponActor)

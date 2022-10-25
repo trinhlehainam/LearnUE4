@@ -36,6 +36,7 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 	bIsInAir = Owner->GetMovementComponent()->IsFalling();
 	bIsAccelerating = Owner->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f;
 	bIsSprinting = Owner->IsSprinting();
+	bIsJumping = Owner->IsJumping();
 	bIsHoldingWeapon = Owner->IsHoldingWeapon();
 	bIsAlive = Owner->IsAlive();
 

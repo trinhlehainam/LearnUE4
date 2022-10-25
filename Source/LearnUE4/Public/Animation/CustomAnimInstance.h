@@ -57,6 +57,9 @@ protected:
 	bool bIsSprinting;
 	
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
+	bool bIsJumping;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Movement)
 	float SprintPower;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Weapon)

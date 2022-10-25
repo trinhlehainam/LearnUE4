@@ -73,6 +73,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category=Character)
 	virtual void StopSprinting();
 
+	UFUNCTION(BlueprintCallable, Category=Character)
+	bool IsJumping() const;
+
+	virtual void Jump() override;
+
+	virtual void StopJumping() override;
+
 	UFUNCTION(BlueprintCallable)
 	void CollectWeapon(AWeaponActor* WeaponActor);
 
@@ -131,6 +138,7 @@ protected:
 	int8 bIsRolling:1;
 	int8 bIsDashing:1;
 	int8 bIsSprinting:1;
+	int8 bIsJumping:1;
 	// TODO: Do we need this ?
 	int8 bIsAlive:1;
 
