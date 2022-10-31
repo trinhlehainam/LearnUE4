@@ -44,11 +44,14 @@ void UCustomAnimInstance::UpdateAnimationProperties(float DeltaTime)
 
 	SprintPower = Owner->GetCurrentWalkSpeed() / Owner->GetBaseWalkSpeed();
 
+	// Calculate Rotation Delta Yaw use for leaning (arc) animation 
 	const FRotator ActorRotation = Owner->GetActorRotation();
 	const float TargetDeltaYaw = UKismetMathLibrary::NormalizedDeltaRotator(ActorRotation, LastFrameActorRotation).Yaw
 		/ DeltaTime;
-	const float LerpedDeltaYaw = FMath::FInterpTo(ActorRotationDeltaYaw, TargetDeltaYaw, DeltaTime, 6.0f);
+	constexpr float LerpSpeed = 6.f;
+	const float LerpedDeltaYaw = FMath::FInterpTo(ActorRotationDeltaYaw, TargetDeltaYaw, DeltaTime, LerpSpeed);
 	ActorRotationDeltaYaw = FMath::Clamp(LerpedDeltaYaw, -90.f, 90.f);
+	//
 
 	const FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
 	MovementOffsetYaw = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, ActorRotation).Yaw;

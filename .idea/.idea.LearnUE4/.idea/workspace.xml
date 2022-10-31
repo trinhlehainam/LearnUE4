@@ -10,14 +10,40 @@
   <component name="ChangeListManager">
     <list default="true" id="e47ac7c1-4aa1-4c4a-9f21-9958ae7708fe" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LearnUE4/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Bwd_Start.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Left_Start.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Right_Start.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/ParagonKhaimera/Jog_Bwd_Stop.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/ParagonKhaimera/Jog_Fwd_Stop.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/ParagonKhaimera/Jog_Left_Stop.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/ParagonKhaimera/Jog_Right_Stop.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Bwd.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Bwd_Circle_Right.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Bwd_Start_Trimmed.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Bwd_Stop.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Bwd_Stop_Trimmed.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Fwd.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Fwd_Circle_Left.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Fwd_Circle_Right.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Fwd_Start.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Fwd_Stop.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Fwd_Stop_Trimmed.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Left.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Left_Circle_Left.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Left_Circle_Right.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Left_Start_Trimmed.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Left_Stop.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Left_Stop_Trimmed.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Right.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Right_Circle_Left.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Right_Circle_Right.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Right_Start_Trimmed.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Right_Stop.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/Jog_Right_Stop_Trimmed.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Animations/Trimming/jog_Bwd_Circle_Left.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Assets/Mannequin/Character/Mesh/UE4_Mannequin_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Assets/Mannequin/Character/Mesh/UE4_Mannequin_Skeleton.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JogStartBlendspace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JogStartBlendspace.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JogStopBlendspace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JogStopBlendspace.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JoggingBlendspace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Character/Player/Animations/JoggingBlendspace.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Maps/LV_Game.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Maps/LV_Game.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Animation/CustomAnimInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Animation/CustomAnimInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Private/Characters/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Private/Characters/BaseCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Animation/CustomAnimInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Animation/CustomAnimInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LearnUE4/Public/Characters/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LearnUE4/Public/Characters/BaseCharacter.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -296,6 +322,8 @@
       <workItem from="1666575258488" duration="1399000" />
       <workItem from="1666661235352" duration="1586000" />
       <workItem from="1666668849884" duration="2620000" />
+      <workItem from="1667187388235" duration="1097000" />
+      <workItem from="1667188641845" duration="298000" />
     </task>
     <servers />
   </component>
